@@ -1,0 +1,83 @@
+#include "adjMatrix.h"
+
+AdjMatrix::AdjMatrix()
+{
+    this->INF = -1;
+    this->cn = ; //cantidad de nodos
+    vector< vector<int> > ady; //matriz de adyacencia
+    deque<int> path; // camino mínimo de dijkstra
+    int caminosPosibles; // cantidad de caminos posibles
+}
+
+// Devuelve un vector con las distancias mínimas del nodo inicial al resto de los vertices.
+// Guarda en path los nodos que forman el camino mínimo y muestra la cantidad de caminos posibles
+vector<int> AdjMatrix::dikjstra(int &inicial, int &final){
+     
+    vector<int> distancias;
+
+    caminosPosibles = 0;
+ 
+    //decremento para manejarme en [0, cn)
+ 
+    // Seteo las distancias en infinito y marco todos los nodos como no visitados
+    for(int i = 0; i < cn; i++){
+        distancias.push_back(INF);
+        noVisitados.push_back(i);
+    }
+ 
+    // Actual es el nodo inicial y la distancia a si mismo es 0
+    int actual = inicial;
+    distancias[inicial] = 0;
+ 
+    // Inicializo el camino mínimo en infinito.
+    path = deque<int>(cn, INF);
+ 
+    while(!noVisitados.empty()){
+        // Para cada nodo no visitado, calculo la distancia tentativa al nodo actual;
+        // si es menor que la distancia seteada, la sobreescribo.
+        for(itList = noVisitados.begin(); itList != noVisitados.end(); itList++){
+            // distancia tentativa = distancia del inicial al actual + distancia del actual al noVisitado
+            int dt = distancias[actual] + ady[actual][*itList];
+            if(distancias[*itList] > dt){
+ 
+                // Agrego a camino el nodo (actual) a través del cual el nodo inicial se conecta con *itList
+                path[*itList] = actual;
+            }
+            else if(distancias[*itList] == dt && *itList == final)
+                caminosPosibles++;
+ 
+        }
+        // Marco como visitado el nodo actual, la distancia seteada es la mínima.
+        noVisitados.remove(actual);
+ 
+        // Si no lo pase como parámetro final vale -1, en ese caso el if nunca da true.
+        if(actual == final) break;
+ 
+        // El nodo actual ahora es el nodo no visitado que tiene la menor distancia al nodo inicial.
+        int min = INF;
+        for(itList = noVisitados.begin(); itList != noVisitados.end(); itList++)
+            if(min >= distancias[*itList]){
+                min = distancias[*itList];
+                actual = *itList;
+            }
+    }
+ 
+    // Si final vino como parámetro obtengo el camino mínimo y lo guardo en path
+    if(final != -1){
+        deque<int> temp;
+        int nodo = final;
+ 
+        while(nodo != inicial){
+            temp.push_front(nodo);
+            nodo = path[nodo];
+        }
+ 
+        path = temp;
+ 
+        if(ady[inicial][final] != INF)
+            caminosPosibles++;
+ 
+        cout << "Caminos Posibles " << caminosPosibles << endl;
+    }    
+    return distancias;
+}
