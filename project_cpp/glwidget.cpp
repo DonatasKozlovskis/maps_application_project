@@ -15,6 +15,7 @@ GLWidget::GLWidget(QWidget *parent)
     vector <int> result = this->mydijkstra->output();
     path = mymap->getPath(result);
 
+
 }
 
 GLWidget::~GLWidget() {}

@@ -7,6 +7,7 @@
 
 #include "map.h"
 #include "dijkstra.h"
+#include "patch.h"
 
 class GLWidget : public QGLWidget
 {

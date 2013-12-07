@@ -17,6 +17,7 @@ public:
     void normalize();
     void adjMatrix(bool);
     vector<Node*> getPath(vector<int>);
+    Node* getCloser(float &, float &);
 
     float **adj;
     vector<Road*> myRoads;

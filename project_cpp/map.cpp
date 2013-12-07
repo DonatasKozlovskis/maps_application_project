@@ -173,5 +173,26 @@ vector<Node*> Map::getPath(vector<int> in){
     return out;
 }
 
+//Checks in the whole list of nodes the node which distance is minimum to the POI
+Node* Map::getCloser(float &x, float &y){
+    Node* poi = new Node;
+    poi->setValue(x,y);
+    Node* it = new Node;
+    Node* closer = new Node;
+    float min = 1000;
+    float dist = 0;
+
+    for(unsigned int i=0; i<this->myRoads.size(); i++){
+        for (unsigned int j=0; j<this->getRoad(i)->length(); j++){
+            it=this->getRoad(i)->getNode(j);
+            dist = poi->distNode(it);
+            if (dist<min){
+                closer=it;
+            }
+        }
+    }
+
+    return closer;
+}
 
 
