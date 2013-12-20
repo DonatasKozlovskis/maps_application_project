@@ -7,7 +7,7 @@ function roadPlotHandles = plotRoads(this, axesHande, lineSpec)
         roadPlotHandles = [roadPlotHandles this.roads(p).plotRoad(axesHande, lineSpec)];
     end
     hold off
-    xlabel('Longitude');
-    ylabel('Latitude');
+ %   xlabel('Longitude');
+ %   ylabel('Latitude');
     lat_lon_proportions;
 end
