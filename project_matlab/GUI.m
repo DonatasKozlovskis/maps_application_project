@@ -73,14 +73,22 @@ handles.data.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.plotSpec);
 handles.lat = varargin{3};
 handles.lon = varargin{4};
 
-handles.userlat1 = 0;
-handles.userlat2 = 0;
-handles.userlon1 = 0;
-handles.userlon2 = 0;
+% handles.userlat1 = 0;
+% handles.userlat2 = 0;
+% handles.userlon1 = 0;
+% handles.userlon2 = 0;
+handles.lat1 = 0;
+handles.lon1 = 0;
+handles.lat2 = 0;
+handles.lon2 = 0;
+handles.lat3 = 0;
+handles.lon3 = 0;
 handles.a = 0;
 handles.b = 0;
 handles.c = 0;
 handles.d = 0;
+handles.e = 0;
+handles.f = 0;
 
 load('POIdata');
 handles.ActualPOIs1 = POIdata;
@@ -111,8 +119,6 @@ set(handles.instructions_panel, 'Visible', 'off');
 % Update handles structure
 guidata(hObject, handles);
 
-
-
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -142,14 +148,18 @@ contents = get(hObject,'Value');
 latmat = cell2mat(handles.ActualPOIs1(:,1));
 longmat = cell2mat(handles.ActualPOIs1(:,2));
 
-latitude = latmat(contents);
-longitude = longmat(contents);
+handles.lat1 = latmat(contents);
+handles.lon1 = longmat(contents);
 
 hold on;
 if handles.b == 1; 
     delete(handles.a);
 end
-handles.a = plot ( longitude, latitude, '*r');
+handles.a = plot ( handles.lon1, handles.lat1, 'ro',...
+                                               'LineWidth',2,...
+                                               'MarkerEdgeColor','k',...
+                                               'MarkerFaceColor',[1 .49 .63],...
+                                               'MarkerSize',10);
 handles.b = 1;
 
 
@@ -184,14 +194,18 @@ contents = get(hObject,'Value');
 latmat = cell2mat(handles.ActualPOIs2(:,1));
 longmat = cell2mat(handles.ActualPOIs2(:,2));
 
-latitude = latmat(contents);
-longitude = longmat(contents);
+handles.lat2 = latmat(contents);
+handles.lon2 = longmat(contents);
 
 hold on;
 if handles.d == 1; 
         delete(handles.c);
 end
-handles.c = plot ( longitude, latitude, '*g');
+handles.c = plot ( handles.lon2, handles.lat2, 'mo',...
+                                               'LineWidth',2,...
+                                               'MarkerEdgeColor','k',...
+                                               'MarkerFaceColor',[.49 .63 1],...
+                                               'MarkerSize',10);
 handles.d = 1;
 
 % Update handles structure
@@ -246,13 +260,8 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to axes1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 %handles.allRoads.plotMap(hObject, 'staticmap.png', handles.plotSpec);
-
 % Hint: place code in OpeningFcn to populate axes1
-
-
-
 
 % --- Executes on button press in refresh.
 function refresh_Callback(hObject, eventdata, handles)
@@ -260,17 +269,36 @@ function refresh_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 load('POIdata');
-POIname = POIdata(:,3);
-POInameFrom = cat(1, 'Go from...', POIname);
-POInameTo = cat(1, 'To...', POIname);
-POIlatitude = cell2mat(POIdata(:,1));
-POIlatitude = cat(1,0,POIlatitude);
-POIlongitude = cell2mat(POIdata(:,2));
-POIlongitude = cat(1,0,POIlongitude);
-set(handles.from, 'String', POInameFrom);
-set(handles.popupmenu2, 'String', POInameTo);
-handles.lat = POIlatitude;
-handles.lon = POIlongitude;
+
+handles.ActualPOIs1 = POIdata;
+handles.ActualPOIs2 = POIdata;
+handles.ActualPOIs3 = POIdata;
+
+set(handles.from, 'String', handles.ActualPOIs1(:,3));
+set(handles.popupmenu2, 'String', handles.ActualPOIs2(:,3));
+set(handles.popupmenu3, 'String', handles.ActualPOIs3(:,3));
+
+set(handles.from, 'Value', 1);
+set(handles.popupmenu2, 'Value', 1);
+set(handles.popupmenu3, 'Value', 1);
+
+set(handles.class1, 'Value', 1);
+set(handles.class2, 'Value', 1);
+set(handles.class3, 'Value', 1);
+
+
+% 
+% POIname = POIdata(:,3);
+% POInameFrom = cat(1, 'Go from...', POIname);
+% POInameTo = cat(1, 'To...', POIname);
+% POIlatitude = cell2mat(POIdata(:,1));
+% POIlatitude = cat(1,0,POIlatitude);
+% POIlongitude = cell2mat(POIdata(:,2));
+% POIlongitude = cat(1,0,POIlongitude);
+% set(handles.from, 'String', POInameFrom);
+% set(handles.popupmenu2, 'String', POInameTo);
+% handles.lat = POIlatitude;
+% handles.lon = POIlongitude;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -525,6 +553,28 @@ function popupmenu3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu3 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu3
+contents = get(hObject,'Value');
+
+latmat = cell2mat(handles.ActualPOIs3(:,1));
+longmat = cell2mat(handles.ActualPOIs3(:,2));
+
+handles.lat3 = latmat(contents);
+handles.lon3 = longmat(contents);
+
+hold on;
+if handles.f == 1; 
+    delete(handles.e);
+end
+handles.e = plot ( handles.lon3, handles.lat3, 'mo',...
+                                               'LineWidth',2,...
+                                               'MarkerEdgeColor','k',...
+                                               'MarkerFaceColor',[.49 1 .63],...
+                                               'MarkerSize',10);
+handles.f = 1;
+
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 
@@ -550,16 +600,15 @@ function class3_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from class3
 contents = get(hObject,'Value');
 
-handles.ActualPOIs = FilterClass(contents);
-set(handles.popupmenu3, 'String', handles.ActualPOIs(:,3));
+handles.ActualPOIs3 = FilterClass(contents);
+set(handles.popupmenu3, 'String', handles.ActualPOIs3(:,3));
 
 %this will avoid the popupmenu to disappear because the index it greater
 %than the elements to be shown
-set(handles.popupmenu3, 'value', 1);
+set(handles.from, 'value', 1);
 
 % Update handles structure
 guidata(hObject, handles);
-
 
 % --- Executes during object creation, after setting all properties.
 function class3_CreateFcn(hObject, eventdata, handles)
