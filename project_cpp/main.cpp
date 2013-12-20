@@ -4,7 +4,7 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    // Some update
+    // Some update by Ferran
     MapExplorer window;
     window.show();
 
