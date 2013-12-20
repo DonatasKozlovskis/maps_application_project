@@ -1,4 +1,4 @@
-function [closestProjectedNode, closestSegmentNode1, closestSegmentNode2] = closestProjection(userNode, wSize, allRoads, nodesDataset, currentSparseMatrix)
+function [closestProjectedNode, closestSegmentNode1, closestSegmentNode2] = closestProjectionToSegment(userNode, wSize, allRoads, nodesDataset, currentSparseMatrix)
 
 closestProjectedNode = MapNode.empty;
 closestSegmentNode1 = MapNode.empty;

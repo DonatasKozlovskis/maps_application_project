@@ -1,4 +1,4 @@
-function thisPlotHandle = plotMap(this, axesHande, imName) 
+function thisPlotHandle = plotMap(this, axesHande, imName, lineSpec) 
     this.plotBackground(axesHande, imName);
-    this.plotRoads(axesHande);
+    this.plotRoads(axesHande, lineSpec);
 end
