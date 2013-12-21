@@ -246,12 +246,6 @@ function go_Callback(hObject, eventdata, handles)
 refresh_Callback(hObject, eventdata, handles);
 
 
-
-
-
-
-
-
 % --- Executes on button press in export_data.
 function export_data_Callback(hObject, eventdata, handles)
 % hObject    handle to export_data (see GCBO)
@@ -335,7 +329,11 @@ hold on;
 if handles.b == 1; 
     delete(handles.a);
 end
-handles.a = plot ( handles.lon1, handles.lat1, '*r');
+handles.a = plot ( handles.lon1, handles.lat1, 'ro',...
+                                               'LineWidth',2,...
+                                               'MarkerEdgeColor','k',...
+                                               'MarkerFaceColor',[1 .49 .63],...
+                                               'MarkerSize',10);
 handles.b = 1;
 
 set(handles.from, 'value', 1);
@@ -351,14 +349,14 @@ function getlocation2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % get start coordinate from user
-userInput =  ginput(1);
 [handles.lon2,handles.lat2] = ginput(1);
 
 hold on;
-if handles.d == 1; 
-    delete(handles.c);
-end
-handles.c = plot ( handles.lon2, handles.lat2, '*g');
+handles.c = plot ( handles.lon2, handles.lat2, 'mo',...
+                                               'LineWidth',2,...
+                                               'MarkerEdgeColor','k',...
+                                               'MarkerFaceColor',[.49 .63 1],...
+                                               'MarkerSize',10);
 handles.d = 1;
 
 set(handles.popupmenu2, 'value', 1);
@@ -567,7 +565,23 @@ function getlocation3_Callback(hObject, eventdata, handles)
 % hObject    handle to getlocation3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+[handles.lon3,handles.lat3] = ginput(1);
 
+hold on;
+if handles.f == 1; 
+    delete(handles.e);
+end
+handles.e = plot ( handles.lon3, handles.lat3, 'mo',...
+                                               'LineWidth',2,...
+                                               'MarkerEdgeColor','k',...
+                                               'MarkerFaceColor',[.49 1 .63],...
+                                               'MarkerSize',10);
+handles.f = 1;
+
+set(handles.popupmenu3, 'value', 1);
+set(handles.popupmenu3, 'String', 'User location');
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Executes on selection change in popupmenu3.
 function popupmenu3_Callback(hObject, eventdata, handles)
