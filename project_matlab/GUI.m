@@ -101,6 +101,13 @@ handles.d = 0;
 handles.e = 0;
 handles.f = 0;
 handles.ShortestPathPlotted = 0;
+handles.ShortestPathPlotted2 = 0;
+
+%This handle will store the distance in the itinerary
+handles.distance = 0;
+%maxDistance is the maximum distance for doing an itinerary. It will be
+%compared with distance
+handles.maxDistance = 0;
 
 load('POIdata');
 handles.ActualPOIs1 = POIdata;
@@ -323,9 +330,14 @@ set(handles.class1, 'Value', 1);
 set(handles.class2, 'Value', 1);
 set(handles.class3, 'Value', 1);
 
-if ishandle(handles.ShortestPathPlotted) == 1
+if handles.ShortestPathPlotted == 1
     delete(handles.shortPathPlot);
     handles.ShortestPathPlotted = 0;
+end
+
+if handles.ShortestPathPlotted2 == 1
+    delete(handles.shortPathPlot2);
+    handles.ShortestPathPlotted2 = 0;
 end
 
 % Update handles structure
@@ -680,6 +692,10 @@ function max_distance_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Hints: get(hObject,'String') returns contents of max_distance as text
 %        str2double(get(hObject,'String')) returns contents of max_distance as a double
+handles.maxDistance = str2double(get(hObject,'String'));
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -701,6 +717,51 @@ function go_itinerary_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
+handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
+
+if handles.walk_car == 1
+    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
+else
+    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
+end
+
+handles.distance = dist;
+
+shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
+hold on
+    handles.shortPathPlot = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
+hold off
+handles.ShortestPathPlotted = 1;
+
+handles.dataUser.mapNodeStart = MapNode(handles.lat2, handles.lon2);
+handles.dataUser.mapNodeTarget = MapNode(handles.lat3, handles.lon3);
+
+if handles.walk_car == 1
+    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
+else
+    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
+end
+
+handles.distance = handles.distance + dist;
+
+shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
+hold on
+    handles.shortPathPlot2 = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
+hold off
+
+handles.ShortestPathPlotted2 = 1;
+
+%We need the distance computed in meters since we ask user for meters.
+handles.distance = handles.distance * 1000;
+
+if handles.distance > handles.maxDistance
+    TooLong();
+end
+
+
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Executes on button press in go_range.
 function go_range_Callback(hObject, eventdata, handles)
