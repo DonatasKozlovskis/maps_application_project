@@ -75,14 +75,6 @@ handles.dataBack.config.plotSpec = dataset2struct(dataset('File','plotConfig.csv
 % updating axes1 UI, plotting map on axes1:
 handles.dataBack.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.dataBack.config.plotSpec);
 
-handles.lat = varargin{3};
-handles.lon = varargin{4};
-
-% handles.userlat1 = 0;
-% handles.userlat2 = 0;
-% handles.userlon1 = 0;
-% handles.userlon2 = 0;
-
 % default start-target points (from-to)
 % empty class object
 c.mapNodeStart = MapNode();
@@ -94,6 +86,11 @@ handles.lat2 = 0;
 handles.lon2 = 0;
 handles.lat3 = 0;
 handles.lon3 = 0;
+
+%This values will be used when plotting the points in the map. We will use
+%them because the procedure is first delete the last point plotted and
+%second plot the new point. But the first time we have no points plotted
+%and we have to skip this
 handles.a = 0;
 handles.b = 0;
 handles.c = 0;
@@ -108,17 +105,15 @@ handles.ActualPOIs3 = POIdata;
 
 %We set some initial parameters in order to see at the begining all the
 %lists filled
-%set(handles.from, 'String', varargin{1});
-%set(handles.popupmenu2, 'String', varargin{2});
-%set(handles.popupmenu3, 'String', varargin{2});
 set(handles.from, 'String', handles.ActualPOIs1(:,3));
 set(handles.popupmenu2, 'String', handles.ActualPOIs2(:,3));
 set(handles.popupmenu3, 'String', handles.ActualPOIs3(:,3));
 
-set(handles.class1, 'String', varargin{5});
-set(handles.class2, 'String', varargin{5});
-set(handles.class3, 'String', varargin{5});
-set(handles.class4, 'String', varargin{5});
+load('POIClasses.mat');
+set(handles.class1, 'String', POIClasses);
+set(handles.class2, 'String', POIClasses);
+set(handles.class3, 'String', POIClasses);
+set(handles.class4, 'String', POIClasses);
 
 %Setting initially visible only the POI panel. We will update the view of
 %each panel when pushing the corresponding button.
@@ -249,6 +244,13 @@ function go_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 refresh_Callback(hObject, eventdata, handles);
+
+
+
+
+
+
+
 
 % --- Executes on button press in export_data.
 function export_data_Callback(hObject, eventdata, handles)
