@@ -11,8 +11,9 @@ load('sparseMatrices.mat');
 %plotting le map
 ax =axes;
 cla(ax);
-lineSpecMap= [];
+lineSpecMap = dataset2struct(dataset('File','plotConfig.csv', 'Delimiter',';'));
 allRoads.plotMap(ax, 'staticmap.png', lineSpecMap);
+
 
 % get start coordinate from user
 userInput =  ginput(1);
@@ -28,7 +29,6 @@ numberOfNodes = size(currentSparse, 1);
 
 % calculating shortest path
 [shortestRoad, dist]= twoInputShortestPath(mapNodeStart, mapNodeTarget, allRoads, nodesDataset, currentSparse);
-%% 
 %plotting shortestPath
 
 lineSpec(1).prop = 'Color';
@@ -36,6 +36,7 @@ lineSpec(1).propVal = 'red';
 lineSpec(2).prop = 'Linewidth';
 lineSpec(2).propVal = 2;
 
+shortestPathLineSpec = lineSpecMap(strcmp ( {lineSpecMap.roadType}, shortestRoad.type));
 hold on
     aa = shortestRoad.plotRoad(ax, lineSpec);
 hold off

@@ -1,0 +1,40 @@
+roadType;prop;propVal
+footway;Color;[0 0.7 0.7]
+footway;LineWidth;[0.7]
+footway;LineStyle;--
+living_street;Color;[0.4 0 0]
+living_street;LineWidth;[1]
+living_street;LineStyle;-
+pedestrian;Color;[0 0.7 0.7]
+pedestrian;LineWidth;[0.7]
+pedestrian;LineStyle;-
+residential;Color;[0.4 0 0]
+residential;LineWidth;[1]
+residential;LineStyle;-
+secondary;Color;[0.4 0 0]
+secondary;LineWidth;[1]
+secondary;LineStyle;-
+secondary_link;Color;[0.4 0 0]
+secondary_link;LineWidth;[1]
+secondary_link;LineStyle;-
+service;Color;[0.4 0 0]
+service;LineWidth;[1]
+service;LineStyle;-
+steps;Color;[0 0.7 0.7]
+steps;LineWidth;[0.7]
+steps;LineStyle;--
+tertiary;Color;[0.4 0 0]
+tertiary;LineWidth;[1.5]
+tertiary;LineStyle;-
+tertiary_link;Color;[0.4 0 0]
+tertiary_link;LineWidth;[1.5]
+tertiary_link;LineStyle;-
+track;Color;[0.4 0 0]
+track;LineWidth;[2]
+track;LineStyle;-
+unclassified;Color;[0.4 0 0]
+unclassified;LineWidth;[1]
+unclassified;LineStyle;-
+ShortestPath;Color;[1 0 0]
+ShortestPath;LineWidth;[1]
+ShortestPath;LineStyle;-
