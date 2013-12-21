@@ -256,6 +256,16 @@ function go_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %refresh_Callback(hObject, eventdata, handles);
 
+if handles.ShortestPathPlotted == 1
+    delete(handles.shortPathPlot);
+    handles.ShortestPathPlotted = 0;
+end
+
+if handles.ShortestPathPlotted2 == 1
+    delete(handles.shortPathPlot2);
+    handles.ShortestPathPlotted2 = 0;
+end
+
 handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
 handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
 
@@ -716,6 +726,16 @@ function go_itinerary_Callback(hObject, eventdata, handles)
 % hObject    handle to go_itinerary (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+if handles.ShortestPathPlotted == 1
+    delete(handles.shortPathPlot);
+    handles.ShortestPathPlotted = 0;
+end
+
+if handles.ShortestPathPlotted2 == 1
+    delete(handles.shortPathPlot2);
+    handles.ShortestPathPlotted2 = 0;
+end
 
 handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
 handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
