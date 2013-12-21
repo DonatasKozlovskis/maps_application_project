@@ -55,20 +55,25 @@ function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for GUI
 handles.output = hObject;
 
+
+% handles.dataBack = all background data, not "accesible" for user
+% handles.dataUser = data which obtained from or can be modified by user
+
 % loading all nodes data and data for shortest path 
 load('allRoads.mat');
 load('nodesDataset.mat');
 load('sparseMatrices.mat');
 % adding needed data to handles;
-handles.data.allRoads = allRoads;
-handles.data.nodesDataset = nodesDataset;
-handles.data.sparseMatCar = sparseMatCar;
-handles.data.sparseMatWalk = sparseMatWalk;
-% loading plot line specifications
-handles.config.plotSpec = dataset2struct(dataset('File','plotConfig.csv', 'Delimiter',';'));
 
-% updating map UI:
-handles.data.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.config.plotSpec);
+handles.dataBack.allRoads = allRoads;
+handles.dataBack.nodesDataset = nodesDataset;
+handles.dataBack.sparseMatCar = sparseMatCar;
+handles.dataBack.sparseMatWalk = sparseMatWalk;
+% loading plot line specifications
+handles.dataBack.config.plotSpec = dataset2struct(dataset('File','plotConfig.csv', 'Delimiter',';'));
+
+% updating axes1 UI, plotting map on axes1:
+handles.dataBack.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.dataBack.config.plotSpec);
 
 handles.lat = varargin{3};
 handles.lon = varargin{4};
@@ -77,6 +82,12 @@ handles.lon = varargin{4};
 % handles.userlat2 = 0;
 % handles.userlon1 = 0;
 % handles.userlon2 = 0;
+
+% default start-target points (from-to)
+% empty class object
+c.mapNodeStart = MapNode();
+handles.dataUser.mapNodeTarget = MapNode();
+
 handles.lat1 = 0;
 handles.lon1 = 0;
 handles.lat2 = 0;
@@ -336,6 +347,9 @@ function getlocation2_Callback(hObject, eventdata, handles)
 % hObject    handle to getlocation2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% get start coordinate from user
+userInput =  ginput(1);
 [handles.lon2,handles.lat2] = ginput(1);
 
 hold on;
