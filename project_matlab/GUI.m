@@ -77,9 +77,12 @@ handles.dataBack.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.dataBa
 
 % default start-target points (from-to)
 % empty class object
-c.mapNodeStart = MapNode();
+handles.dataUser.mapNodeStart = MapNode();
 handles.dataUser.mapNodeTarget = MapNode();
 
+%In this handles we will store the three points that we can select on our
+%GUI. 1 and 2 will be used in the main GUI while the third one will be used
+%in the itinerary panel
 handles.lat1 = 0;
 handles.lon1 = 0;
 handles.lat2 = 0;
@@ -97,6 +100,7 @@ handles.c = 0;
 handles.d = 0;
 handles.e = 0;
 handles.f = 0;
+handles.ShortestPathPlotted = 0;
 
 load('POIdata');
 handles.ActualPOIs1 = POIdata;
@@ -243,7 +247,26 @@ function go_Callback(hObject, eventdata, handles)
 % hObject    handle to go (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-refresh_Callback(hObject, eventdata, handles);
+%refresh_Callback(hObject, eventdata, handles);
+
+handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
+handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
+
+if handles.walk_car == 1
+    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
+else
+    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
+end
+
+shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
+hold on
+    handles.shortPathPlot = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
+hold off
+
+handles.ShortestPathPlotted = 1;
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes on button press in export_data.
@@ -300,19 +323,10 @@ set(handles.class1, 'Value', 1);
 set(handles.class2, 'Value', 1);
 set(handles.class3, 'Value', 1);
 
-
-% 
-% POIname = POIdata(:,3);
-% POInameFrom = cat(1, 'Go from...', POIname);
-% POInameTo = cat(1, 'To...', POIname);
-% POIlatitude = cell2mat(POIdata(:,1));
-% POIlatitude = cat(1,0,POIlatitude);
-% POIlongitude = cell2mat(POIdata(:,2));
-% POIlongitude = cat(1,0,POIlongitude);
-% set(handles.from, 'String', POInameFrom);
-% set(handles.popupmenu2, 'String', POInameTo);
-% handles.lat = POIlatitude;
-% handles.lon = POIlongitude;
+if ishandle(handles.ShortestPathPlotted) == 1
+    delete(handles.shortPathPlot);
+    handles.ShortestPathPlotted = 0;
+end
 
 % Update handles structure
 guidata(hObject, handles);
