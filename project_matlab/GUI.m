@@ -59,16 +59,16 @@ handles.output = hObject;
 load('allRoads.mat');
 load('nodesDataset.mat');
 load('sparseMatrices.mat');
-
+% adding needed data to handles;
 handles.data.allRoads = allRoads;
 handles.data.nodesDataset = nodesDataset;
 handles.data.sparseMatCar = sparseMatCar;
 handles.data.sparseMatWalk = sparseMatWalk;
 % loading plot line specifications
-handles.plotSpec = [];
+handles.config.plotSpec = dataset2struct(dataset('File','plotConfig.csv', 'Delimiter',';'));
 
 % updating map UI:
-handles.data.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.plotSpec);
+handles.data.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.config.plotSpec);
 
 handles.lat = varargin{3};
 handles.lon = varargin{4};
