@@ -1,89 +1,98 @@
 #include "map.h"
 
+// Default constructor
 Map::Map()
 {
-    QSqlQuery queryRoads("SELECT  RoadID, Count(RoadID) FROM road_node GROUP BY RoadID ORDER BY RoadID asc;");
-
-    //Prepare the structure
     roadsCount=0;
     nodesCount=0;
-    numberNodes = 0;
+}
 
-    while(queryRoads.next()){
-        Road* newr=new Road();
-        int nodes = queryRoads.value(1).toInt();
-        for (int i=0; i<nodes; i++){
-            Node* newn=new Node();
-            newr->addNode(newn);
-            nodesCount++;
-        }
-        myRoads.push_back(newr);
-        roadsCount++;
-    }
-    cout<<"Roads created: "<<roadsCount<<endl;
-    cout<<"Nodes created: "<<nodesCount<<endl;
+Map::~Map() {
+    for (vector<Road*>::const_iterator it = roads.begin(); it != roads.end(); it++)
+        delete (*it);
 }
 
 void Map::addData(){
 
-    QSqlQuery queryPoints("SELECT ind, Latitude, Longitude FROM road_node, node WHERE road_node.NodeID=node.ID ORDER BY RoadID asc, ContourOrder asc;");
-    QSqlQuery queryNodes("Select max(ind) from node;");
-    QSqlQuery queryRoads("select ID, OneWay from Road");
+    // Select all roads and from the database
+    QSqlQuery queryRoads("SELECT RoadID FROM road_node GROUP BY RoadID ORDER BY RoadID asc;");
+    // queryRoads.exec();
+    // Prepare the queries for the separate road and the node
+    QSqlQuery queryRoad, queryPoints, queryNode;
 
-    float lat=0;
-    float lon=0;
-    unsigned int ID=0;
-    bool way;
-    Road* roadit;
-    Node* nodeit;
-    roadsCount=0;
-    nodesCount=0;
+    QSqlQuery queryNodesCount("select count(id) from node;");
+    queryNodesCount.next();
+    numberNodes = queryNodesCount.value(0).toInt();
 
-    queryNodes.next();
-    this->numberNodes = queryNodes.value(0).toInt();
-    cout<<numberNodes<<endl;
+    queryPoints.prepare("select road_node.NodeID from road_node where road_node.RoadID = :roadID order by road_node.ContourOrder ASC;");
+    queryNode.prepare("select node.ind, node.Latitude, node.Longitude from node where node.ID = :nodeID;");
+    queryRoad.prepare("select * from road where road.ID = :roadID;");
 
-    //Let's add the data
-    for(unsigned int i=0; i<myRoads.size(); i++){
-        queryRoads.next();
-        roadit = myRoads.at(i);
-        way=queryRoads.value(1).toBool();
-        roadit->setWay(way);
-        for (unsigned int j=0; j<roadit->length(); j++){
-            queryPoints.next();
-            ID=queryPoints.value(0).toInt()-1;        //Add -1 to the index
-            lat=queryPoints.value(1).toFloat();
-            lon=queryPoints.value(2).toFloat();
+    // For each road create a new Road object
+    while (queryRoads.next()) {
 
-            nodeit = roadit->getNode(j);
-            nodeit->setId(ID);
-            nodeit->setValue(lat,lon);
+        // Query separate road and create an instance of class Road
+        QString roadID =queryRoads.value(0).toString();
+
+        queryRoad.bindValue(":roadID",roadID);
+        queryRoad.exec();
+        queryRoad.next();
+
+        Road* newRoad = new Road(roadID.toStdString(),queryRoad.value(1).toString().toStdString(),
+                                 queryRoad.value(2).toString().toStdString(),queryRoad.value(3).toBool());
+
+        // Prepare the query to search the points for the selected road
+        queryPoints.bindValue(":roadID",roadID);
+        queryPoints.exec();
+
+        // For each point from the previous query, create a new Point object
+        while (queryPoints.next()) {
+
+            unsigned int nodeID = queryPoints.value(0).toInt();
+            Node* newNode = new Node();
+
+            // Query for the parameters of the current node
+            queryNode.bindValue(":nodeID", nodeID);
+            queryNode.exec();
+            queryNode.next();
+
+            // Fill the Node and add it to the road
+            unsigned int id = queryNode.value(0).toInt();
+            newNode->setId(--id);
+
+            float latitude = queryNode.value(1).toFloat();
+            float longitude = queryNode.value(2).toFloat();
+
+            newNode->setPoint(latitude,longitude);
+            newRoad->addNode(newNode);
             nodesCount++;
         }
+
+        // Add road to the map
+        roads.push_back(newRoad);
         roadsCount++;
     }
-    cout<<"Roads updated: "<<roadsCount<<endl;
-    cout<<"Nodes updated: "<<nodesCount<<endl;
+
 }
 
 Road* Map::getRoad(unsigned int i){
-    return myRoads.at(i);
+    return roads.at(i);
 }
 
 void Map::renderMap(){
-    for(unsigned int i=0; i<this->myRoads.size(); i++){
+    for(unsigned int i=0; i<this->roads.size(); i++){
         float x,y;
         glBegin(GL_LINE_STRIP);
         for (unsigned int j=0; j<this->getRoad(i)->length(); j++){
-                x = this->getRoad(i)->getNode(j)->getValue().x;
-                y = this->getRoad(i)->getNode(j)->getValue().y;
+                x = this->getRoad(i)->getNode(j)->getPoint().x;
+                y = this->getRoad(i)->getNode(j)->getPoint().y;
                 glVertex2f(x,y);
             }
         glEnd();
     }
 }
 
-void Map::normalize(){
+void Map::normalize(unsigned int width, unsigned int height){
 
     QSqlQuery queryMaxMin("select max(Latitude), max(Longitude), min(Latitude), min(Longitude) from node;");
 
@@ -97,24 +106,25 @@ void Map::normalize(){
     float dLat,dLon,aLat,aLon,bLat,bLon;
     dLat = latMax - latMin;
     dLon = lonMax - lonMin;
-    aLat = 600/dLat;
-    aLon = 600/dLon;
-    bLat = 300 - (aLat * latMax);
-    bLon = 300 - (aLon * lonMax);
+    aLat = width/dLat;
+    aLon = height/dLon;
+    bLat = width/2 - (aLat * latMax);
+    bLon = height/2 - (aLon * lonMax);
 
-    for(unsigned int i=0; i<this->myRoads.size(); i++){
+    for(unsigned int i=0; i<this->roads.size(); i++){
         for (unsigned int j=0; j<this->getRoad(i)->length(); j++){
-            x = this->getRoad(i)->getNode(j)->getValue().x;
-            y = this->getRoad(i)->getNode(j)->getValue().y;
+            x = this->getRoad(i)->getNode(j)->getPoint().x;
+            y = this->getRoad(i)->getNode(j)->getPoint().y;
 
             xt = x*aLat + bLat;
             yt = (y*aLon + bLon);
 
-            this->getRoad(i)->getNode(j)->setValue(xt, yt);
+            this->getRoad(i)->getNode(j)->setPoint(xt, yt);
         }
     }
 }
 
+// TODO: Replace some code to the constructor i order to prevent the memory leak
 void Map::adjMatrix(bool driving){
     //Create structure
     this->adj = new float * [this->numberNodes];
@@ -135,7 +145,7 @@ void Map::adjMatrix(bool driving){
     Node * next = new Node;
     float dist = 0.0;
     int x,y;
-    for(unsigned int i=0; i<this->myRoads.size(); i++){
+    for(unsigned int i=0; i<this->roads.size(); i++){
         for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
             current = this->getRoad(i)->getNode(j);
             next = this->getRoad(i)->getNode(j+1);
@@ -144,9 +154,10 @@ void Map::adjMatrix(bool driving){
             x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
             y = next->getId();
             this->adj[x][y] = dist;
-            if (driving == false || this->getRoad(i)->getWay() == false)   this->adj[y][x] = dist;
+            if (driving == false || this->getRoad(i)->isOneWay() == false)   this->adj[y][x] = dist;
         }
     }
+    cout << "lol" << endl;
 }
 
 vector<Node*> Map::getPath(vector<int> in){
@@ -159,8 +170,8 @@ vector<Node*> Map::getPath(vector<int> in){
     for(unsigned int k=0; k<in.size(); k++){
         id = in[k];
         exist = false;
-        for(unsigned int i=0; i<this->myRoads.size(); i++){
-            for (unsigned int j=0; j<this->getRoad(i)->length(); j++){              
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            for (unsigned int j=0; j<this->getRoad(i)->length(); j++){
                 target = this->getRoad(i)->getNode(j)->getId();
                 if(target == id && exist == false){
                     targetNode = this->getRoad(i)->getNode(j);
@@ -172,27 +183,3 @@ vector<Node*> Map::getPath(vector<int> in){
     }
     return out;
 }
-
-//Checks in the whole list of nodes the node which distance is minimum to the POI
-Node* Map::getCloser(float &x, float &y){
-    Node* poi = new Node;
-    poi->setValue(x,y);
-    Node* it = new Node;
-    Node* closer = new Node;
-    float min = 1000;
-    float dist = 0;
-
-    for(unsigned int i=0; i<this->myRoads.size(); i++){
-        for (unsigned int j=0; j<this->getRoad(i)->length(); j++){
-            it=this->getRoad(i)->getNode(j);
-            dist = poi->distNode(it);
-            if (dist<min){
-                closer=it;
-            }
-        }
-    }
-
-    return closer;
-}
-
-

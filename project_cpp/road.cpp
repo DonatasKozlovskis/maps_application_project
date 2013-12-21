@@ -1,39 +1,110 @@
 #include "road.h"
 
-Road::Road()
-{
+// Empty constructor
+Road::Road() {}
+
+Road::Road(string id) {
+    roadID = id;
+}
+
+// Constructor that takes four parameters
+Road::Road(string id, string name, string type, bool way) {
+    roadID = id;
+    roadName = name;
+    roadType = type;
+    oneWay = way;
+}
+
+// Added - Copy constructor
+Road::Road(const Road &road) {
+
+    for (vector<Node*>::const_iterator it = road.nodes.begin();
+         it != road.nodes.end(); it++)
+        nodes.push_back(new Node(**it));
+
+    roadID = road.roadID;
+    roadName = road.roadName;
+    roadType = road.roadType;
+
+    // passing 'const Road' as 'this' argument of 'bool Road::isOneWay()' discards qualifiers [-fpermissive]
+    this->oneWay = road.oneWay;
 
 }
 
+// Destructor
+Road::~Road() {
+
+    // We have to clear every node
+    for (vector<Node*>::const_iterator it = nodes.begin();
+         it != nodes.end(); it++)
+        delete *it;
+
+}
+
+// Node addition
 void Road::addNode(Node* n){
-    nodesRoad.push_back(n);
+    nodes.push_back(n);
 }
 
-Node* Road::getNode(unsigned int i){
-    return nodesRoad.at(i);
+// Accessor of the single node
+Node* Road::getNode(const unsigned int &i){
+    return nodes.at(i);
 }
 
+// Accessor of the nodes' length
 int Road::length(){
-    return this->nodesRoad.size();
+    return this->nodes.size();
 }
 
+// Road rendering
 void Road::render(){
     float x,y;
     glBegin(GL_LINE_STRIP);
-        for (unsigned int i=0; i<this->nodesRoad.size(); i++){
-            x = this->getNode(i)->getValue().x;
-            y = this->getNode(i)->getValue().y;
+        for (unsigned int i=0; i<this->nodes.size(); i++){
+            x = this->getNode(i)->getPoint().x;
+            y = this->getNode(i)->getPoint().y;
             glVertex2f(x,y);
         }
     glEnd();
 
 }
 
-void Road::setWay(bool direction){
-    this->oneWay = direction;
+// Accessor of the property road
+string Road::getRoadID() const {
+    return roadID;
 }
 
-bool Road::getWay(){
-    return this->oneWay;
+// Mutator of the property  roadID
+void Road::setRoadID(const string &newID) {
+    roadID = newID;
 }
 
+// Accessor of the property roadName
+string Road::getRoadName() const {
+    return roadName;
+}
+
+// Mutator of the property roadName
+void Road::setRoadName(const string &newName) {
+    roadName = newName;
+}
+
+// Accessor of the property roadType
+string Road::getRoadType() const {
+    return roadType;
+}
+
+// Mutator of the propery roadType
+void Road::setRoadType(const string & newType) {
+    roadType = newType;
+}
+
+// Accessor of the property oneWay
+bool Road::isOneWay() {
+    return oneWay;
+}
+
+// Mutator of the property oneWay
+void Road::setOneWay(bool way) {
+    oneWay = way;
+}
