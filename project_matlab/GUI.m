@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 08-Dec-2013 23:53:37
+% Last Modified by GUIDE v2.5 20-Dec-2013 20:02:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -115,6 +115,13 @@ set(handles.poi_panel, 'Visible', 'on');
 set(handles.itinerary_panel, 'Visible', 'off');
 set(handles.find_panel, 'Visible', 'off');
 set(handles.instructions_panel, 'Visible', 'off');
+
+% set walk mode by default
+set(handles.walk, 'Value', 0);
+set(handles.car, 'Value', 1);
+
+%if handles.walk_car=1 we will go by walk, otherwise by car (handles.walk_car=0)
+handles.walk_car = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -656,3 +663,31 @@ function go_range_Callback(hObject, eventdata, handles)
 % hObject    handle to go_range (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in walk.
+function walk_Callback(hObject, eventdata, handles)
+% hObject    handle to walk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.walk_car = 1;
+set(handles.car, 'Value', 0);
+%set(handles.walk, 'Value', 1);
+% Hint: get(hObject,'Value') returns toggle state of walk
+
+% Update handles structure
+guidata(hObject, handles);
+
+
+% --- Executes on button press in car.
+function car_Callback(hObject, eventdata, handles)
+% hObject    handle to car (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.walk_car = 0;
+%set(handles.car, 'Value', 1');
+set(handles.walk, 'Value', 0.0);
+% Hint: get(hObject,'Value') returns toggle state of car
+
+% Update handles structure
+guidata(hObject, handles);
