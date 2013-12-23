@@ -4,7 +4,7 @@
 
 // Default constructor
 MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
-    camPos = QPointF(0.0d,0.0d);
+    camPos = QPointF(0.0,0.0);
 
     // Set scale to 1
     scale = 1;

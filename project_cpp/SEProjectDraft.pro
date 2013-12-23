@@ -31,3 +31,5 @@ FORMS    += mapexplorer.ui
 
 RESOURCES += \
     maps.qrc
+
+QMAKE_CXXFLAGS += /DNOMINMAX

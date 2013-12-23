@@ -16,7 +16,7 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     connect(ui->mapGLWidget, SIGNAL(mouseMovedGL(int,int)),this, SLOT(updateMapPos(int,int)));
     connect(ui->mapGLWidget, SIGNAL(mouseWheeledGL(float)),this, SLOT(updateMapScale(float)));
 
-    mapMoved = QPoint(0.0d,0.0d);
+    mapMoved = QPoint(0.0,0.0);
     mapScale = 1.0f;
 }
 
