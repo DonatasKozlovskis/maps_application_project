@@ -73,7 +73,7 @@ vector<int> Dijkstra::output(){
             cout<<source<<".."<<source;
         }else{
             printPath(i);
-            cout<<"->"<<distance[i]<<endl;
+            cout<<"->"<<distance[i]*4<< "meters"<<endl;
         }
 
     return this->result;

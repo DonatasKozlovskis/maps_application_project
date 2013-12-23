@@ -8,6 +8,7 @@
 
 #include "map.h"
 #include "dijkstra.h"
+#include "patch.h"
 
 
 class MapGLWidget : public QGLWidget
@@ -61,6 +62,7 @@ private:
 
     Dijkstra *mydijkstra;
     vector <Node*> path;
+    Patch *directions;
 };
 
 #endif // GLWIDGET_H

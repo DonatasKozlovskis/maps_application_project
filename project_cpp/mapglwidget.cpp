@@ -23,16 +23,15 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
     mymap->adjMatrix(driving);
 
     int ini = 1000;
-    int dest =1500;
+    int dest = 1500;
 
     this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes);
     this->mydijkstra->calculateDistance();
     vector <int> result = this->mydijkstra->output();
 
     path = mymap->getPath(result);
-    //this->direc = new Patch;
-    //direc->calcPatch(path);
-
+    this->directions = new Patch;
+    directions->calcPatch(path);
 }
 
 // Default destructor
