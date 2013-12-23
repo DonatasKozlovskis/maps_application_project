@@ -20,13 +20,11 @@ void Patch::calcPatch(vector<Node*> path){
             float angle= this->checkAngle(path[i], path[i-1] ,path[i+1]);
 
             if(angle>=30 && angle<160){
-                cout<<"Go ahead"<<endl;
-                cout<<angle<<": turn right"<<endl;
+                //cout<<"Go ahead and turn right: "<<angle<<" degrees"<<endl;
                 route.push_back(right);
             }
             if(angle<-10 && angle>-160){
-                cout<<"Go ahead"<<endl;
-                cout<<angle<<": turn left"<<endl;
+                //cout<<"Go ahead and turn left: "<<angle<<" degrees"<<endl;
                 route.push_back(left);
             }
         }
@@ -88,7 +86,7 @@ bool Patch::belong(Node* node1, Node* node2){
 }
 
 //Generates a txt file with name route.txt with all previous instructions
-//This file is deleted overwrited each time the txt is generated
+//This file is deleted overwrited each time the txt is generated in the compile folder
 void Patch::genTxt(vector<string> route){
 
     ofstream file;
