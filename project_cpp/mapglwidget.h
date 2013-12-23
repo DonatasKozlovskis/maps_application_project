@@ -1,7 +1,6 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include <windows.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include <QGLWidget>
