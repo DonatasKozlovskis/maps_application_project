@@ -1,6 +1,5 @@
 #include "patch.h"
 
-
 Patch::Patch(){}
 
 void Patch::calcPatch(vector<Node*> path){
@@ -10,6 +9,9 @@ void Patch::calcPatch(vector<Node*> path){
     char *left = "Turn left and go ahead";
     char *end = "You have just arrived!";
 
+    Node* init = path[0];
+    float dist = 0;
+
     //Until the path finishes
     for(unsigned int i=1; i<path.size()-1; i++){
         //Compare if the couple of points belong to the same road
@@ -17,14 +19,17 @@ void Patch::calcPatch(vector<Node*> path){
         //If two points does not belong to the same road means that it is a cross where we have to turn
         if(bel == false){
 
+            dist = init->distNode(path[i]);
+            init = path[i];
+
             float angle= this->checkAngle(path[i], path[i-1] ,path[i+1]);
 
             if(angle>=30 && angle<160){
-                //cout<<"Go ahead and turn right: "<<angle<<" degrees"<<endl;
+                cout<<"Go ahead "<<dist<<" meters and turn right: "<<angle<<" degrees"<<endl;
                 route.push_back(right);
             }
             if(angle<-10 && angle>-160){
-                //cout<<"Go ahead and turn left: "<<angle<<" degrees"<<endl;
+                cout<<"Go ahead "<<dist<<" meters and turn left: "<<angle<<" degrees"<<endl;
                 route.push_back(left);
             }
         }
@@ -73,7 +78,7 @@ bool Patch::belong(Node* node1, Node* node2){
         belongId1.next();
         road1=belongId1.value(0).toString().toStdString();
         //cout<<id1<<" "<<road1<<endl;
-        for(unsigned int j=0; j<belongId2.size(); j++){
+        for(unsigned int j=0; j<belongId2.size()-1; j++){
             belongId2.next();
             road2 = belongId2.value(0).toString().toStdString();
             if(road1 == road2){
@@ -86,7 +91,7 @@ bool Patch::belong(Node* node1, Node* node2){
 }
 
 //Generates a txt file with name route.txt with all previous instructions
-//This file is deleted overwrited each time the txt is generated in the compile folder
+//The file is deleted overwrited each time the txt is generated in the compile folder
 void Patch::genTxt(vector<string> route){
 
     ofstream file;
@@ -97,3 +102,6 @@ void Patch::genTxt(vector<string> route){
 
     file.close();
 }
+
+//This function calculates the distance between the current position and the point
+//  we have a change of orientation in the route

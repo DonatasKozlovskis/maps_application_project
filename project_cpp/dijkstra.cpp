@@ -1,5 +1,8 @@
 #include "dijkstra.h"
 
+//This algorithm has been inspired in the basis suggested for the following link:
+//http://www.programming-techniques.com/2012/01/implementation-of-dijkstras-shortest.html
+
 Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
     this->adjMatrix = adj;
     this->source = initial;
@@ -73,7 +76,7 @@ vector<int> Dijkstra::output(){
             cout<<source<<".."<<source;
         }else{
             printPath(i);
-            cout<<"->"<<distance[i]*4<< "meters"<<endl;
+            cout<<"->"<<distance[i]*4<<" meters"<<endl;
         }
 
     return this->result;
