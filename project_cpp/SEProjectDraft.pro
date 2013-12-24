@@ -18,14 +18,14 @@ SOURCES += main.cpp\
     node.cpp \
     map.cpp \
     mapglwidget.cpp \
-    dijkstra.cpp patch.cpp
+    dijkstra.cpp patch.cpp poi.cpp
 
 HEADERS  += mapexplorer.h \
     road.h \
     node.h \
     map.h \
     mapglwidget.h \
-    dijkstra.h patch.h
+    dijkstra.h patch.h poi.h
 
 FORMS    += mapexplorer.ui
 

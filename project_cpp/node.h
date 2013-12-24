@@ -1,6 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 #include <vector>
+#include <iostream>
 #include <string.h>
 #include <QtOpenGL>
 

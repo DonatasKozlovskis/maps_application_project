@@ -157,7 +157,6 @@ void Map::adjMatrix(bool driving){
             if (driving == false || this->getRoad(i)->isOneWay() == false)   this->adj[y][x] = dist;
         }
     }
-    cout << "lol" << endl;
 }
 
 vector<Node*> Map::getPath(vector<int> in){
