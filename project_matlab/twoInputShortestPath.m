@@ -84,8 +84,8 @@ nodesInShortestPath = numel(myPath);
 
 %initializing road with # nodesInShortestPath MapNodes
 shortestRoad = Road(nodesInShortestPath+2);
-shortestRoad.id =  'ShortestPath'; 
-shortestRoad.name =      'ShortestPath'; 
+shortestRoad.id =   'ShortestPath'; 
+shortestRoad.name = 'ShortestPath'; 
 shortestRoad.type = 'ShortestPath';
 shortestRoad.oneWay =  1;
 % adding start and target node to shortest Road
