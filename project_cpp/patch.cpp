@@ -1,15 +1,19 @@
 #include "patch.h"
+#include <sstream>
 
 Patch::Patch(){}
 
 void Patch::calcPatch(vector<Node*> path){
     bool bel = true;
     vector<string> route;
-    char *right = "Turn right and go ahead";
-    char *left = "Turn left and go ahead";
-    char *end = "You have just arrived!";
+    string s;
+    string ahead = "Go ahead ";
+    string right = " meters and turn right";
+    string left = " meters and turn left";
+    string end = " meters for arriving!";
 
     Node* init = path[0];
+    Node* dest;
     float dist = 0;
 
     //Until the path finishes
@@ -18,23 +22,37 @@ void Patch::calcPatch(vector<Node*> path){
         bel = this->belong(path[i-1], path[i]);
         //If two points does not belong to the same road means that it is a cross where we have to turn
         if(bel == false){
-
-            dist = init->distNode(path[i]);
-            init = path[i];
-
             float angle= this->checkAngle(path[i], path[i-1] ,path[i+1]);
-
             if(angle>=30 && angle<160){
-                cout<<"Go ahead "<<dist<<" meters and turn right: "<<angle<<" degrees"<<endl;
-                route.push_back(right);
+                dest = path[i];
+                dist = init->distNode(dest);
+                init = path[i];
+                //Composing the string in order to show and store in 'route'
+                ostringstream aux;
+                aux << dist*4;
+                s = ahead+aux.str()+right;
+                cout<<s<<endl;
+                route.push_back(s);
             }
             if(angle<-10 && angle>-160){
-                cout<<"Go ahead "<<dist<<" meters and turn left: "<<angle<<" degrees"<<endl;
-                route.push_back(left);
+                dest = path[i];
+                dist = init->distNode(dest);
+                init = path[i];
+                //Composing the string in order to show and store in 'route'
+                ostringstream aux;
+                aux << dist*4;
+                s = ahead+aux.str()+left;
+                cout<<s<<endl;
+                route.push_back(s);
             }
         }
     }
-    route.push_back(end);
+    dist = init->distNode(path.back());
+    ostringstream aux;
+    aux << dist*4;
+    s = ahead+aux.str()+end;
+    cout<<s<<endl;
+    route.push_back(s);
     this->genTxt(route);
 }
 
@@ -102,6 +120,3 @@ void Patch::genTxt(vector<string> route){
 
     file.close();
 }
-
-//This function calculates the distance between the current position and the point
-//  we have a change of orientation in the route
