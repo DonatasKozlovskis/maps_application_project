@@ -38,9 +38,8 @@ lineSpec(2).propVal = 2;
 
 shortestPathLineSpec = lineSpecMap(strcmp ( {lineSpecMap.roadType}, shortestRoad.type));
 hold on
-    aa = shortestRoad.plotRoad(ax, lineSpec);
+    aa = shortestRoad.plotRoad(ax, shortestPathLineSpec);
 hold off
-
 
 
 
