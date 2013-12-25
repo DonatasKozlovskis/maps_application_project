@@ -121,6 +121,7 @@ void poi::deletePoi(unsigned int &id){
 
 //Shows all poi of a specific type around another poi
 //setted by the user according to a radius
+//Take into account that the point in the middle is the one which we use to call the function
 vector<Node*> poi::radiousPoi(float &radius, int &type){
 
     float lat, lon, dist;
