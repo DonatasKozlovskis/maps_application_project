@@ -14,7 +14,6 @@ void Patch::calcPatch(vector<Node*> path){
 
     Node* init = path[0];
     Node* dest;
-    float dist = 0;
 
     //Until the path finishes
     for(unsigned int i=1; i<path.size()-1; i++){
@@ -25,31 +24,31 @@ void Patch::calcPatch(vector<Node*> path){
             float angle= this->checkAngle(path[i], path[i-1] ,path[i+1]);
             if(angle>=30 && angle<160){
                 dest = path[i];
-                dist = init->distNode(dest);
+                this->distance = init->distNode(dest);
                 init = path[i];
                 //Composing the string in order to show and store in 'route'
                 ostringstream aux;
-                aux << dist*4;
+                aux << this->distance*4;
                 s = ahead+aux.str()+right;
                 cout<<s<<endl;
                 route.push_back(s);
             }
             if(angle<-10 && angle>-160){
                 dest = path[i];
-                dist = init->distNode(dest);
+                this->distance = init->distNode(dest);
                 init = path[i];
                 //Composing the string in order to show and store in 'route'
                 ostringstream aux;
-                aux << dist*4;
+                aux << this->distance*4;
                 s = ahead+aux.str()+left;
                 cout<<s<<endl;
                 route.push_back(s);
             }
         }
     }
-    dist = init->distNode(path.back());
+    this->distance = init->distNode(path.back());
     ostringstream aux;
-    aux << dist*4;
+    aux << this->distance*4;
     s = ahead+aux.str()+end;
     cout<<s<<endl;
     route.push_back(s);

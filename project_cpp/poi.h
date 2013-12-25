@@ -18,6 +18,7 @@ public:
     void setName(string &);
     vector<string> getListPoi();
     poi* getPoi(string &);
+    vector<Node*> radiousPoi(float &, int &);
 
 private:
     string name;

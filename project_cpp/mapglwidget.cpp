@@ -25,7 +25,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
     int ini = 1000;
     int dest = 1500;
 
-    this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes);
+    this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes, driving);
     this->mydijkstra->calculateDistance();
     vector <int> result = this->mydijkstra->output();
 

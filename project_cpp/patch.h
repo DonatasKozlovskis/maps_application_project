@@ -17,6 +17,9 @@ public:
     void calcPatch(vector<Node*>);
     float checkAngle(Node*, Node*, Node*);
     void genTxt(vector<string>);
+
+private:
+    float distance;
 };
 
 #endif // PATCH_H

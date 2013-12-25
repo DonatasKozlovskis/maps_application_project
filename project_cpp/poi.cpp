@@ -1,9 +1,6 @@
 #include "poi.h"
 
-poi::poi()
-{
-
-}
+poi::poi(){}
 
 string poi::getName(){
     return this->name;
@@ -27,7 +24,7 @@ vector<string> poi::getListPoi(){
     return listPoi;
 }
 
-//Obtain the information of a specific poi from the database returning a pointer to a POI
+//Obtain the information of a specific poi from the database returning a pointer to this POI
 poi* poi::getPoi(string &name){
     poi* request = new poi;
     QVariant _name = QString::fromStdString(name);
@@ -120,4 +117,30 @@ void poi::deletePoi(unsigned int &id){
     deletePoi.exec();
 
     cout<<"Point of interest deleted successfully"<<endl;
+}
+
+//Shows all poi of a specific type around another poi
+//setted by the user according to a radius
+vector<Node*> poi::radiousPoi(float &radius, int &type){
+
+    float lat, lon, dist;
+    vector<Node*> Poi;
+
+    QSqlQuery radiusPoi;
+    radiusPoi.prepare("SELECT Latitude, Longitude FROM poi WHERE Type=:type");
+    radiusPoi.bindValue(":type", type);
+    radiusPoi.exec();
+
+    while(radiusPoi.next()){
+        lat = radiusPoi.value(0).toFloat();
+        lon = radiusPoi.value(1).toFloat();
+
+        Node* iter = new Node();
+        iter->setPoint(lat, lon);
+        dist = this->distNode(iter);
+        dist=dist*4;
+
+        if (dist<=radius)   Poi.push_back(iter);
+    }
+    return Poi;
 }
