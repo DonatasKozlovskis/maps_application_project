@@ -145,16 +145,37 @@ void Map::adjMatrix(bool driving){
     Node * next = new Node;
     float dist = 0.0;
     int x,y;
-    for(unsigned int i=0; i<this->roads.size(); i++){
-        for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
-            current = this->getRoad(i)->getNode(j);
-            next = this->getRoad(i)->getNode(j+1);
-            //Call function distance
-            dist = current->distNode(next);
-            x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
-            y = next->getId();
-            this->adj[x][y] = dist;
-            if (driving == false || this->getRoad(i)->isOneWay() == false)   this->adj[y][x] = dist;
+    string s = "footway";
+
+    if (driving == true){
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            if(this->getRoad(i)->getRoadType().compare(s) != 0 ){
+                for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
+                    current = this->getRoad(i)->getNode(j);
+                    next = this->getRoad(i)->getNode(j+1);
+                    //Call function distance
+                    dist = current->distNode(next);
+                    x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
+                    y = next->getId();
+                    this->adj[x][y] = dist;
+                    if (this->getRoad(i)->isOneWay() == false) this->adj[y][x] = dist;
+                }
+            }
+        }
+    }
+
+    if (driving == false){
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
+                current = this->getRoad(i)->getNode(j);
+                next = this->getRoad(i)->getNode(j+1);
+                //Call function distance
+                dist = current->distNode(next);
+                x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
+                y = next->getId();
+                this->adj[x][y] = dist;
+                this->adj[y][x] = dist;
+            }
         }
     }
 }
