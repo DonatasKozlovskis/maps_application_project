@@ -36,10 +36,14 @@ for i=1:numberOfRoads
     tempSpMat1 = sparse(nodes1, nodes2, nodes12Dist, numberOfNodes, numberOfNodes);
     tempSpMat2 = sparse(nodes2, nodes1, nodes12Dist, numberOfNodes, numberOfNodes);
     % create temp sparse matrix for cars
-    if tempRoad.oneWay==0
-        sparseMatCarTemp = tempSpMat1 + tempSpMat2;
+    if strcmp(tempRoad.type, 'pedestrian') || strcmp(tempRoad.type, 'footway')
+        sparseMatCarTemp = sparse(numberOfNodes, numberOfNodes, 0);
     else
-        sparseMatCarTemp = tempSpMat1;
+        if tempRoad.oneWay==0
+            sparseMatCarTemp = tempSpMat1 + tempSpMat2;
+        else
+            sparseMatCarTemp = tempSpMat1;
+        end
     end
     % create sparse matrix for cars
     if isnan(sparseMatCar)

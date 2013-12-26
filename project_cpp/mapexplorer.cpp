@@ -13,6 +13,7 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
 
     // Connect signals and slots
     connect(ui->mapGLWidget, SIGNAL(mousePressedGL(int,int)), this, SLOT(updateDebugInfo(int,int)));
+
 }
 
 // Default destructor

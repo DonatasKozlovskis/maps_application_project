@@ -1,12 +1,14 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include <Windows.h> //Added by Ferran 23/12
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include <QGLWidget>
-#include <map.h>
 
+#include "map.h"
 #include "dijkstra.h"
+#include "patch.h"
 
 
 class MapGLWidget : public QGLWidget
@@ -78,10 +80,13 @@ private:
     Map *mymap;                 // Map instance
 
     Dijkstra *mydijkstra;
+
     vector < vector<Node*> > paths;
 
-
     vector <Node*> points;      // Points for painting (testing) --------------------------
+    vector <Node*> path;
+
+    Patch *directions;
 };
 
 #endif // GLWIDGET_H

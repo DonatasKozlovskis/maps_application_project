@@ -1,5 +1,5 @@
 function  foundNode = GetMapNode(this, idValue)
-% returns MapNode with id value given in textId or numId
+% returns MapNode with idValue given in textId or numId
 % if not found returns []
 %
     if (nargin==2)

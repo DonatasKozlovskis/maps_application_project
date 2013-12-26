@@ -31,16 +31,12 @@ numberOfNodes = size(currentSparse, 1);
 [shortestRoad, dist]= twoInputShortestPath(mapNodeStart, mapNodeTarget, allRoads, nodesDataset, currentSparse);
 %plotting shortestPath
 
-lineSpec(1).prop = 'Color';
-lineSpec(1).propVal = 'red';
-lineSpec(2).prop = 'Linewidth';
-lineSpec(2).propVal = 2;
 
 shortestPathLineSpec = lineSpecMap(strcmp ( {lineSpecMap.roadType}, shortestRoad.type));
 hold on
-    aa = shortestRoad.plotRoad(ax, lineSpec);
+    aa = shortestRoad.plotRoad(ax, shortestPathLineSpec);
 hold off
 
-
+sprintf( makeDirections(shortestRoad, allRoads))
 
 

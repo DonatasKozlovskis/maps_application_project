@@ -15,8 +15,11 @@ using namespace std;
 class Dijkstra
 {
 public:
+
     Dijkstra(float**, int &, int &, int);
+    Dijkstra(float**, int &, int &, int, bool);
     ~Dijkstra();
+
 
     void initialize();
     int getClosestUnmarkedNode();
@@ -26,6 +29,7 @@ public:
 
     Dijkstra(float**, int);
     vector<int> calculate(int &, int &); // el parámetro 'final' es opcional
+    void calcTime();
 
 private:
 
@@ -37,7 +41,8 @@ private:
     int dest;
     int numOfVertices;
     vector<int> result;
-
+    float time;
+    bool driving;
 };
 
 #endif // DIJKSTRA_H

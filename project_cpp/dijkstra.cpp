@@ -1,10 +1,15 @@
 #include "dijkstra.h"
 
-Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
+//This algorithm has been inspired in the basis suggested for the following link:
+//http://www.programming-techniques.com/2012/01/implementation-of-dijkstras-shortest.html
+
+Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num, bool driving){
     this->adjMatrix = adj;
     this->source = initial;
     this->dest = end;
     this->numOfVertices = num;
+    this->time = 0;
+    this->driving = driving;
 
     this->predecessor = new int[this->numOfVertices];
     this->distance = new float[this->numOfVertices];
@@ -80,9 +85,24 @@ vector<int> Dijkstra::output(){
             cout<<source<<".."<<source;
         }else{
             printPath(i);
-            cout<<"->"<<distance[i]<<endl;
+            cout<<"->"<<distance[i]*4<<" meters"<<endl;
         }
-
+    calcTime();
     return this->result;
+}
+
+//This function receives the distance that has to be covered walking/driving
+//and returns the time in minutes that the user would spend;
+void Dijkstra::calcTime(){
+    if (driving == true){
+        float car = 11.12;          //The average speed by car is setted to 40 km/h or 11.12 m/s
+        this->time = ((this->distance[this->dest]/car)*4)/60;
+        cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
+    }
+    if (driving == false){
+        float person = 1.12;        //The average speed by walking is setted to 4 km/h or 1.12 m/s
+        this->time = ((this->distance[this->dest]/person)*4)/60;
+        cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
+    }
 }
 

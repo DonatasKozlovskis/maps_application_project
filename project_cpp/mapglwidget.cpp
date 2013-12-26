@@ -5,6 +5,7 @@
 // Default constructor
 MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
 
+
     camPos = QPointF(0.0f,0.0f);            // camera position (uses adjustments)
     movPos = QPointF(0.0f,0.0f);            // movement position (without adjustments)
 
@@ -30,6 +31,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
     bool driving = false;
     mymap->adjMatrix(driving);
 
+
     // Dijkstra testing
     //int ini = 1000;
     //int dest = 1500;
@@ -41,6 +43,18 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
 
     //this->direc = new Patch;
     //direc->calcPatch(path);
+
+
+    int ini = 1000;
+    int dest = 1500;
+
+    this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes, driving);
+    this->mydijkstra->calculateDistance();
+    vector <int> result = this->mydijkstra->output();
+
+    path = mymap->getPath(result);
+    this->directions = new Patch;
+    directions->calcPatch(path);
 
 }
 
