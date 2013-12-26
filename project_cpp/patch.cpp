@@ -58,13 +58,12 @@ void Patch::calcPatch(vector<Node*> path){
 //Returns the angle between two segments defined by the same initial point "Center"
 float Patch::checkAngle(Node* M, Node* P, Node* O){
 
-    //Inspirated in http://stackoverflow.com/questions/3486172/angle-between-3-points
+//Inspirated in http://stackoverflow.com/questions/3486172/angle-between-3-points
     POINTFLOAT ab = { M->getPoint().x - O->getPoint().x, M->getPoint().y - O->getPoint().y };
     POINTFLOAT cb = { M->getPoint().x - P->getPoint().x, M->getPoint().y - P->getPoint().y };
 
     float dot = (ab.x * cb.x + ab.y * cb.y); // dot product
     float cross = (ab.x * cb.y - ab.y * cb.x); // cross product
-
     float alpha = atan2(cross, dot);
 
     return (int) floor(alpha * 180. / 3.14159265359 + 0.5);
@@ -90,7 +89,7 @@ bool Patch::belong(Node* node1, Node* node2){
     belongId2.bindValue(":id", id2);
     belongId2.exec();
 
-    //Take into account that the node can belong to more than one road
+//Take into account that the node can belong to more than one road
     for(unsigned int i=0; i<belongId1.size(); i++){
         belongId1.next();
         road1=belongId1.value(0).toString().toStdString();
