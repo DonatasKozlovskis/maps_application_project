@@ -5,6 +5,8 @@
 // Default constructor
 MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
 
+    adjustmentX = 0.5;
+    adjustmentY = 1.65;
 
     camPos = QPointF(0.0f,0.0f);            // camera position (uses adjustments)
     movPos = QPointF(0.0f,0.0f);            // movement position (without adjustments)

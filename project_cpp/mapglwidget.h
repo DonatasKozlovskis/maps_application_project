@@ -70,8 +70,8 @@ private:
     QPoint lastPos;             // Last position on the screen
     float scale;                // Current map scaling
 
-    float adjustmentX = 0.5f;
-    float adjustmentY = 1.65f;
+    float adjustmentX;
+    float adjustmentY;
 
     float mapGeoCoordinates[4]; // Max and min geographic coordinates of the points in the map
     int mapNormalization[2];    // Normalization values for the map
