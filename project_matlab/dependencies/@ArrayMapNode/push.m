@@ -6,10 +6,10 @@ function this = push(this, newMapNode)
             this.nodes(end+1) = newMapNode;
         else
             % otherwise display error message
-            error('Wrong input arguments for getMapNode')        
+            error('Wrong input arguments for push newMapNode')        
         end
     else
         % otherwise display error message
-        error('Wrong number of input arguments for getMapNode')
+        error('Wrong number of input arguments for push newMapNode')
     end
 end
