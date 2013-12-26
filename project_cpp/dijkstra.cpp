@@ -3,6 +3,20 @@
 //This algorithm has been inspired in the basis suggested for the following link:
 //http://www.programming-techniques.com/2012/01/implementation-of-dijkstras-shortest.html
 
+// Old version o constructor added also in order to run it as of 26/12/2013 11.07PM Le Creusot
+// 27/12/2013 04.07AM Almaty
+// Andrey - I used out-of-date version in my route drawing test
+Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
+    this->adjMatrix = adj;
+    this->source = initial;
+    this->dest = end;
+    this->numOfVertices = num;
+
+    this->predecessor = new int[this->numOfVertices];
+    this->distance = new float[this->numOfVertices];
+    this->mark = new bool[this->numOfVertices];
+}
+
 Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num, bool driving){
     this->adjMatrix = adj;
     this->source = initial;
