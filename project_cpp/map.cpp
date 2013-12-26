@@ -65,6 +65,10 @@ void Map::addData(){
 
             newNode->setPoint(latitude,longitude);
             newRoad->addNode(newNode);
+
+            // Adding the same pointer to the map
+            nodes.insert(pair<int,Node*>(id,newNode));
+
             nodesCount++;
         }
 
@@ -72,6 +76,9 @@ void Map::addData(){
         roads.push_back(newRoad);
         roadsCount++;
     }
+
+
+    cout << nodes.size() << "---" << endl;
 
 }
 
@@ -92,34 +99,24 @@ void Map::renderMap(){
     }
 }
 
-void Map::normalize(unsigned int width, unsigned int height){
+// 2048 1024
+void Map::normalize(unsigned int height, unsigned int width, float* geoCoords){
 
-    QSqlQuery queryMaxMin("select max(Latitude), max(Longitude), min(Latitude), min(Longitude) from node;");
+    //QSqlQuery queryMaxMin("select max(Latitude), max(Longitude), min(Latitude), min(Longitude) from node;");
 
-    float x,y,xt,yt,latMin,latMax,lonMax,lonMin;
-    queryMaxMin.next();
-    latMin = queryMaxMin.value(2).toFloat();
-    latMax = queryMaxMin.value(0).toFloat();
-    lonMax = queryMaxMin.value(1).toFloat();
-    lonMin = queryMaxMin.value(3).toFloat();
-
-    float dLat,dLon,aLat,aLon,bLat,bLon;
-    dLat = latMax - latMin;
-    dLon = lonMax - lonMin;
-    aLat = width/dLat;
-    aLon = height/dLon;
-    bLat = width/2 - (aLat * latMax);
-    bLon = height/2 - (aLon * lonMax);
+    float aLat,aLon,bLat,bLon;
+    aLat = height/(*(geoCoords+1) - *(geoCoords));           // ratio between width and the difference in latitude
+    bLat = height/2 - (aLat * *(geoCoords+1));
+    aLon = width/(*(geoCoords+3) - *(geoCoords+2));        // ration between height and difference in longitude
+    bLon = width/2 - (aLon * *(geoCoords+3));
 
     for(unsigned int i=0; i<this->roads.size(); i++){
         for (unsigned int j=0; j<this->getRoad(i)->length(); j++){
-            x = this->getRoad(i)->getNode(j)->getPoint().x;
-            y = this->getRoad(i)->getNode(j)->getPoint().y;
 
-            xt = x*aLat + bLat;
-            yt = (y*aLon + bLon);
+            float x = this->getRoad(i)->getNode(j)->getPoint().x;       // Lat
+            float y = this->getRoad(i)->getNode(j)->getPoint().y;       // Lon
 
-            this->getRoad(i)->getNode(j)->setPoint(xt, yt);
+            this->getRoad(i)->getNode(j)->setPoint(x*aLat + bLat, y*aLon + bLon);
         }
     }
 }
@@ -145,19 +142,39 @@ void Map::adjMatrix(bool driving){
     Node * next = new Node;
     float dist = 0.0;
     int x,y;
-    for(unsigned int i=0; i<this->roads.size(); i++){
-        for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
-            current = this->getRoad(i)->getNode(j);
-            next = this->getRoad(i)->getNode(j+1);
-            //Call function distance
-            dist = current->distNode(next);
-            x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
-            y = next->getId();
-            this->adj[x][y] = dist;
-            if (driving == false || this->getRoad(i)->isOneWay() == false)   this->adj[y][x] = dist;
+    string s = "footway";
+
+    if (driving == true){
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            if(this->getRoad(i)->getRoadType().compare(s) != 0 ){
+                for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
+                    current = this->getRoad(i)->getNode(j);
+                    next = this->getRoad(i)->getNode(j+1);
+                    //Call function distance
+                    dist = current->distNode(next);
+                    x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
+                    y = next->getId();
+                    this->adj[x][y] = dist;
+                    if (this->getRoad(i)->isOneWay() == false) this->adj[y][x] = dist;
+                }
+            }
         }
     }
-    cout << "lol" << endl;
+
+    if (driving == false){
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
+                current = this->getRoad(i)->getNode(j);
+                next = this->getRoad(i)->getNode(j+1);
+                //Call function distance
+                dist = current->distNode(next);
+                x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
+                y = next->getId();
+                this->adj[x][y] = dist;
+                this->adj[y][x] = dist;
+            }
+        }
+    }
 }
 
 vector<Node*> Map::getPath(vector<int> in){
@@ -182,4 +199,22 @@ vector<Node*> Map::getPath(vector<int> in){
         }
     }
     return out;
+}
+
+unsigned int Map::findClosest(float x, float y) {
+
+    unsigned int result = -1;
+    float distance = 9999;      // Test for now
+    for (map<unsigned int,Node*>::iterator i = nodes.begin(); i != nodes.end(); i++) {
+
+        float c = sqrt( pow(x - i->second->getPoint().x,2) + pow(y - i->second->getPoint().y,2) );
+        if (c < distance) {
+            distance = c;
+            result = i->first;
+        }
+
+    }
+    //cout << result << endl;
+
+    return result;
 }

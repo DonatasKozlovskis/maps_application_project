@@ -33,13 +33,6 @@ private:
     void connectDatabase();
     void disconnectDatabase();
 
-    // Even the map movement is integer, it should b float i order not to use casting
-    // while calculating. Setting it to QPoint (integer) produces precision error when
-    // obtaining map coordinates
-    QPointF mapMoved;
-    // Current map scale
-    float mapScale;
-
 protected:
     QSqlDatabase db;                        // database connection for the whole parent widget
 

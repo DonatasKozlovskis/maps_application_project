@@ -18,6 +18,20 @@ public:
     int getXPos();
     int getYPos();
 
+    // Testing
+    float getMaxLat();
+    float getMinLat();
+    float getMaxLon();
+    float getMinLon();
+
+    int getNormX();
+    int getNormY();
+
+    float getScale();
+
+    QPointF getMovPos();
+    QPointF getCamPos();
+
 signals:
 
 public slots:
@@ -43,23 +57,31 @@ private:
     void drawMap();
     void drawAxices();
     void drawTextureMap();
-
+    void drawPoints();                      // 24.12 ------------------------------
     void drawPath();
-
     void loadTextures();
 
+    void detectPoint(float, float);         // 24.12 -------------------------------
+
+    QPointF movPos;             // Current movement
     QPointF camPos;             // Current camera position with movement adjustments
     QPoint lastPos;             // Last position on the screen
     float scale;                // Current map scaling
 
-    int mapNormalization[2];
+    float adjustmentX = 0.5f;
+    float adjustmentY = 1.65f;
+
+    float mapGeoCoordinates[4]; // Max and min geographic coordinates of the points in the map
+    int mapNormalization[2];    // Normalization values for the map
     GLuint textureID;
 
-    Map *mymap;
-    Map *mymapn;
+    Map *mymap;                 // Map instance
 
     Dijkstra *mydijkstra;
-    vector <Node*> path;
+    vector < vector<Node*> > paths;
+
+
+    vector <Node*> points;      // Points for painting (testing) --------------------------
 };
 
 #endif // GLWIDGET_H

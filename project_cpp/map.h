@@ -4,6 +4,7 @@
 #include <QtSql>
 #include <iostream>
 #include "road.h"
+#include <map>
 
 using namespace std;
 
@@ -16,13 +17,15 @@ public:
     void addData();
     void renderMap();
     Road* getRoad(unsigned int);
-    void normalize(unsigned int, unsigned int);
+    void normalize(unsigned int, unsigned int, float*);
+    unsigned int findClosest(float,float);
 
     void adjMatrix(bool);
     vector<Node*> getPath(vector<int>);
     float **adj;
 
     vector<Road*> roads;                            // Changed from myRoads Adrey 02.12
+    map<unsigned int,Node*> nodes;                           // Added 24.12
     int roadsCount;
     int nodesCount;
     int numberNodes;

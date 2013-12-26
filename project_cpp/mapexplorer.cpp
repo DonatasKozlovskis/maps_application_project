@@ -13,11 +13,6 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
 
     // Connect signals and slots
     connect(ui->mapGLWidget, SIGNAL(mousePressedGL(int,int)), this, SLOT(updateDebugInfo(int,int)));
-    connect(ui->mapGLWidget, SIGNAL(mouseMovedGL(int,int)),this, SLOT(updateMapPos(int,int)));
-    connect(ui->mapGLWidget, SIGNAL(mouseWheeledGL(float)),this, SLOT(updateMapScale(float)));
-
-    mapMoved = QPoint(0.0d,0.0d);
-    mapScale = 1.0f;
 }
 
 // Default destructor
@@ -47,47 +42,46 @@ void MapExplorer::updateDebugInfo(int w, int h) {
     float widgetWidth = ui->mapGLWidget->width();
     float widgetHeight = ui->mapGLWidget->height();
 
-    float mapTexWidth = 2048.0;
-    int mapTexHeight = 1024.0;
+    float mpoglx = (w - widgetWidth/2) - ui->mapGLWidget->getMovPos().x();      // mpogl - Mouse Pressed OpenGL
+    float mpogly = -(h - widgetHeight/2) - ui->mapGLWidget->getMovPos().y();
 
-    float mousePressedTexX = -(widgetWidth/2 - w)/mapScale + mapTexWidth/2 - mapMoved.x()/mapScale;
-    float mousePressedTexY = -(widgetHeight/2 - h)/mapScale + mapTexHeight/2 - mapMoved.y()/mapScale;
+    // Solving ax + b = y for latitude and longitude
+    float aLat = (float)ui->mapGLWidget->getNormX() /
+            (ui->mapGLWidget->getMaxLat() - ui->mapGLWidget->getMinLat());
+    float bLat = (float)ui->mapGLWidget->getNormX() / 2 - ui->mapGLWidget->getMaxLat()*aLat;
 
-    QString output("Map moved: " + QString::number(mapMoved.x()) + " " + QString::number(mapMoved.y())
+    float aLon = (float)ui->mapGLWidget->getNormY() /
+            (ui->mapGLWidget->getMaxLon() - ui->mapGLWidget->getMinLon());
+    float bLon = (float)ui->mapGLWidget->getNormY() / 2 - ui->mapGLWidget->getMaxLon()*aLon;
 
-                   + "\n\nWidget Width: X: " + QString::number(widgetWidth)
+    float mpgeolat = (mpogly*1.65/ui->mapGLWidget->getScale() - bLat)/aLat;
+    float mpgeolon = (mpoglx*0.5/ui->mapGLWidget->getScale() - bLon)/aLon;
+
+    QString output("Map moved: \n" + QString::number(ui->mapGLWidget->getMovPos().x()) + " "
+                   + QString::number(ui->mapGLWidget->getMovPos().y())
+
+                   + "\n\nWidget Width: \nX: " + QString::number(widgetWidth)
                    + " Y: " + QString::number(widgetHeight)
 
-                   + "\n\nMouse pressed widget: X: " + QString::number(w)
+                   + "\n\nMouse pressed widget 1: \nX: " + QString::number(w)
                    + " Y: "   + QString::number(h)
 
-                   + "\n\nMouse pressed widget center: X: " + QString::number(w-widgetWidth/2)
-                   + " Y: "   + QString::number(h-widgetHeight/2)
+                   + "\n\nMouse pressed widget 2: \nX: " + QString::number(w - widgetWidth/2)
+                   + " Y: "   + QString::number(-h + widgetHeight/2)
 
-                   + "\n\nMouse pressed tex: X: " + QString::number(mousePressedTexX)
-                   + " Y: "   + QString::number(mousePressedTexY)
+                   + "\n\nMouse pressed OpenGL: \nX: " + QString::number(mpoglx)
+                   + " Y: "   + QString::number(mpogly)
 
-                   + "\n\nMouse pressed tex center: X: " + QString::number(mousePressedTexX - 1024)
-                   + " Y: "   + QString::number(mousePressedTexY - 512)
+                   + "\n\nMouse pressed Geo: Lat:" + QString::number(mpgeolat)
+                   + " Lon: "   + QString::number(mpgeolon)
 
-                   + "\n\nMouse pressed geo: " + "X :" + QString::number(46.79638985f + (mousePressedTexX-mapTexWidth/2)/2210.0*0.0534133)
-                   + " Y :" + QString::number(4.4371799f + (mousePressedTexY-mapTexHeight/2)/670.0*0.0945412)
-
-                   + "\n\n Scale: " + QString::number(mapScale)
+                   + "\n\n Scale: " + QString::number(ui->mapGLWidget->getScale())
                    );
 
     ui->debugLabel->setText(output);
 }
 
-void MapExplorer::updateMapPos(int x, int y) {
-    mapMoved.setX(mapMoved.x() + x);
-    mapMoved.setY(mapMoved.y() + y);
-}
-
-void MapExplorer::updateMapScale(float s) {
-    mapScale = s;
-}
-
+// Database stuff
 void MapExplorer::connectDatabase(){
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");

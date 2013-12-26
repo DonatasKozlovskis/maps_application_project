@@ -11,6 +11,13 @@ Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
     this->mark = new bool[this->numOfVertices];
 }
 
+// Added Andrey
+Dijkstra::~Dijkstra() {
+    delete [] predecessor;
+    delete [] distance;
+    delete [] mark;
+}
+
 void Dijkstra::initialize(){
     for(int i=0;i<numOfVertices;i++) {
         mark[i] = false;

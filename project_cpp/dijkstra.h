@@ -16,6 +16,7 @@ class Dijkstra
 {
 public:
     Dijkstra(float**, int &, int &, int);
+    ~Dijkstra();
 
     void initialize();
     int getClosestUnmarkedNode();
