@@ -8,6 +8,8 @@ classdef ArrayRoad < handle
         boundMin       % MapNode
         boundMax       % MapNode
         latLonAdjCoef  % double
+        allRoadIds %char
+        nodesInRoads
     end
     methods
         % constructor
@@ -43,6 +45,16 @@ classdef ArrayRoad < handle
         end
         function value = get.latLonAdjCoef(this)
             value = cosd( mean([this.boundMin.lat this.boundMax.lat]) );          
+        end
+        function value = get.allRoadIds(this)
+            value = {this.roads(:).id};            
+        end
+        function  value = get.nodesInRoads(this)
+        % returns hash table for roadID and nodeIDs
+            roadId = [this.roads.idRepeated];
+            nodeId = [this.roads.nodesNumIds];
+            roadName = [this.roads.nameRepeated];
+            value= dataset({nodeId', 'nodeId'}, {roadId', 'roadId'}, {roadName', 'roadName'});
         end
     end % methods 
 

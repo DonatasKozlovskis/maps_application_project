@@ -16,6 +16,8 @@ classdef Road
         nodesNumIds %
         nodesLats %
         nodesLons %
+        idRepeated % repeated road ID in number of nodes
+        nameRepeated % repeated road ID in number of nodes
     end    
     methods
         function this = Road(varargin)
@@ -59,6 +61,13 @@ classdef Road
         function value = get.nodesLons(this)
             value = this.roadNodes.lons;           
         end
+        function value = get.idRepeated(this)
+            value = repmat({this.id}, 1, numel(this.nodes));         
+        end
+        function value = get.nameRepeated(this)
+            value = repmat({this.name}, 1, numel(this.nodes));         
+        end
+        
     end % methods 
 
 end
