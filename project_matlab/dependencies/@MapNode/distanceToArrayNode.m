@@ -1,6 +1,6 @@
 function  distances = distanceToArrayNode(this, nodesArray)
 %distanceToNodesArray distance between current and all nodes in
-%ArrayMapNode
+%nodesArray of class ArrayMapNode
 %
 %   distanceToNodesArray Calculates distance between two MapNode points 
 %   expressed in lat1, lon1, lat2, lon2.
