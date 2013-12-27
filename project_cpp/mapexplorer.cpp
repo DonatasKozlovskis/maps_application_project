@@ -14,6 +14,7 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     // Connect signals and slots
     connect(ui->mapGLWidget, SIGNAL(mousePressedGL(int,int)), this, SLOT(updateDebugInfo(int,int)));
 
+
 }
 
 // Default destructor
@@ -86,7 +87,7 @@ void MapExplorer::updateDebugInfo(int w, int h) {
 void MapExplorer::connectDatabase(){
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
-    db.setDatabaseName("schneider");
+    db.setDatabaseName("bigschneider");
     db.setUserName("root");
     db.setPassword("root");
 
