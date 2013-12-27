@@ -21,3 +21,9 @@ Makefile
 
 # ignore matlab GUI .asv files
 *.asv
+
+
+# ignore tex output files
+*.synctex.gz
+*.log
+*.aux

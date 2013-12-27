@@ -7,23 +7,26 @@ function whichTurn = makeTextTurn(nodeA, nodeB, nodeC)
     side = '';
     turnPower = '';
     
-    % determine side to turn
-    if (angle>0)
-        side = 'right';
+    if absAngle > 170
+        % if abs angle is almost 180
+        whichTurn = 'Go straight';
     else
-        side = 'left';
+        % determine side to turn
+        if (angle>0)
+            side = 'right';
+        else
+            side = 'left';
+        end
+        % determine turn (angle power)
+        if (absAngle < 60)
+            turnPower = 'Sharp';
+        elseif (absAngle >= 60 && absAngle <120)
+            turnPower = 'Med.';
+        else
+            turnPower = 'Slight';
+        end
+        %form sentence
+        whichTurn = [turnPower, ' turn ', side];  
     end
-    
-    % determine turn (angle power)
-    if (absAngle < 60)
-        turnPower = 'Sharp';
-    elseif (absAngle >= 60 && absAngle <120)
-        turnPower = 'Med.';
-    else
-        turnPower = 'Slight';
-    end
-    
-    whichTurn = [turnPower, ' turn ', side]; 
-    
 end
     

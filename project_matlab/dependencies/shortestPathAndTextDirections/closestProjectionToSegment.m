@@ -57,6 +57,8 @@ shortestDist = inf;
         %assign new shortest dist and node
         shortestDist=tempDistances(minIndex);
         closestProjectedNode =  tempProjectedNodes.nodes(minIndex);
+        % adding mark that this is projected node
+        closestProjectedNode.textId = 'projectedNode';
         closestSegmentNode1 =segmentNodes1.nodes(closestProjectedNode.numId);
         closestSegmentNode2 =segmentNodes2.nodes(closestProjectedNode.numId);
     end
@@ -71,7 +73,7 @@ shortestDist = inf;
         windowNodes.numIds = tempNodeData.numId;
         windowNodes.textIds = tempNodeData.textId;
     end
-    
+    %checking if there are closer nodes then projected node
     if (~isempty(windowNodes))
 
         tempDistances = userNode.distanceToArrayNode(windowNodes);
