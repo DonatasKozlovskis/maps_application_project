@@ -8,11 +8,13 @@ shortestDist = inf;
     % creating window nodes limits
     [userNodeMin, userNodeMax] = userNode.mapNodeWindow(wSize, allRoads.boundMin, allRoads.boundMax);
 
-    %subseting nodes from window
+    %subseting all nodes from window
     nodesInWindow = nodesDataset.lat > userNodeMin.lat & ...
                     nodesDataset.lon > userNodeMin.lon & ...
                     nodesDataset.lat < userNodeMax.lat & ...
                     nodesDataset.lon < userNodeMax.lon;
+    %leaving only those nodes which are in current sparse matrix as well.
+    nodesInSparse =0;
     %getting nodes ID in window
     nodesInWindowNumId = nodesDataset.numId(nodesInWindow);
 
@@ -22,6 +24,9 @@ shortestDist = inf;
     jointNodeNumId = [cPair1 cPair2];
 
     %getting paired nodes Id in my window
+    %cpair2 is not used since the roads can be only one way and this allows
+    %to take only right roads
+    
     pairInWindow = ismember(cPair1, nodesInWindowNumId); % | ismember(cPair2, nodesInWindowNumId);
     myPairs = jointNodeNumId(pairInWindow,:);
 
@@ -58,9 +63,9 @@ shortestDist = inf;
 
 %%%%%%%%%%%
     windowNodes = ArrayMapNode.empty;
-    if (size(nodesInWindowNumId, 1)> 0)
-        tempNodeData = nodesDataset(nodesInWindowNumId,:);
-        windowNodes = ArrayMapNode(size(nodesInWindowNumId, 1));
+    if (size(myPairs, 1)> 0)
+        tempNodeData = nodesDataset(myPairs(:,1),:);
+        windowNodes = ArrayMapNode( size(myPairs, 1) );
         windowNodes.lats = tempNodeData.lat;
         windowNodes.lons = tempNodeData.lon;
         windowNodes.numIds = tempNodeData.numId;
