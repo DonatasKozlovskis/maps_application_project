@@ -6,11 +6,15 @@ numberOfNodes = size(currentSparse, 1);
 
 % trying to get projection for mapNodeStart
 [clPrNodeStart, clSegNodeStart1, clSegNodeStart2] = closestProjectionToSegment(mapNodeStart, 0.3, allRoads, nodesDataset, currentSparse);
-clPrNodeStart.numId = numberOfNodes- 1;
+if strcmp(clPrNodeStart.textId, 'projectedNode')
+    clPrNodeStart.numId = numberOfNodes- 1;
+end
 
 % trying to get projection for mapNodeTarget
 [clPrNodeTarget, clSegNodeTarget1, clSegNodeTarget2] = closestProjectionToSegment(mapNodeTarget, 0.3, allRoads, nodesDataset, currentSparse);
-clPrNodeTarget.numId = numberOfNodes;
+if strcmp(clPrNodeTarget.textId, 'projectedNode')
+    clPrNodeTarget.numId = numberOfNodes;
+end
 
 % % update nodes dataset:
 tempDataRow = nodesDataset(end, :);

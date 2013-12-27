@@ -12,6 +12,18 @@ function textDirections = makeDirections(shortestRoad, allRoads)
         [foundRoadIds, foundRoadNames]= allRoads.nodePairInRoad(shortestRoad.nodesNumIds);
         %replacing empty street names with string 'unnamed':
         foundRoadNames (strcmp(foundRoadNames, '')) = {'unnamed'};
+        
+        %if there is a node with text Id: 'projectedNode', give street name
+        
+        if  numel(shortestRoad.nodes) > 2
+            if strcmp(shortestRoad.nodes(2).textId, 'projectedNode') 
+                foundRoadNames(2) = foundRoadNames(3); 
+            end
+            if strcmp(shortestRoad.nodes(end-1).textId, 'projectedNode') 
+                foundRoadNames(end-1) = foundRoadNames(end-2); 
+            end
+        end
+        
         %initializing temp distance in One street 
         tempStreetDist = indivDist(1);
         
