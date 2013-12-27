@@ -1,85 +1,82 @@
 #include "map.h"
 
 // Default constructor
-Map::Map()
-{
-    roadsCount=0;
-    nodesCount=0;
-}
+
 
 Map::~Map() {
     for (vector<Road*>::const_iterator it = roads.begin(); it != roads.end(); it++)
         delete (*it);
 }
 
+Map::Map()
+{
+    roadsCount=0;
+    nodesCount=0;
+    numberNodes = 0;
+}
+
 void Map::addData(){
 
-    // Select all roads and from the database
-    QSqlQuery queryRoads("SELECT RoadID FROM road_node GROUP BY RoadID ORDER BY RoadID asc;");
-    // queryRoads.exec();
-    // Prepare the queries for the separate road and the node
-    QSqlQuery queryRoad, queryPoints, queryNode;
+    QSqlQuery queryRoads1("SELECT  RoadID, Count(RoadID) FROM road_node GROUP BY RoadID ORDER BY RoadID asc;");
 
-    QSqlQuery queryNodesCount("select count(id) from node;");
-    queryNodesCount.next();
-    numberNodes = queryNodesCount.value(0).toInt();
+    //Prepare the structure
 
-    queryPoints.prepare("select road_node.NodeID from road_node where road_node.RoadID = :roadID order by road_node.ContourOrder ASC;");
-    queryNode.prepare("select node.ind, node.Latitude, node.Longitude from node where node.ID = :nodeID;");
-    queryRoad.prepare("select * from road where road.ID = :roadID;");
 
-    // For each road create a new Road object
-    while (queryRoads.next()) {
-
-        // Query separate road and create an instance of class Road
-        QString roadID =queryRoads.value(0).toString();
-
-        queryRoad.bindValue(":roadID",roadID);
-        queryRoad.exec();
-        queryRoad.next();
-
-        Road* newRoad = new Road(roadID.toStdString(),queryRoad.value(1).toString().toStdString(),
-                                 queryRoad.value(2).toString().toStdString(),queryRoad.value(3).toBool());
-
-        // Prepare the query to search the points for the selected road
-        queryPoints.bindValue(":roadID",roadID);
-        queryPoints.exec();
-
-        // For each point from the previous query, create a new Point object
-        while (queryPoints.next()) {
-
-            unsigned int nodeID = queryPoints.value(0).toInt();
-            Node* newNode = new Node();
-
-            // Query for the parameters of the current node
-            queryNode.bindValue(":nodeID", nodeID);
-            queryNode.exec();
-            queryNode.next();
-
-            // Fill the Node and add it to the road
-            unsigned int id = queryNode.value(0).toInt();
-            newNode->setId(--id);
-
-            float latitude = queryNode.value(1).toFloat();
-            float longitude = queryNode.value(2).toFloat();
-
-            newNode->setPoint(latitude,longitude);
-            newRoad->addNode(newNode);
-
-            // Adding the same pointer to the map
-            nodes.insert(pair<int,Node*>(id,newNode));
-
+    while(queryRoads1.next()){
+        Road* newr=new Road();
+        int nodes = queryRoads1.value(1).toInt();
+        for (int i=0; i<nodes; i++){
+            Node* newn=new Node();
+            newr->addNode(newn);
             nodesCount++;
         }
-
-        // Add road to the map
-        roads.push_back(newRoad);
+        roads.push_back(newr);
         roadsCount++;
     }
 
+    cout<<"Roads created: "<<roadsCount<<endl;
+    cout<<"Nodes created: "<<nodesCount<<endl;
 
-    cout << nodes.size() << "---" << endl;
+    QSqlQuery queryPoints("SELECT ind, Latitude, Longitude FROM road_node, node WHERE road_node.NodeID=node.ID ORDER BY RoadID asc, ContourOrder asc;");
+    QSqlQuery queryNodes("Select max(ind) from node;");
+    QSqlQuery queryRoads("select ID, OneWay from Road");
 
+    float lat=0;
+    float lon=0;
+    unsigned int ID=0;
+    bool way;
+    Road* roadit;
+    Node* nodeit;
+    roadsCount=0;
+    nodesCount=0;
+
+    queryNodes.next();
+    this->numberNodes = queryNodes.value(0).toInt();
+    cout<<numberNodes<<endl;
+
+    //Let's add the data
+    for(unsigned int i=0; i<roads.size(); i++){
+        queryRoads.next();
+        roadit = roads.at(i);
+        way=queryRoads.value(1).toBool();
+        roadit->setOneWay(way);
+        for (unsigned int j=0; j<roadit->length(); j++){
+            queryPoints.next();
+            ID=queryPoints.value(0).toInt()-1;        //Add -1 to the index
+            lat=queryPoints.value(1).toFloat();
+            lon=queryPoints.value(2).toFloat();
+
+            nodeit = roadit->getNode(j);
+            nodeit->setId(ID);
+            nodeit->setPoint(lat,lon);
+            nodesCount++;
+
+            nodes.insert(pair<int,Node*>(ID,nodeit));
+        }
+        roadsCount++;
+    }
+    cout<<"Roads updated: "<<roadsCount<<endl;
+    cout<<"Nodes updated: "<<nodesCount<<endl;
 }
 
 Road* Map::getRoad(unsigned int i){

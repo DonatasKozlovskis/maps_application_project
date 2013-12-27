@@ -1,4 +1,5 @@
 #include <QMouseEvent>
+#include <QTime>
 
 #include "mapglwidget.h"
 
@@ -27,25 +28,16 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
 
     // Create a new map and populate it.
     mymap = new Map;
+    QTime timer;
+    timer.start();
     mymap->addData();
+    cout << "Data add: " << timer.elapsed() << endl;
+    timer.start();
     mymap->normalize(mapNormalization[0],mapNormalization[1], mapGeoCoordinates);
-
+    cout << "Data normalization: " << timer.elapsed() << endl;
     bool driving = false;
     mymap->adjMatrix(driving);
-
-
-    // Dijkstra testing
-    //int ini = 1000;
-    //int dest = 1500;
-
-    //this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes);
-    //this->mydijkstra->calculateDistance();
-    //vector <int> result = this->mydijkstra->output();
-    //path = mymap->getPath(result);
-
-    //this->direc = new Patch;
-    //direc->calcPatch(path);
-
+    cout << "Adj: "<< timer.elapsed() << endl;
 
     int ini = 1000;
     int dest = 1500;
