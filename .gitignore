@@ -24,6 +24,7 @@ Makefile
 
 
 # ignore tex output files
-*.synctex.gz
-*.log
+SE_Report/*.pdf
 *.aux
+*.log
+*.synctex.gz
