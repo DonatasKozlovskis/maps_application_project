@@ -58,6 +58,20 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
       <item>
        <layout class="QGridLayout" name="gridLayout">
+        <item row="4" column="0">
+         <widget class="QPushButton" name="newPOIButton">
+          <property name="text">
+           <string>New POI</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="managePOIButton">
+          <property name="text">
+           <string>Manage POIs</string>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="3">
          <widget class="QComboBox" name="P1ComboBox">
           <item>
@@ -67,20 +81,13 @@
           </item>
          </widget>
         </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="QLineEdit" name="P1LineEdit"/>
+        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="P1NameLabel">
           <property name="text">
            <string>P1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" colspan="2">
-         <widget class="QLineEdit" name="P1LineEdit"/>
-        </item>
-        <item row="0" column="2">
-         <widget class="QRadioButton" name="walkRadioButton">
-          <property name="text">
-           <string>Walk</string>
           </property>
          </widget>
         </item>
@@ -90,17 +97,17 @@
         <item row="2" column="3">
          <widget class="QComboBox" name="P2ComboBox"/>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="P2NameLabel">
-          <property name="text">
-           <string>P2</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="P3NameLabel">
           <property name="text">
            <string>P3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="P2NameLabel">
+          <property name="text">
+           <string>P2</string>
           </property>
          </widget>
         </item>
@@ -109,16 +116,6 @@
         </item>
         <item row="3" column="3">
          <widget class="QComboBox" name="P3ComboBox"/>
-        </item>
-        <item row="6" column="0" colspan="4">
-         <widget class="QLabel" name="routeInfoLabel">
-          <property name="text">
-           <string>Route Info:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-          </property>
-         </widget>
         </item>
         <item row="7" column="0" colspan="4">
          <widget class="QLabel" name="debugLabel">
@@ -130,24 +127,30 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0" colspan="2">
+        <item row="6" column="0" colspan="4">
+         <widget class="QLabel" name="routeInfoLabel">
+          <property name="text">
+           <string>Route Info:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
          <widget class="QRadioButton" name="driveRadioButton">
           <property name="text">
            <string>Drive</string>
           </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QPushButton" name="managePOIButton">
-          <property name="text">
-           <string>Manage POIs</string>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QPushButton" name="newPOIButton">
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="walkRadioButton">
           <property name="text">
-           <string>New POI</string>
+           <string>Walk</string>
           </property>
          </widget>
         </item>

@@ -2,17 +2,25 @@
 #include <QFileInfo>
 
 #include "mapexplorer.h"
-#include "ui_mapexplorer.h"
+
 
 // Default constructor
 MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapExplorer) {
     // Connect to the database
     this->connectDatabase();
 
+    // Create a child in separate window
+    poiwidget = new POIWidget(this);
+    poiwidget->setWindowFlags(Qt::Window);
+
     ui->setupUi(this);
+    initializeContextMenu();
 
     // Connect signals and slots
     connect(ui->mapGLWidget, SIGNAL(mousePressedGL(int,int)), this, SLOT(updateDebugInfo(int,int)));
+    connect(ui->driveRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT(updateAdjDriving()));
+    connect(ui->walkRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT (updateAdjWalking()));
+
 }
 
 // Default destructor
@@ -98,4 +106,44 @@ void MapExplorer::disconnectDatabase() {
         db.close();
         cout << "Database disconnected MapExplorer" << endl;
     }
+}
+
+// Context menu call slot
+// Called on right-click
+void MapExplorer::on_mapGLWidget_customContextMenuRequested(const QPoint &pos)
+{
+    QPoint newPos = mapToParent(pos);
+    contextMenu->move(newPos.x()+this->pos().x(),newPos.y()+this->pos().y());   // Any other way to translate coordinates
+    contextMenu->show();
+}
+
+// Context menu initialization
+void MapExplorer::initializeContextMenu() {
+
+    // Two actions, that appear once user right-clicks the screen
+    newPOIAct = new QAction(tr("Add new POI"),this);
+    findNearestAct = new QAction(tr("Find nearest.."),this);
+
+    contextMenu = new QMenu(this);
+    contextMenu->addAction(newPOIAct);
+    contextMenu->addAction(findNearestAct);
+
+    // Connect the actions to the slots
+    connect(newPOIAct, SIGNAL(triggered()), this, SLOT(showPOIWidget()));
+}
+
+// Show function for POI widget
+// Any way to call it directly from connect()?
+void MapExplorer::showPOIWidget() {
+    poiwidget->show();
+}
+
+void MapExplorer::on_driveRadioButton_clicked()
+{
+
+}
+
+void MapExplorer::on_walkRadioButton_clicked()
+{
+
 }

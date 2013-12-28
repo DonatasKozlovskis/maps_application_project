@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include <QtSql>
+#include <poiwidget.h>
+
+#include "ui_mapexplorer.h"
+
 
 namespace Ui {
     class MapExplorer;
@@ -22,16 +26,29 @@ private slots:
 
     // Debug output 2
     void updateDebugInfo(int, int);
-    void updateMapPos(int,int);
-    void updateMapScale(float);
+    void on_mapGLWidget_customContextMenuRequested(const QPoint &pos);
+    void showPOIWidget();
+
+    void on_driveRadioButton_clicked();
+
+    void on_walkRadioButton_clicked();
 
 private:
     // User interface
     Ui::MapExplorer *ui;
+    POIWidget* poiwidget;
 
     // Database stuff
     void connectDatabase();
     void disconnectDatabase();
+
+    // Context menu
+    QMenu* contextMenu;
+    QAction* newPOIAct;
+    QAction* findNearestAct;
+
+    void initializeContextMenu();
+
 
 protected:
     QSqlDatabase db;                        // database connection for the whole parent widget
