@@ -120,6 +120,7 @@ void Map::normalize(unsigned int height, unsigned int width, float* geoCoords){
 
 // TODO: Replace some code to the constructor i order to prevent the memory leak
 void Map::adjMatrix(bool driving){
+
     //Create structure
     this->adj = new float * [this->numberNodes];
     for (unsigned int i = 0; i<this->numberNodes; i++){

@@ -36,10 +36,11 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
     mymap->normalize(mapNormalization[0],mapNormalization[1], mapGeoCoordinates);
     cout << "Data normalization: " << timer.elapsed() << endl;
     bool driving = false;
+
     mymap->adjMatrix(driving);
     cout << "Adj: "<< timer.elapsed() << endl;
 
-    int ini = 1000;
+    /*int ini = 1000;
     int dest = 1500;
 
     this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes, driving);
@@ -48,7 +49,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
 
     path = mymap->getPath(result);
     this->directions = new Patch;
-    directions->calcPatch(path);
+    directions->calcPatch(path);*/
 
 }
 
