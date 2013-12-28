@@ -21,6 +21,7 @@ public:
     unsigned int findClosest(float,float);
 
     void adjMatrix(bool);
+    void rmAdjMatrix();
     vector<Node*> getPath(vector<int>);
     float **adj;
 

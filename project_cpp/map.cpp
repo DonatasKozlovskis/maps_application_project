@@ -1,11 +1,12 @@
 #include "map.h"
 
 // Default constructor
-
-
 Map::~Map() {
     for (vector<Road*>::const_iterator it = roads.begin(); it != roads.end(); it++)
         delete (*it);
+    for (int i = 0; i < this->numberNodes; i++)
+            delete[] this->adj[i];
+        delete[] this->adj;
 }
 
 Map::Map()
@@ -20,8 +21,6 @@ void Map::addData(){
     QSqlQuery queryRoads1("SELECT  RoadID, Count(RoadID) FROM road_node GROUP BY RoadID ORDER BY RoadID asc;");
 
     //Prepare the structure
-
-
     while(queryRoads1.next()){
         Road* newr=new Road();
         int nodes = queryRoads1.value(1).toInt();
@@ -150,13 +149,14 @@ void Map::adjMatrix(bool driving){
                     next = this->getRoad(i)->getNode(j+1);
                     //Call function distance
                     dist = current->distNode(next);
-                    x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
+                    x = current->getId();                 //The indices of the database starts from 1 !
                     y = next->getId();
                     this->adj[x][y] = dist;
                     if (this->getRoad(i)->isOneWay() == false) this->adj[y][x] = dist;
                 }
             }
         }
+        cout<<"driving adj matrix"<<endl;
     }
 
     if (driving == false){
@@ -166,12 +166,13 @@ void Map::adjMatrix(bool driving){
                 next = this->getRoad(i)->getNode(j+1);
                 //Call function distance
                 dist = current->distNode(next);
-                x = current->getId();                 //The indices of the database starts from 1 !!!!!!! !!!!!!!!
+                x = current->getId();                 //The indices of the database starts from 1 !
                 y = next->getId();
                 this->adj[x][y] = dist;
                 this->adj[y][x] = dist;
             }
         }
+        cout<<"walking adj matrix"<<endl;
     }
 }
 
@@ -210,9 +211,13 @@ unsigned int Map::findClosest(float x, float y) {
             distance = c;
             result = i->first;
         }
-
     }
-    //cout << result << endl;
 
     return result;
+}
+
+void Map::rmAdjMatrix(){
+    for (int i = 0; i < this->numberNodes; i++)
+            delete[] this->adj[i];
+        delete[] this->adj;
 }
