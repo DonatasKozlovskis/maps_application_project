@@ -13,21 +13,28 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mapexplorer.cpp \
+    mapexplorer.cpp \
     road.cpp \
     node.cpp \
     map.cpp \
     mapglwidget.cpp \
-    dijkstra.cpp patch.cpp poi.cpp
+    dijkstra.cpp patch.cpp poi.cpp \
+    poiwidget.cpp \
+    poicontainer.cpp
 
 HEADERS  += mapexplorer.h \
     road.h \
     node.h \
     map.h \
     mapglwidget.h \
-    dijkstra.h patch.h poi.h
+    dijkstra.h \
+    patch.h \
+    poi.h \
+    poiwidget.h \
+    poicontainer.h
 
-FORMS    += mapexplorer.ui
+FORMS    += mapexplorer.ui \
+    poiwidget.ui
 
 RESOURCES += \
     maps.qrc
