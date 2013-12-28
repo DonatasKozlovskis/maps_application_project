@@ -38,12 +38,14 @@ void Map::addData(){
 
     QSqlQuery queryPoints("SELECT ind, Latitude, Longitude FROM road_node, node WHERE road_node.NodeID=node.ID ORDER BY RoadID asc, ContourOrder asc;");
     QSqlQuery queryNodes("Select max(ind) from node;");
-    QSqlQuery queryRoads("select ID, OneWay from Road");
+    QSqlQuery queryRoads("select ID, OneWay, RoadType, RoadName from Road");
 
     float lat=0;
     float lon=0;
     unsigned int ID=0;
-    bool way;
+    bool way = 0;
+    string type = "";
+    string name = "";
     Road* roadit;
     Node* nodeit;
     roadsCount=0;
@@ -58,7 +60,11 @@ void Map::addData(){
         queryRoads.next();
         roadit = roads.at(i);
         way=queryRoads.value(1).toBool();
+        type=queryRoads.value(2).toString().toStdString();
+        name=queryRoads.value(3).toString().toStdString();
         roadit->setOneWay(way);
+        roadit->setRoadType(type);
+        roadit->setRoadName(name);
         for (unsigned int j=0; j<roadit->length(); j++){
             queryPoints.next();
             ID=queryPoints.value(0).toInt()-1;        //Add -1 to the index
@@ -143,7 +149,8 @@ void Map::adjMatrix(bool driving){
 
     if (driving == true){
         for(unsigned int i=0; i<this->roads.size(); i++){
-            if(this->getRoad(i)->getRoadType().compare(s) != 0 ){
+            //if(this->getRoad(i)->getRoadType().compare(s) != 0 ){
+            if(this->getRoad(i)->getRoadType()!= s ){
                 for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
                     current = this->getRoad(i)->getNode(j);
                     next = this->getRoad(i)->getNode(j+1);
@@ -152,7 +159,7 @@ void Map::adjMatrix(bool driving){
                     x = current->getId();                 //The indices of the database starts from 1 !
                     y = next->getId();
                     this->adj[x][y] = dist;
-                    if (this->getRoad(i)->isOneWay() == false) this->adj[y][x] = dist;
+                    if (this->getRoad(i)->isOneWay() == false)  this->adj[y][x] = dist;
                 }
             }
         }

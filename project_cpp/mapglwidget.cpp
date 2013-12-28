@@ -37,12 +37,11 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     timer.start();
     mymap->normalize(mapNormalization[0],mapNormalization[1], mapGeoCoordinates);
     cout << "Data normalization: " << timer.elapsed() << endl;
-    bool driving = true;
 
-    mymap->adjMatrix(driving);
-    /*cout << "Adj: "<< timer.elapsed() << endl;
+    mymap->adjMatrix(true);
+    cout << "Adj: "<< timer.elapsed() << endl;
 
-    int ini = 1000;
+    /*int ini = 1000;
     int dest = 1500;
 
     this->mydijkstra = new Dijkstra(mymap->adj, ini, dest, mymap->numberNodes, driving);
@@ -384,7 +383,7 @@ QPointF MapGLWidget::getCamPos() {
 
 void MapGLWidget::updateAdjDriving() {
     this->mymap->rmAdjMatrix();
-    this->mymap->adjMatrix(true);    
+    this->mymap->adjMatrix(true);
 }
 
 void MapGLWidget::updateAdjWalking() {
