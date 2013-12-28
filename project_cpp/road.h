@@ -35,7 +35,6 @@ private:
     string roadType;                // Changed from roadtype Andrey 02.12
     bool oneWay;                  // Changed from oneWay Andrey 02.12
     vector<Node*> nodes;            // Changed from roadNodes Andrey 02.12
-    int* nodesIndexes;
 };
 
 #endif // ROAD_H

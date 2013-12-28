@@ -6,25 +6,36 @@
 
 #include "node.h"
 
-class poi: public Node
+class POI: public Node
 {
 public:
-    poi();
-    void deletePoi(unsigned int &);
-    void createPoi(float &, float &, string &, int &, string &);
-    void modifyPoi(unsigned int &, string &, int &);
-    void imagePoi();
-    string getName();
-    void setName(string &);
-    vector<string> getListPoi();
-    poi* getPoi(string &);
+    POI();
+    POI(unsigned int, float, float, QString, QString, QString, QString);
+    ~POI();
+
+    QString getName();
+    QString getImgPath();
+    QString getType();
+    QString getAddress();
+
+    void setName(QString &);
+    void setImgPath(QString);
+    void setType(QString);
+    void setAdress(QString);
+
     vector<Node*> radiousPoi(float &, int &);
 
 private:
-    string name;
-    int type;
-    string pic;
     vector<string> listPoi;
+
+    unsigned int id;
+    QString name;
+    QString imgPath;
+    QString type;
+    QString address;
+    float latitude, longitude;
+
+
 };
 
 #endif // POI_H

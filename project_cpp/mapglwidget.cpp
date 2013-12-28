@@ -4,7 +4,9 @@
 #include "mapglwidget.h"
 
 // Default constructor
-MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent){
+MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
+
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
 
     adjustmentX = 0.5;
     adjustmentY = 1.65;
@@ -352,7 +354,6 @@ void MapGLWidget::drawPoints() {
     glLineWidth((GLfloat)2.0);
     glBegin(GL_LINES);
 
-
     for (vector<Node*>::const_iterator i = points.begin(); i != points.end(); i++) {
         float x = (*i)->getPoint().x;
         float y = (*i)->getPoint().y;
@@ -381,3 +382,13 @@ QPointF MapGLWidget::getMovPos() {
 QPointF MapGLWidget::getCamPos() {
     return camPos;
 }
+
+void MapGLWidget::updateAdjDriving() {
+    // TODO: Change to adj to driving here
+}
+
+void MapGLWidget::updateAdjWalking() {
+    // TODO: Change to adj walking here
+}
+
+

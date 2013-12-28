@@ -37,6 +37,8 @@ public:
 signals:
 
 public slots:
+    void updateAdjDriving();     // 28.12
+    void updateAdjWalking();
 
 protected:
     void initializeGL();
@@ -87,6 +89,10 @@ private:
     vector <Node*> path;
 
     Patch *directions;
+
+
+
+
 };
 
 #endif // GLWIDGET_H
