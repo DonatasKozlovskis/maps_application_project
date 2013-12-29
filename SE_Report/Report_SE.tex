@@ -11,6 +11,9 @@
 \graphicspath{ {./images/} }
 \usepackage{babel,blindtext}
 \usepackage{hyperref} % % package for inserting Hyperlinks
+\usepackage{tikz}
+\usetikzlibrary{shapes.misc, shapes.arrows}
+\usetikzlibrary{calc, matrix,chains,scopes,positioning,arrows,fit}
 
 
 \usepackage{listings}
@@ -217,7 +220,43 @@ Since by itself Matlab has a lot of different data types from which the \textit{
 \url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
 }
 
-Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in matlab can be created, where class constructor returns a handle object that is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+
+As in C++ implementation, classes for representing the \textit{node}, \textit{road} and \textit{map} were created.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[node distance=5mm,
+terminal/.style={
+% The shape:
+rectangle,
+minimum size=6mm,
+% The rest
+very thick,draw=black!50,
+top color=white,bottom color=black!15,
+font=\ttfamily}]
+
+\node (Node) [terminal] {Node};
+\node (ArrNode) [terminal,right=of Node] {ArrayNodes};
+\node (Road) [terminal,right=of ArrNode] {Road};
+\node (Map) [terminal,right=of Road] {Map (Array of Roads)};
+\path
+(Node) edge[-latex] (ArrNode) % simple edges
+(ArrNode) edge[-latex] (Road)
+(Road) edge[-latex] (Map);
+
+\end{tikzpicture}
+\caption{Simplified diagram of relationship of a classes}
+\end{figure}
+
+As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent method was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
+
+Notwithstanding our option, the user could find an alternative or better data structure for the same goal.
+For example, together with the team we discussed another options such as keeping data in project in the same way as in kept in the database: roads and nodes and the dictionary (linking table) between roads and nodes. Such structure would have it's advantage that various connections between roads and nodes would be easier accessible, e.g. it would be possible to get all roads where node \textit{X} is included and vice versa, while the our methodology requires additional methods to get the same results. 
+
+% % matlab
+% % Shortest Path
+\subsection{The shortest path}
 
 \end{document}
 
