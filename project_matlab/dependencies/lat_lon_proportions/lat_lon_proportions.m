@@ -6,8 +6,6 @@ function lat_lon_proportions(h)
 %       reflect the relationship between a degree latitude and a degree
 %       longitude at the center of the map. The major assumption here is
 %       sperical Earth.
-%
-% By: A Weaver, April 2004. Slightly tweaked by J Sullivan, August 2011
 
 %Grab the axis limits
 if nargin > 0
