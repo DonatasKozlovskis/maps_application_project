@@ -388,6 +388,9 @@ function getlocation2_Callback(hObject, eventdata, handles)
 [handles.lon2,handles.lat2] = ginput(1);
 
 hold on;
+if handles.d == 1; 
+    delete(handles.c);
+end
 handles.c = plot ( handles.lon2, handles.lat2, 'mo',...
                                                'LineWidth',2,...
                                                'MarkerEdgeColor','k',...
