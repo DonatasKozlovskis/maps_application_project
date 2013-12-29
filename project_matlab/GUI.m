@@ -350,6 +350,14 @@ if handles.ShortestPathPlotted2 == 1
     handles.ShortestPathPlotted2 = 0;
 end
 
+if handles.b == 1; 
+    delete(handles.a);
+end
+
+if handles.d == 1; 
+    delete(handles.c);
+end
+
 % Update handles structure
 guidata(hObject, handles);
 
