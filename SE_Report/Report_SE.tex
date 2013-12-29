@@ -58,15 +58,25 @@ This document has been divided in three different main sections; the first one s
 
 \subsection{Tools and resources}
 This section shows which software has been used directly or indirectly during the whole phase of design as well as the phase of development.
-In order to manage the whole project and its tasks, we have chosen the on-line manager Trello that keeps track of everything, from the big picture to the minute details. In this way, all kind of tasks can be divided and assigned to the people involved in the project and also can be located in different boards according to the state of development of the task as in the following image:
+In order to manage the whole our project and its tasks, we have chosen the web-based project management application \textit{Trello}.It allows to keep track of everything, from the big picture to the minute details. In this way, all kind of tasks can be divided and assigned to the people involved in the project and also can be located in different boards according to the state of development of the task as in the following image:
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \centering
-\includegraphics[width=0.7\textwidth]{trello.png}
+\includegraphics[width=0.68\textwidth]{trello.png}
 \caption{Image of the task manager during the development process at early stages. The work is divided in four different boards with multiple drag and drop tasks and is assigned to one person}
 \end{figure}
 
-It is also important to establish the IDE and tools before starting to develop the project. On one hand, we assigned that Qt 5.0.1 OpenGL under Mingw compiler would be the appropriate platform because it is the last stable version of Qt and also because this open source developing environment allows us to create easier the graphical user interface and also render without adding by hard the OpenGL libraries. On the other hand, regarding to Matlab part, everything has been developed using the R2013a version of the software.
+At the same time, real world meetings were not avoided. Normally we tried to establish team meeting at least once in a week. In such meetings we have discussed common problems, created good ideas or simply tried to brainstorm as many ideas as possible.Afterwards, the results of such meetings were definitely moved to the interactive board in \textit{Trello}.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.7\textwidth]{windowBoard.jpg}
+\caption{One of the team meeting. Window is used as a white board to gather all ideas/problems.}
+\end{figure}
+
+Concurrently we were looking for frameworks for managing software projects. We have found that \textit{Agile software development} methods as \textit{Scrum} could fit to iterative management development of our project, however as it requires a lot of knowledge, we left this framework to the future works and employed only general parts of this framework.
+
+It is also important to establish the IDE and tools before starting to develop the project. On one hand, we assigned that \textit{open-source} Qt 5.0.1 OpenGL under Mingw compiler would be the appropriate platform because it is the last stable version of Qt and also because this open source developing environment allows us to create easier the graphical user interface and also render without adding by hard the OpenGL libraries. On the other hand, regarding to Matlab part, everything has been developed using the R2013a version of the software.
 
 However, the previous software is not the only one used in the project. We supposed correctly the basic necessity to deal with data structures such as information related with roads, nodes, buildings or points of interest among other possible types (see section \textit{Methodology}). The options were to deal with this data coming from one, \textit{txt/xml} format files or similar or two, databases.
 In both cases, Matlab and C++ implementation, the decision was to work with databases because of the amount of data and specially because is the easiest and fastest way to get detailed information of the structures without going over the whole structure in such cases as getting nodes shared by two different roads (see the \textit{Database} section).
@@ -77,7 +87,11 @@ Despite sharing the same EER schema, the database chosen for the Matlab part it 
 
 In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.es/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
 
-OpenStreetMap has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way.
+For user's information, OpenStreetMap data is stored topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
+
+\textit{OpenStreetMap} has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way. For example, all elements as roads, forest, buildings, rivers, linear structures are represented as polygons of way elements, thus additional data filtering, subsets were used to prepare required datasets for implementation of project database.
+
+
 
 \section{Application Design}
 In this section is explained how the application was devised starting by the definition of the database as well as the analysis of the use cases taking into account the user and the design of the resultant graphical user interface prototype.
