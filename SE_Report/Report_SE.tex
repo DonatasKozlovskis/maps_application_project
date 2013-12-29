@@ -10,6 +10,8 @@
 \usepackage{graphicx}
 \graphicspath{ {./images/} }
 \usepackage{babel,blindtext}
+\usepackage{hyperref} % % package for inserting Hyperlinks
+
 
 \usepackage{listings}
 \lstset{
@@ -117,9 +119,9 @@ That also can be summarized in the following diagram:
 \caption{Diagram of the use cases provided to the user}
 \end{figure}
 
-The user has to be able to select a point of interest which already exists, modify it and deleted from the data base. But also has to be able to create a new point of interest and simply located in the map.
+The user has to be able to select a point of interest which already exists, modify it and deleted from the database. But also has to be able to create a new point of interest and simply locate it on the map.
 
-Once the user selects a point from the map, no matters if it is random or a point of interest, we have the option to establish the distance we want to locate a specific type of points of interest around it. But also, we have the option to select a second or still a third point of interest for getting the shortest path.
+Once the user selects a point from the map, no matters if it is random position or a point of interest, we have the option to establish the distance we want to locate a specific type of points of interest around it. But also, we have the option to select a second or still a third point of interest for getting the shortest path.
 
 \subsection{GUI prototype}
 After defining the use cases that users have to be able to deal with, we can start prototyping the graphical user interface that is also common between the two implementations. To accomplish this hard task that can be adjusted to solve future requirements, we decided to divide the screen in 5 different relevant points explained below:
@@ -156,6 +158,7 @@ Taking into account the previous steps, we can see the result of the database in
 \centering
 \includegraphics[width=0.6\textwidth]{EER_Diagram.png}
 \caption{Diagram of the relational database model created during the design}
+\label{fig:RelDBdiagram}
 \end{figure}
 
 Notice that part of the process of development and parsing of the data from OpenStreetMap into our databases was accomplished together with the rest of the groups.
@@ -195,5 +198,28 @@ We can also take into account querying the database, if a road is a foot way or 
 On the other hand, people can work in both senses and also use all king of roads, so we can generate the adjacency matrix in the same way without the restrictions explained above.
 
 Notice that in order to calculate the distance between two nodes the method \textit{distNode()} was implemented in class \textit{node } following the formula of the euclidean distance. 
-             
+
+\clearpage
+\section{Matlab Implementation}
+       
+In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, only the differences are presented and discussed.
+
+\subsection{Getting the data}
+
+As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure and all data were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
+
+The first difference comes in fact that variables in Matlab can be not even created, but as well saved and loaded in Matlab's data structure \textit{.mat} files. This allowed us to come to the solution where the connection to external data source (database) is made only one time for creating appropriate data structures/class objects (discussed in next section). As in Matlab project part queries to database are used only one, the program end-user does not need to have database and driver installed, because afterwards all calculations are created using generated data structures from .mat files.
+
+\subsection{Data Structure}
+
+The second important question which had to be answered - the types of data structures in Matlab.
+Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object classes with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, thus all of those will not be discussed since all information can be found in the web.\footnote{
+\url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
+}
+
+Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in matlab can be created, where class constructor returns a handle object that is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+
 \end{document}
+
+
+
