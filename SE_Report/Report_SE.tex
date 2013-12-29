@@ -148,7 +148,38 @@ Notice that part of the process of development and parsing of the data from Open
 
 \section{C++ Implementation}
 
+The present section has been divided in two different parts: The first one explains how the map structure is created evolving the three basic classes, the correspondent adjacency matrix depending on the choice of the user (walking or driving), how the shortest path is calculated using Dijkstra's algorithm and the logic behind the management of the points of interest. During the second part, we will focus on how the data is shown and obtained directly from the screen and its process of normalization and denormalization, taking into account the different spatial coordinates we work with during the implementation. But also we will see how the graphical user interface provides the input/output to the user and how is managed.
+
+\subsection{Creating the map}
+The implementation of the application started with classes \textit{Node}, \textit{Road} and \textit{Map} according to the three tables already existing in the database and with the goal of loading all necessary points that composes the map of le Creusot in memory. However, at the same time, we wanted to take profit of the whole process storing all nodes that composes one road in the same structure. As a consequence, the map structure is a vector container that keeps as many pointers to road structures as number of roads are in the map. At the same time, each road is a vector container whose size is defined by the number of nodes that compose it. However, what is stored in the road structure are pointers to nodes.
+
+\begin{lstlisting}
+vector<Road*> myMap 	//Definition of map structure
+vector<Node*> myRoad;	//Definition of road structure
+\end{lstlisting}
+
+Composing the following relationship:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{map.png}
+\caption{UML diagram of the three classes that composes the logic map: Map, Road and Node}
+\end{figure}
+
+As we can see our class map has dependencies with the class \textit{QtSQL}, necessary for making queries to the database but also contains a standard map structure. It is used in order to avoid checking node by node in some cases, a map that contains the node structures and its identifier is composed in the constructor. Finally, we can see some other dependences with standard libraries with \textit{QtOpenGL} the library that makes possible drawing the nodes that compose the map (explained in detail in the next section).
+
+\subsection{The shortest path}
 
 
+\subsubsection{Dijkstra's algorithm}
 
+\subsubsection{The adjacency matrix}
+The following section describes a specific method of the \textit{map} class that allows us to create an adjacency matrix of dimensions NxN where N is the total amount of nodes that composes the map. This matrix will be used to calculate the shortest path between two or more points in the map. Such matrix is generated according to the method of transport chosen by the user. For instance, we can not drive in both senses in all roads or driving in a foot way.
+
+First of all, the structure is allocated in memory and initialized to the maximum distance in all positions, in our case 999 units, and 0 in the diagonal of the squared matrix. Then, the rest of the matrix is filed taking into account the distance between the nodes identified by the index of the rows and columns of the matrix. From this point, the only thing we have to do is to go over the map structure checking which nodes are consecutive meaning that exists a connection between them. In this way, the position $M_{adj}(1,2)$ would contain the distance between node 1 and node 2. But what happens with the position $M_{adj}(2,1)$? This position contains the same distance if and only if the road is two ways, fact that can be checked querying the attribute \textit{oneWay} located in table \textit{Roads} in the database. 
+We can also take into account querying the database, if a road is a foot way or not and calculate the appropriate distance.
+On the other hand, people can work in both senses and also use all king of roads, so we can generate the adjacency matrix in the same way without the restrictions explained above.
+
+Notice that in order to calculate the distance between two nodes the method \textit{distNode()} was implemented in class \textit{node } following the formula of the euclidean distance. 
+             
 \end{document}
