@@ -12,6 +12,7 @@
 \usepackage{babel,blindtext}
 \usepackage{hyperref} % % package for inserting Hyperlinks
 \usepackage{tikz}
+\usetikzlibrary{shapes,snakes}
 \usetikzlibrary{shapes.misc, shapes.arrows}
 \usetikzlibrary{calc, matrix,chains,scopes,positioning,arrows,fit}
 
@@ -257,7 +258,126 @@ For example, together with the team we discussed another options such as keeping
 % % matlab
 % % Shortest Path
 \subsection{The shortest path}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% projection figure
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[
+	%	style def
+    scale=1,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+    %circle representing user input			 
+    \fill[red] (2.6,2.5) circle (3pt) node[above] {$?$};
+\end{tikzpicture}
+\begin{tikzpicture}[
+	%	style def
+    scale=1,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+    %circle representing user input			 
+    \fill[red] (2.6,2.5) coordinate(user) circle (2pt) ;
+    			     
 
+    \draw[important line, blue] (user) -- (a3);
+    \draw[important line, blue] (user) -- (E);
+    \draw[important line, blue] (user) -- (J);
+    %connecting closest nodes
+        %circle representing user input			 
+        \fill[red] (user) circle (3pt) node[above] {$?$};
+    
+    
+\end{tikzpicture}
+\begin{tikzpicture}[
+	%	style def
+    scale=1,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+   %circle representing user input			 
+    \fill[red] (2.6,2.5) coordinate(user) circle (2pt) ;
+    			     
+	%connecting closest nodes
+    \draw[important line, blue] (user) -- (a3);
+    \draw[important line, blue] (user) -- (E);
+    \draw[important line, blue] (user) -- (J);
+    % projection
+    \draw[important line, green] (user) -- (2.73, 1.95) coordinate (intersect);
+    \fill[black] (intersect) circle (2pt) ;
+    
+    \draw[important line, green, ] (intersect)+(-0.14,0.07) node[minimum size=0.1cm,draw,green, rotate =14]{};
+    %circle representing user input			 
+    \fill[red] (user) circle (3pt) node[above] {$?$};
+    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);    
+\end{tikzpicture}
+
+\caption{Random point projections}
+\end{figure}
 \end{document}
 
 
