@@ -22,7 +22,7 @@ function varargout = modify_POI(varargin)
 
 % Edit the above text to modify the response to help modify_POI
 
-% Last Modified by GUIDE v2.5 26-Nov-2013 22:54:19
+% Last Modified by GUIDE v2.5 29-Dec-2013 16:33:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,6 +63,11 @@ handles.index = 0;
 handles.name = 0;
 handles.lat = 0;
 handles.lon = 0;
+handles.adress = 0;
+handles.class = 0;
+
+
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -98,8 +103,13 @@ name = POIdata(handles.index,3);
 set(handles.text_name,'String', name);
 lat = POIdata(handles.index,1);
 lon = POIdata(handles.index,2);
+class = POIdata(handles.index,4);
+adress = POIdata(handles.index,5);
 set(handles.text_latitude,'String',lat);
 set(handles.text_longitude,'String',lon);
+set(handles.text_class, 'String', class);
+set(handles.text_adress, 'String', adress);
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -171,7 +181,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
+%
 function get_longitude_Callback(hObject, eventdata, handles)
 % hObject    handle to get_longitude (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -205,7 +215,9 @@ load('POIdata');
 POIdata{handles.index,1} = handles.lat;
 POIdata{handles.index,2} = handles.lon;
 POIdata{handles.index,3} = handles.name;
-save('POIdata.mat', 'POIdata');
+POIdata{handles.index,4} = handles.class;
+POIdata{handles.index,5} = handles.adress;
+save('.\dependencies\data\POIdata.mat', 'POIdata');
 
 % --- Executes on button press in close.
 function close_Callback(hObject, eventdata, handles)
@@ -213,3 +225,57 @@ function close_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 close(handles.figure3);
+
+
+
+function get_adress_Callback(hObject, eventdata, handles)
+% hObject    handle to get_adress (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of get_adress as text
+%        str2double(get(hObject,'String')) returns contents of get_adress as a double
+handles.adress = get(hObject,'String');
+
+% Update handles structure
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function get_adress_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to get_adress (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in get_class.
+function get_class_Callback(hObject, eventdata, handles)
+% hObject    handle to get_class (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: contents = cellstr(get(hObject,'String')) returns get_class contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from get_class
+load('POIClasses.mat');
+
+contents = get(hObject,'Value');
+handles.class = POIClasses(contents);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function get_class_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to get_class (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+load('POIClasses.mat');
+set(hObject, 'String', POIClasses);
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
