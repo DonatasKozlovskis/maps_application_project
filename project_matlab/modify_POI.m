@@ -260,7 +260,6 @@ function get_class_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns get_class contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from get_class
 load('POIClasses.mat');
-
 contents = get(hObject,'Value');
 handles.class = POIClasses(contents);
 
