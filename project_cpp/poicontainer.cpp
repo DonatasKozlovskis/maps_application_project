@@ -122,7 +122,7 @@ bool POIContainer::modifyPOI(int id, QString nname, QString ntype, QString npath
     QString Address = "Address";
     QString PicturePath = "PicturePath";
 
-    modPoi.prepare(QString("UPDATE poi SET %1 = \":type\", %2 = \":name\", %3 = \"address\", %4 = \"path\" WHERE ID=:id")
+    modPoi.prepare(QString("UPDATE poi SET %1 = :type ,%2 = :name , %3 = :address, %4 = :path WHERE ID = :id")
                    .arg(Type, Name, Address, PicturePath));
     modPoi.bindValue(":type", ntype);
     modPoi.bindValue(":name", nname);
@@ -140,14 +140,20 @@ bool POIContainer::modifyPOI(int id, QString nname, QString ntype, QString npath
 
         cout << "Point of interest modified successfully" << endl;
 
+        QString result = getLastExecutedQuery(modPoi);
+        cout << result.toStdString() << endl;
+
         return true;
+    } else {
+
+        QString result = getLastExecutedQuery(modPoi);
+        cout << result.toStdString() << endl;
+
+        cout << "Failed to modyfy Point of Interest!" << endl;
+        return false;
     }
 
-    QString result = getLastExecutedQuery(modPoi);
-    cout << result.toStdString() << endl;
 
-    cout << "Failed to modyfy Point of Interest!" << endl;
-    return false;
 
 }
 
@@ -186,14 +192,15 @@ QMap < int , POI* > POIContainer::getPOITypeFiltered(QString &type) {
     return result;
 }
 
-QString POIContainer::getLastExecutedQuery(const QSqlQuery& query)
-{
- QString str = query.lastQuery();
- QMapIterator<QString, QVariant> it(query.boundValues());
- while (it.hasNext())
- {
-  it.next();
-  str.replace(it.key(),it.value().toString());
- }
- return str;
+QString POIContainer::getLastExecutedQuery(const QSqlQuery& query) {
+
+    QString str = query.lastQuery();
+    QMapIterator<QString, QVariant> it(query.boundValues());
+
+    while (it.hasNext()) {
+        it.next();
+        str.replace(it.key(),it.value().toString());
+    }
+
+    return str;
 }
