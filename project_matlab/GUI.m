@@ -266,7 +266,7 @@ if handles.ShortestPathPlotted2 == 1
     handles.ShortestPathPlotted2 = 0;
 end
 
-if (handles.lat1 || handles.lon1 || handles.lat2 || handles.lon2)>0
+if (handles.lat1 && handles.lon1 && handles.lat2 && handles.lon2)>0
     handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
     handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
 
@@ -362,6 +362,11 @@ end
 if handles.d == 1; 
     delete(handles.c);
     handles.d = 0;
+end
+
+if handles.f == 1; 
+    delete(handles.e);
+    handles.f = 0;
 end
 
 %reseting the handles of the latitude and longitude
@@ -761,47 +766,50 @@ if handles.ShortestPathPlotted2 == 1
     delete(handles.shortPathPlot2);
     handles.ShortestPathPlotted2 = 0;
 end
+if (handles.lat1 && handles.lon1 && handles.lat2 && handles.lon2 && handles.lat3 && handles.lon3)>0
+    handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
+    handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
 
-handles.dataUser.mapNodeStart = MapNode(handles.lat1, handles.lon1);
-handles.dataUser.mapNodeTarget = MapNode(handles.lat2, handles.lon2);
+    if handles.walk_car == 1
+        [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
+    else
+        [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
+    end
 
-if handles.walk_car == 1
-    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
+    handles.distance = dist;
+
+    shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
+    hold on
+        handles.shortPathPlot = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
+    hold off
+    handles.ShortestPathPlotted = 1;
+
+    handles.dataUser.mapNodeStart = MapNode(handles.lat2, handles.lon2);
+    handles.dataUser.mapNodeTarget = MapNode(handles.lat3, handles.lon3);
+
+    if handles.walk_car == 1
+        [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
+    else
+        [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
+    end
+
+    handles.distance = handles.distance + dist;
+
+    shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
+    hold on
+        handles.shortPathPlot2 = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
+    hold off
+
+    handles.ShortestPathPlotted2 = 1;
+
+    %We need the distance computed in meters since we ask user for meters.
+    handles.distance = handles.distance * 1000;
+
+    if handles.distance > handles.maxDistance
+        TooLong();
+    end
 else
-    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
-end
-
-handles.distance = dist;
-
-shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
-hold on
-    handles.shortPathPlot = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
-hold off
-handles.ShortestPathPlotted = 1;
-
-handles.dataUser.mapNodeStart = MapNode(handles.lat2, handles.lon2);
-handles.dataUser.mapNodeTarget = MapNode(handles.lat3, handles.lon3);
-
-if handles.walk_car == 1
-    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatWalk);
-else
-    [shortestRoad, dist]= twoInputShortestPath(handles.dataUser.mapNodeStart, handles.dataUser.mapNodeTarget, handles.dataBack.allRoads, handles.dataBack.nodesDataset, handles.dataBack.sparseMatCar);
-end
-
-handles.distance = handles.distance + dist;
-
-shortestPathLineSpec = handles.dataBack.config.plotSpec(strcmp ( {handles.dataBack.config.plotSpec.roadType}, shortestRoad.type));
-hold on
-    handles.shortPathPlot2 = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
-hold off
-
-handles.ShortestPathPlotted2 = 1;
-
-%We need the distance computed in meters since we ask user for meters.
-handles.distance = handles.distance * 1000;
-
-if handles.distance > handles.maxDistance
-    TooLong();
+    GUI_error('One or more points are invalid, please recheck it');
 end
 
 
