@@ -352,10 +352,12 @@ end
 
 if handles.b == 1; 
     delete(handles.a);
+    handles.b = 0;
 end
 
 if handles.d == 1; 
     delete(handles.c);
+    handles.d = 0;
 end
 
 % Update handles structure
