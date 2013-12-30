@@ -8,8 +8,8 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    adjustmentX = 0.5;
-    adjustmentY = 1.65;
+    adjustmentX = 1;//0.5;
+    adjustmentY = 1;//1.65;
 
     camPos = QPointF(0.0f,0.0f);            // camera position (uses adjustments)
     movPos = QPointF(0.0f,0.0f);            // movement position (without adjustments)
@@ -23,10 +23,11 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
 
     // This is not good as this coordinates are approximate
     // Map's node max/min altitude and max/min longitude
-    mapGeoCoordinates[0] = 46.7720; //46.7696832;   // Min Latitude
-    mapGeoCoordinates[1] = 46.8210; //46.8230965;  // Max Latitude
-    mapGeoCoordinates[2] = 4.3655; //4.3899093;   // Min Longitude
+    mapGeoCoordinates[0] = 46.77265; //46.7696832;   // Min Latitude
+    mapGeoCoordinates[1] = 46.8217; //46.8230965;  // Max Latitude
+    mapGeoCoordinates[2] = 4.36545; //4.3899093;   // Min Longitude
     mapGeoCoordinates[3] = 4.5086; //4.4844505;   // Max Longitude
+
 
     // Create a new map and populate it.
     mymap = new Map;
@@ -35,11 +36,15 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     mymap->addData();
     cout << "Data add: " << timer.elapsed() << endl;
     timer.start();
-    mymap->normalize(mapNormalization[0],mapNormalization[1], mapGeoCoordinates);
+    mymap->normalize(mapNormalization[1],mapNormalization[0], mapGeoCoordinates);
     cout << "Data normalization: " << timer.elapsed() << endl;
     bool driving = false;
     mymap->adjMatrix(driving);
     cout << "Adj: "<< timer.elapsed() << endl;
+
+    // POI container contains QMap of all POIs and a QVector of POI types
+    poiContainer = new POIContainer();
+    poiContainer->loadData();
 
     int ini = 1000;
     int dest = 1500;
@@ -89,7 +94,7 @@ void MapGLWidget::initializeGL() {
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);      // Really Nice Perspective Calculations
 
     // ???
-    resizeGL(height(),width());                                      // ? checking
+    resizeGL(1000,500);                                      // ? checking
 }
 
 // OpenGL rendering
@@ -116,23 +121,20 @@ void MapGLWidget::paintGL() {
     glDisable(GL_TEXTURE_2D);                               // Disable the texture state, otherwise impossible to change the color of the lines
 
     drawAxices();                                           // Draw axices for testing purposes
-    //drawMap();                                              // Draw the roads
+    drawMap();                                              // Draw the roads
     drawPath();
     drawPoints();
 }
 
 // Size change routine OpenGL
-void MapGLWidget::resizeGL(int height, int width) {
+void MapGLWidget::resizeGL(int width, int height) {
 
-    if (height==0)										// Prevent A Divide By Zero By
-        height=1;										// Making Height Equal One
-
-    glViewport(0,0,height,width);						// Reset The Current Viewport
+    glViewport(0,0,width,height);						// Reset The Current Viewport
     glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
     glLoadIdentity();									// Reset The Projection Matrix
 
-    // Calculate The Aspect Ratio Of The Window
-    glOrtho(-256, 256, -512, 512 , 0.0, 2.0);
+    glOrtho(-500, 500, -250, 250 , 0.0, 2.0);
+
     glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
     glLoadIdentity();                                   // Clear everything
 }
@@ -193,10 +195,10 @@ void MapGLWidget::drawTextureMap() {
     glBegin(GL_QUADS);
     glColor3f(0.0f,0.0f,0.0f);
 
-    glTexCoord2f(0.0f,0.0f);    glVertex3f(-512.0f, -1024.0f+30, -1.0f);
-    glTexCoord2f(1.0f, 0.0f);   glVertex3f(512.0f,-1024.0f+30, -1.0f);
-    glTexCoord2f(1.0f,1.0f);    glVertex3f(512.0f,1024.0f+30,-1.0f);
-    glTexCoord2f(0.0f,1.0f);    glVertex3f(-512.0f,1024.0f+30,-1.0f);
+    glTexCoord2f(0.0f,0.0f);    glVertex3f(-1024.0f, -512.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f);   glVertex3f(1024.0f,-512.0f, -1.0f);
+    glTexCoord2f(1.0f,1.0f);    glVertex3f(1024.0f,512.0f,-1.0f);
+    glTexCoord2f(0.0f,1.0f);    glVertex3f(-1024.0f,512.0f,-1.0f);
 
     glEnd();
 }
@@ -226,33 +228,43 @@ void MapGLWidget::drawPath(){
 
 // Once mouse is pressed, record the coordinates
 void MapGLWidget::mousePressEvent(QMouseEvent *event) {
-    lastPos = event->pos();
-    emit mousePressedGL(event->pos().x(),event->pos().y());
 
-    float xt = event->pos().x() - width()/2 - movPos.x();
-    float yt = -event->pos().y() + height()/2 - movPos.y();
+    // Added Andrey 29/12/2013
+    // To select the point on the map, the user should click the left mouse button
+    if (event->button() == Qt::LeftButton) {
+
+        lastPos = event->pos();
+        emit mousePressedGL(event->pos().x(),event->pos().y());
+
+        float xt = event->pos().x() - width()/2 - movPos.x();
+        float yt = -event->pos().y() + height()/2 - movPos.y();
 
 
 
-    // For now, we do not need more than three points
-    if (!(points.size() >= 3)) {
+        // For now, we do not need more than three points
+        if (!(points.size() >= 3)) {
 
-        detectPoint(adjustmentX*xt,adjustmentY*yt);
-        // If user picks up more than one point, start to calculate the paths
-        if (points.size() > 1) {
+            detectPoint(adjustmentX*xt,adjustmentY*yt);
+            // If user picks up more than one point, start to calculate the paths
+            if (points.size() > 1) {
 
-            int source = points.at(points.size()-2)->getId();
-            int destination = points.at(points.size()-1)->getId();
+                int source = points.at(points.size()-2)->getId();
+                int destination = points.at(points.size()-1)->getId();
 
-            mydijkstra = new Dijkstra(mymap->adj, source,
-                                     destination ,mymap->numberNodes);
-            mydijkstra->calculateDistance();
-            paths.push_back(mymap->getPath(mydijkstra->output()));
-            delete mydijkstra;
+                mydijkstra = new Dijkstra(mymap->adj, source,
+                                         destination ,mymap->numberNodes);
+                mydijkstra->calculateDistance();
+                paths.push_back(mymap->getPath(mydijkstra->output()));
+                delete mydijkstra;
+            }
         }
+
+        updateGL();
+    } else if (event->button() == Qt::RightButton) {
+        // emit something here
     }
 
-    updateGL();
+
 
 }
 
@@ -291,19 +303,19 @@ void MapGLWidget::mouseReleaseEvent(QMouseEvent *event) {
 // Scales are: 0.5 1 1.5 2
 void MapGLWidget::wheelEvent(QWheelEvent *event) {
 
-    float d = event->delta();
-    cout << d << endl;
-    if (scale <= 2 && scale >= 0.5)
-        if (d > 0)
-            scale += 0.5;
-        else
-            scale -= 0.5;
+//    float d = event->delta();
+//    cout << d << endl;
+//    if (scale <= 2 && scale >= 0.5)
+//        if (d > 0)
+//            scale += 0.5;
+//        else
+//            scale -= 0.5;
 
-    if (scale < 0.5) scale = 0.5;
-    if (scale > 2) scale = 2;
+//    if (scale < 0.5) scale = 0.5;
+//    if (scale > 2) scale = 2;
 
-    adjustmentX = 0.5/scale;
-    adjustmentY = 1.65/scale;
+//    adjustmentX = 0.5/scale;
+//    adjustmentY = 1.65/scale;
 
     //updateGL();
 }
@@ -357,11 +369,11 @@ void MapGLWidget::drawPoints() {
         float x = (*i)->getPoint().x;
         float y = (*i)->getPoint().y;
 
-        glVertex3f(y-5,x-10,0.0);
-        glVertex3f(y+5,x+10,0.0);
+        glVertex3f(y-3,x-3,0.0);
+        glVertex3f(y+3,x+3,0.0);
 
-        glVertex3f(y-5,x+10,0.0);
-        glVertex3f(y+5,x-10,0.0);
+        glVertex3f(y-3,x+3,0.0);
+        glVertex3f(y+3,x-3,0.0);
     }
 
     glEnd();
@@ -390,4 +402,45 @@ void MapGLWidget::updateAdjWalking() {
     // TODO: Change to adj walking here
 }
 
+// Accessor of the POIs container
+POIContainer* MapGLWidget::getPois() {
+    return poiContainer;
+}
+
+// x,y,width,height
+QPointF MapGLWidget::widgetToGeoCoordinates(QPointF widgetCoordinates) {
+    float mpoglx = (widgetCoordinates.x() - width()/2) - movPos.x();      // mpogl - Mouse Pressed OpenGL
+    float mpogly = -(widgetCoordinates.y() - height()/2) - movPos.y();
+
+    float aLat = (float)mapNormalization[0] /
+            (mapGeoCoordinates[1] - mapGeoCoordinates[0]);
+    float bLat = (float)mapNormalization[0] / 2 - mapGeoCoordinates[1]*aLat;
+
+    float aLon = (float)mapNormalization[1] /
+            (mapGeoCoordinates[3] - mapGeoCoordinates[2]);
+    float bLon = (float)mapNormalization[1] / 2 - mapGeoCoordinates[3]*aLon;
+
+    float mpgeolon = (mpoglx*0.5/scale - bLon)/aLon;
+    float mpgeolat = (mpogly*2/scale - bLat)/aLat;
+
+    return QPointF(mpgeolat,mpgeolon);
+
+}
+
+// lat lon
+QPointF MapGLWidget::geoToOpenGLCoordinates(QPointF geoCoordinates) {
+
+    float aLat = (float)mapNormalization[0] /
+            (mapGeoCoordinates[1] - mapGeoCoordinates[0]);
+    float bLat = (float)mapNormalization[0] / 2 - mapGeoCoordinates[1]*aLat;
+
+    float aLon = (float)mapNormalization[1] /
+            (mapGeoCoordinates[3] - mapGeoCoordinates[2]);
+    float bLon = (float)mapNormalization[1] / 2 - mapGeoCoordinates[3]*aLon;
+
+    float x = geoCoordinates.x()*aLat + bLat;
+    float y = geoCoordinates.y()*aLon + bLon;
+
+    return QPointF(y*2,x/2);
+}
 

@@ -80,13 +80,13 @@ void Dijkstra::calculateDistance(){
 
 void Dijkstra::printPath(int node){
     if(node == source){
-        cout<<node<<"..";
+        //cout<<node<<"..";
         //this->result.push_back(node);
     }else if(predecessor[node] == -1){
-        cout<<"No path from "<<source<<" to "<<node<<endl;
+        //cout<<"No path from "<<source<<" to "<<node<<endl;
     }else {
         printPath(predecessor[node]);
-        cout<<node<<"..";
+        //cout<<node<<"..";
         this->result.push_back(node);
     }
 }
@@ -96,10 +96,10 @@ vector<int> Dijkstra::output(){
 
     int i = this->dest;
         if(i == source){
-            cout<<source<<".."<<source;
+            //cout<<source<<".."<<source;
         }else{
             printPath(i);
-            cout<<"->"<<distance[i]*4<<" meters"<<endl;
+            //cout<<"->"<<distance[i]*4<<" meters"<<endl;
         }
     calcTime();
     return this->result;
@@ -111,12 +111,12 @@ void Dijkstra::calcTime(){
     if (driving == true){
         float car = 11.12;          //The average speed by car is setted to 40 km/h or 11.12 m/s
         this->time = ((this->distance[this->dest]/car)*4)/60;
-        cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
+        //cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
     }
     if (driving == false){
         float person = 1.12;        //The average speed by walking is setted to 4 km/h or 1.12 m/s
         this->time = ((this->distance[this->dest]/person)*4)/60;
-        cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
+        //cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
     }
 }
 

@@ -21,7 +21,6 @@ void Map::addData(){
 
     //Prepare the structure
 
-
     while(queryRoads1.next()){
         Road* newr=new Road();
         int nodes = queryRoads1.value(1).toInt();
@@ -34,8 +33,8 @@ void Map::addData(){
         roadsCount++;
     }
 
-    cout<<"Roads created: "<<roadsCount<<endl;
-    cout<<"Nodes created: "<<nodesCount<<endl;
+    //cout<<"Roads created: "<<roadsCount<<endl;
+    //cout<<"Nodes created: "<<nodesCount<<endl;
 
     QSqlQuery queryPoints("SELECT ind, Latitude, Longitude FROM road_node, node WHERE road_node.NodeID=node.ID ORDER BY RoadID asc, ContourOrder asc;");
     QSqlQuery queryNodes("Select max(ind) from node;");
@@ -52,7 +51,7 @@ void Map::addData(){
 
     queryNodes.next();
     this->numberNodes = queryNodes.value(0).toInt();
-    cout<<numberNodes<<endl;
+    //cout<<numberNodes<<endl;
 
     //Let's add the data
     for(unsigned int i=0; i<roads.size(); i++){
@@ -75,8 +74,8 @@ void Map::addData(){
         }
         roadsCount++;
     }
-    cout<<"Roads updated: "<<roadsCount<<endl;
-    cout<<"Nodes updated: "<<nodesCount<<endl;
+    //cout<<"Roads updated: "<<roadsCount<<endl;
+    //cout<<"Nodes updated: "<<nodesCount<<endl;
 }
 
 Road* Map::getRoad(unsigned int i){
@@ -104,6 +103,7 @@ void Map::normalize(unsigned int height, unsigned int width, float* geoCoords){
     float aLat,aLon,bLat,bLon;
     aLat = height/(*(geoCoords+1) - *(geoCoords));           // ratio between width and the difference in latitude
     bLat = height/2 - (aLat * *(geoCoords+1));
+
     aLon = width/(*(geoCoords+3) - *(geoCoords+2));        // ration between height and difference in longitude
     bLon = width/2 - (aLon * *(geoCoords+3));
 
@@ -215,3 +215,4 @@ unsigned int Map::findClosest(float x, float y) {
 
     return result;
 }
+

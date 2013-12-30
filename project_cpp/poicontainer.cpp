@@ -13,20 +13,29 @@ POIContainer::~POIContainer() {
 
 // Populates the QMap with the POIs form the database
 bool POIContainer::loadData() {
-    QSqlQuery queryPOI;
+    QSqlQuery queryPOI,queryPOIType;
     if (queryPOI.exec("select * from poi;")) {
 
-        POI* poi = new POI(queryPOI.value(0).toInt(),              // index POI
-                               queryPOI.value(1).toFloat(),            // lat
-                               queryPOI.value(2).toFloat(),            // lon
-                               queryPOI.value(3).toString(),           // name
-                               queryPOI.value(4).toString(),           // type
-                               queryPOI.value(5).toString(),           // path
-                               queryPOI.value(6).toString());
-
+        // Populate the POI QMap
         while (queryPOI.next()) {
+
+            POI* poi = new POI(queryPOI.value(0).toInt(),              // index POI
+                                   queryPOI.value(1).toFloat(),            // lat
+                                   queryPOI.value(2).toFloat(),            // lon
+                                   queryPOI.value(3).toString(),           // name
+                                   queryPOI.value(4).toString(),           // type
+                                   queryPOI.value(5).toString(),           // path
+                                   queryPOI.value(6).toString());
+
             pois.insert(queryPOI.value(0).toInt(), poi);
+
         }
+
+        // Populate the POI type vector
+        queryPOIType.exec("select distinct(type) from schneider.poi;");
+
+        while (queryPOIType.next())
+            typeList.push_back(queryPOIType.value(0).toString());
 
         return true;
     }
@@ -42,7 +51,7 @@ int POIContainer::size() {
 
 // Accessor of the element of the container
 POI* POIContainer::getPOI(int &index) {
-    return pois.find(index).value();
+    return pois.value(index);
 }
 
 //Crates a new poi providing latitude, longitude, type, name and location of the picture
@@ -81,7 +90,6 @@ bool POIContainer::addPOI(float &lat, float &lon, QString &nname, QString &ntype
             cout << "Failed to add Point of Interest." << endl;
             return false;
         }
-
     }
 
     cout << "One Point of interest with the same name already exists!" << endl;
@@ -106,7 +114,7 @@ bool POIContainer::removePOI(int &id) {
 }
 
 // Modifies the parameters of the POI based on the POI's id
-bool POIContainer::modifyPOI(int &id, QString &nname, QString &ntype, QString &npath, QString &naddress) {
+bool POIContainer::modifyPOI(int id, QString nname, QString ntype, QString npath, QString naddress) {
     QSqlQuery modPoi;
 
     QString Type = "Type";
@@ -114,7 +122,7 @@ bool POIContainer::modifyPOI(int &id, QString &nname, QString &ntype, QString &n
     QString Address = "Address";
     QString PicturePath = "PicturePath";
 
-    modPoi.prepare(QString("UPDATE poi SET %1 = :type, %2 = :name, %3 = address, %4 = path WHERE ID=:id")
+    modPoi.prepare(QString("UPDATE poi SET %1 = \":type\", %2 = \":name\", %3 = \"address\", %4 = \"path\" WHERE ID=:id")
                    .arg(Type, Name, Address, PicturePath));
     modPoi.bindValue(":type", ntype);
     modPoi.bindValue(":name", nname);
@@ -135,7 +143,57 @@ bool POIContainer::modifyPOI(int &id, QString &nname, QString &ntype, QString &n
         return true;
     }
 
+    QString result = getLastExecutedQuery(modPoi);
+    cout << result.toStdString() << endl;
+
     cout << "Failed to modyfy Point of Interest!" << endl;
     return false;
 
+}
+
+QVector < QString > POIContainer::getTypeList() {
+    return typeList;
+}
+
+QMap < int , POI* > POIContainer::getPOITypeFiltered(QString &type) {
+
+    QSqlQuery poiFiltered;
+    QMap < int, POI* > result;
+
+    if (type.compare("All")) {
+        poiFiltered.prepare("select * from poi where type = :type;");
+        poiFiltered.bindValue(":type",type);
+    } else
+        poiFiltered.prepare("select * from poi");
+
+    if (poiFiltered.exec()) {
+        while (poiFiltered.next()) {
+            POI* poi = new POI(poiFiltered.value(0).toInt(),              // index POI
+                               poiFiltered.value(1).toFloat(),            // lat
+                               poiFiltered.value(2).toFloat(),            // lon
+                               poiFiltered.value(3).toString(),           // name
+                               poiFiltered.value(4).toString(),           // type
+                               poiFiltered.value(5).toString(),           // path
+                               poiFiltered.value(6).toString());
+
+            result.insert(poiFiltered.value(0).toInt(), poi);
+
+        }
+    } else {
+        cout << "Failed to filter" << endl;
+    }
+
+    return result;
+}
+
+QString POIContainer::getLastExecutedQuery(const QSqlQuery& query)
+{
+ QString str = query.lastQuery();
+ QMapIterator<QString, QVariant> it(query.boundValues());
+ while (it.hasNext())
+ {
+  it.next();
+  str.replace(it.key(),it.value().toString());
+ }
+ return str;
 }

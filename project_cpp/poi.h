@@ -18,7 +18,7 @@ public:
     QString getType();
     QString getAddress();
 
-    void setName(QString &);
+    void setName(QString);
     void setImgPath(QString);
     void setType(QString);
     void setAdress(QString);

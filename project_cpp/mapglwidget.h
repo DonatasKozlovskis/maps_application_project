@@ -9,11 +9,15 @@
 #include "map.h"
 #include "dijkstra.h"
 #include "patch.h"
+#include "poicontainer.h"
 
 
 class MapGLWidget : public QGLWidget
 {
     Q_OBJECT
+
+    friend class POIWidget;
+
 public:
     explicit MapGLWidget(QWidget *parent = 0);
     ~MapGLWidget();
@@ -33,6 +37,11 @@ public:
 
     QPointF getMovPos();
     QPointF getCamPos();
+
+    POIContainer* getPois();
+
+    QPointF widgetToGeoCoordinates(QPointF);
+    QPointF geoToOpenGLCoordinates(QPointF);
 
 signals:
 
@@ -55,6 +64,7 @@ signals:
     void mouseMovedGL(int,int);
     void mouseReleasedGL(int,int);
     void mouseWheeledGL(float);
+
 
 private:
     void draw();
@@ -79,8 +89,6 @@ private:
     int mapNormalization[2];    // Normalization values for the map
     GLuint textureID;
 
-    Map *mymap;                 // Map instance
-
     Dijkstra *mydijkstra;
 
     vector < vector<Node*> > paths;
@@ -90,8 +98,11 @@ private:
 
     Patch *directions;
 
+    QTimer clickTimer;
 
-
+protected:
+    POIContainer* poiContainer;
+    Map *mymap;                 // Map instance
 
 };
 
