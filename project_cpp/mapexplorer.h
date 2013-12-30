@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QtSql>
-#include <poiwidget.h>
+#include "poiwidget.h"
 
 #include "ui_mapexplorer.h"
 

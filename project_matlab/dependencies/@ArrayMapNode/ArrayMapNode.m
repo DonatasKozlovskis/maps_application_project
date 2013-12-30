@@ -35,17 +35,25 @@ classdef ArrayMapNode < handle
             end % case 
         end % constructor
         function this = set.lats(this, newValues)
-            [this.nodes(:).lat] = vout(newValues);            
+            if numel(newValues)>0
+                [this.nodes(:).lat] = vout(newValues); 
+            end
         end
         function this = set.lons(this, newValues)
-            [this.nodes(:).lon] = vout(newValues);            
+            if numel(newValues)>0
+                [this.nodes(:).lon] = vout(newValues);
+            end
         end
         function this = set.numIds(this, newValues)
-            [this.nodes(:).numId] = vout(newValues);            
+            if numel(newValues)>0
+                [this.nodes(:).numId] = vout(newValues);  
+            end
         end
         function this = set.textIds(this, newValues)
             if (isa(newValues,'cell'))
-                [this.nodes(:).textId] = cout(newValues);
+                if numel(newValues)>0
+                    [this.nodes(:).textId] = cout(newValues);
+                end
             else
                  error('Wrong input argument for setting textIds in ArrayMapNode')
             end

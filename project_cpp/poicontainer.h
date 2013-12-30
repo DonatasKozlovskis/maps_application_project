@@ -2,7 +2,7 @@
 #define POICONTAINER_H
 
 #include <QMap>
-#include <poi.h>
+#include "poi.h"
 
 class POIContainer
 {
