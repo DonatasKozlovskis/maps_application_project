@@ -302,6 +302,27 @@ function export_data_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+mycell = handles.instructions';
+
+% output filename
+outfile = 'instructions';
+filename = [outfile,'.txt'];
+% initialize/open the file
+fid = fopen(filename, 'w');
+
+% write each cell to the text file
+[nrows,ncols]= size(mycell);
+for row=1:nrows
+    fprintf(fid, '%s ',mycell{row});
+%     for col=1:length(mycell{row})
+%         fprintf(fid, '%s ', mycell{row}{col});
+%     end
+    fprintf(fid, '\n');
+end
+
+% close file when done
+fclose(fid);
+
 
 % --- Executes on button press in modify_POI.
 function modify_POI_Callback(hObject, eventdata, handles)
@@ -825,10 +846,7 @@ if (handles.lat1 && handles.lon1 && handles.lat2 && handles.lon2 && handles.lat3
     
     handles.instructions = cat(2, instructions1, 'You arrived at the first POI', ' ' ,instructions2);
     set(handles.output_instructions2, 'String', handles.instructions);
-    
-    
-    
-    
+     
     if handles.distance > handles.maxDistance
         TooLong();
     end
