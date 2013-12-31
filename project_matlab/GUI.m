@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 20-Dec-2013 20:02:35
+% Last Modified by GUIDE v2.5 31-Dec-2013 11:25:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,7 +55,6 @@ function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for GUI
 handles.output = hObject;
 
-
 % handles.dataBack = all background data, not "accesible" for user
 % handles.dataUser = data which obtained from or can be modified by user
 
@@ -79,6 +78,10 @@ handles.dataBack.allRoads.plotMap(handles.axes1, 'staticmap.png', handles.dataBa
 % empty class object
 handles.dataUser.mapNodeStart = MapNode();
 handles.dataUser.mapNodeTarget = MapNode();
+
+%here we will store the instructions for going from one point to another
+%one
+handles.instructions = 0;
 
 %In this handles we will store the three points that we can select on our
 %GUI. 1 and 2 will be used in the main GUI while the third one will be used
@@ -282,6 +285,9 @@ if (handles.lat1 && handles.lon1 && handles.lat2 && handles.lon2)>0
     hold off
 
     handles.ShortestPathPlotted = 1;
+    handles.instructions = makeDirections(shortestRoad, handles.dataBack.allRoads);
+    handles.instructions = strsplit(handles.instructions, 'NewLine');
+    set(handles.output_instructions2, 'String', handles.instructions);
 else
     GUI_error('One or more points are invalid, please recheck it');
 end
@@ -849,3 +855,26 @@ set(handles.walk, 'Value', 0.0);
 
 % Update handles structure
 guidata(hObject, handles);
+
+
+
+function output_instructions2_Callback(hObject, eventdata, handles)
+% hObject    handle to output_instructions2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of output_instructions2 as text
+%        str2double(get(hObject,'String')) returns contents of output_instructions2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function output_instructions2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to output_instructions2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

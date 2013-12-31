@@ -32,16 +32,16 @@ function textDirections = makeDirections(shortestRoad, allRoads)
                 tempStreetDist= tempStreetDist+ indivDist(k);
                 if k == numel(indivDist)
                     textDirections = [ textDirections, 'Continue ', num2str(tempStreetDist), ' km on ', ...
-                            char(foundRoadNames(k-1)), ' road.\n '];                    
+                            char(foundRoadNames(k-1)), ' road.NewLine '];                    
                 end
                 
             else
                 textDirections = [ textDirections, 'Continue ', num2str(tempStreetDist), ' km on ', ...
-                char(foundRoadNames(k-1)), ' road.\n '];
+                char(foundRoadNames(k-1)), ' road.NewLine '];
                 
                 turnText = makeTextTurn(shortestRoad.nodes(k-1), shortestRoad.nodes(k), shortestRoad.nodes(k+1));
                 
-                textDirections = [ textDirections, turnText, ' to ', char(foundRoadNames(k)), ' road.\n '];
+                textDirections = [ textDirections, turnText, ' to ', char(foundRoadNames(k)), ' road.NewLine '];
                 tempStreetDist = indivDist(k);
             end
         end
