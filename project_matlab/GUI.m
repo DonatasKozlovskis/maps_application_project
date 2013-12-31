@@ -789,6 +789,11 @@ if (handles.lat1 && handles.lon1 && handles.lat2 && handles.lon2 && handles.lat3
         handles.shortPathPlot = shortestRoad.plotRoad(handles.axes1, shortestPathLineSpec);
     hold off
     handles.ShortestPathPlotted = 1;
+    
+    
+    instructions1 = makeDirections(shortestRoad, handles.dataBack.allRoads);
+    
+    
 
     handles.dataUser.mapNodeStart = MapNode(handles.lat2, handles.lon2);
     handles.dataUser.mapNodeTarget = MapNode(handles.lat3, handles.lon3);
@@ -811,6 +816,19 @@ if (handles.lat1 && handles.lon1 && handles.lat2 && handles.lon2 && handles.lat3
     %We need the distance computed in meters since we ask user for meters.
     handles.distance = handles.distance * 1000;
 
+    
+    
+    instructions2 = makeDirections(shortestRoad, handles.dataBack.allRoads);
+    
+    instructions1 = strsplit(instructions1, 'NewLine');
+    instructions2 = strsplit(instructions2, 'NewLine');
+    
+    handles.instructions = cat(2, instructions1, 'You arrived at the first POI', ' ' ,instructions2);
+    set(handles.output_instructions2, 'String', handles.instructions);
+    
+    
+    
+    
     if handles.distance > handles.maxDistance
         TooLong();
     end
