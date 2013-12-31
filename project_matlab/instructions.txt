@@ -1,0 +1,31 @@
+Continue 0.0044307 km on unnamed road. 
+ Med. turn left to Rue du Maréchal Foch road. 
+ Continue 1.4437 km on Rue du Maréchal Foch road. 
+ Med. turn left to unnamed road. 
+  
+You arrived at the first POI 
+  
+Continue 0.004195 km on unnamed road. 
+ Med. turn left to Rue du Maréchal Foch road. 
+ Continue 0.25796 km on Rue du Maréchal Foch road. 
+ Med. turn left to Place Charles de Gaulle road. 
+ Continue 0.059754 km on Place Charles de Gaulle road. 
+ Med. turn left to unnamed road. 
+ Continue 0.11047 km on unnamed road. 
+ Go straight to Rue du Maréchal Leclerc road. 
+ Continue 0.073358 km on Rue du Maréchal Leclerc road. 
+ Go straight to Espace François Mitterrand road. 
+ Continue 0.092035 km on Espace François Mitterrand road. 
+ Go straight to Rue du Maréchal Leclerc road. 
+ Continue 0.56467 km on Rue du Maréchal Leclerc road. 
+ Med. turn left to Rue Marcel Sembat road. 
+ Continue 0.45933 km on Rue Marcel Sembat road. 
+ Go straight to unnamed road. 
+ Continue 0.04777 km on unnamed road. 
+ Go straight to Rue de la Couronne road. 
+ Continue 0.15176 km on Rue de la Couronne road. 
+ Go straight to Rue de Strasbourg road. 
+ Continue 0.35937 km on Rue de Strasbourg road. 
+ Med. turn left to unnamed road. 
+ Continue 0.051911 km on unnamed road. 
+  

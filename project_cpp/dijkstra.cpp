@@ -86,6 +86,7 @@ void Dijkstra::calculateDistance(){
 void Dijkstra::printPath(int node){
     if(node == source){
         cout<<node<<"..";
+        this->result.push_back(node);
     }else if(predecessor[node] == -1){
         cout<<"No path from "<<source<<" to "<<node<<endl;
     }else {

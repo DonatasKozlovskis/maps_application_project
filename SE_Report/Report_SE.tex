@@ -10,6 +10,12 @@
 \usepackage{graphicx}
 \graphicspath{ {./images/} }
 \usepackage{babel,blindtext}
+\usepackage{hyperref} % % package for inserting Hyperlinks
+\usepackage{tikz}
+\usetikzlibrary{shapes,snakes}
+\usetikzlibrary{shapes.misc, shapes.arrows}
+\usetikzlibrary{calc, matrix,chains,scopes,positioning,arrows,fit}
+
 
 \usepackage{listings}
 \lstset{
@@ -58,15 +64,25 @@ This document has been divided in three different main sections; the first one s
 
 \subsection{Tools and resources}
 This section shows which software has been used directly or indirectly during the whole phase of design as well as the phase of development.
-In order to manage the whole project and its tasks, we have chosen the on-line manager Trello that keeps track of everything, from the big picture to the minute details. In this way, all kind of tasks can be divided and assigned to the people involved in the project and also can be located in different boards according to the state of development of the task as in the following image:
+In order to manage the whole our project and its tasks, we have chosen the web-based project management application \textit{Trello}.It allows to keep track of everything, from the big picture to the minute details. In this way, all kind of tasks can be divided and assigned to the people involved in the project and also can be located in different boards according to the state of development of the task as in the following image:
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \centering
-\includegraphics[width=0.7\textwidth]{trello.png}
+\includegraphics[width=0.68\textwidth]{trello.png}
 \caption{Image of the task manager during the development process at early stages. The work is divided in four different boards with multiple drag and drop tasks and is assigned to one person}
 \end{figure}
 
-It is also important to establish the IDE and tools before starting to develop the project. On one hand, we assigned that Qt 5.0.1 OpenGL under Mingw compiler would be the appropriate platform because it is the last stable version of Qt and also because this open source developing environment allows us to create easier the graphical user interface and also render without adding by hard the OpenGL libraries. On the other hand, regarding to Matlab part, everything has been developed using the R2013a version of the software.
+At the same time, real world meetings were not avoided. Normally we tried to establish team meeting at least once in a week. In such meetings we have discussed common problems, created good ideas or simply tried to brainstorm as many ideas as possible.Afterwards, the results of such meetings were definitely moved to the interactive board in \textit{Trello}.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.7\textwidth]{windowBoard.jpg}
+\caption{One of the team meeting. Window is used as a white board to gather all ideas/problems.}
+\end{figure}
+
+Concurrently we were looking for frameworks for managing software projects. We have found that \textit{Agile software development} methods as \textit{Scrum} could fit to iterative management development of our project, however as it requires a lot of knowledge, we left this framework to the future works and employed only general parts of this framework.
+
+It is also important to establish the IDE and tools before starting to develop the project. On one hand, we assigned that \textit{open-source} Qt 5.0.1 OpenGL under Mingw compiler would be the appropriate platform because it is the last stable version of Qt and also because this open source developing environment allows us to create easier the graphical user interface and also render without adding by hard the OpenGL libraries. On the other hand, regarding to Matlab part, everything has been developed using the R2013a version of the software.
 
 However, the previous software is not the only one used in the project. We supposed correctly the basic necessity to deal with data structures such as information related with roads, nodes, buildings or points of interest among other possible types (see section \textit{Methodology}). The options were to deal with this data coming from one, \textit{txt/xml} format files or similar or two, databases.
 In both cases, Matlab and C++ implementation, the decision was to work with databases because of the amount of data and specially because is the easiest and fastest way to get detailed information of the structures without going over the whole structure in such cases as getting nodes shared by two different roads (see the \textit{Database} section).
@@ -77,7 +93,11 @@ Despite sharing the same EER schema, the database chosen for the Matlab part it 
 
 In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.es/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
 
-OpenStreetMap has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way.
+For user's information, OpenStreetMap data is stored topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
+
+\textit{OpenStreetMap} has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way. For example, all elements as roads, forest, buildings, rivers, linear structures are represented as polygons of way elements, thus additional data filtering, subsets were used to prepare required datasets for implementation of project database.
+
+
 
 \section{Application Design}
 In this section is explained how the application was devised starting by the definition of the database as well as the analysis of the use cases taking into account the user and the design of the resultant graphical user interface prototype.
@@ -103,9 +123,9 @@ That also can be summarized in the following diagram:
 \caption{Diagram of the use cases provided to the user}
 \end{figure}
 
-The user has to be able to select a point of interest which already exists, modify it and deleted from the data base. But also has to be able to create a new point of interest and simply located in the map.
+The user has to be able to select a point of interest which already exists, modify it and deleted from the database. But also has to be able to create a new point of interest and simply locate it on the map.
 
-Once the user selects a point from the map, no matters if it is random or a point of interest, we have the option to establish the distance we want to locate a specific type of points of interest around it. But also, we have the option to select a second or still a third point of interest for getting the shortest path.
+Once the user selects a point from the map, no matters if it is random position or a point of interest, we have the option to establish the distance we want to locate a specific type of points of interest around it. But also, we have the option to select a second or still a third point of interest for getting the shortest path.
 
 \subsection{GUI prototype}
 After defining the use cases that users have to be able to deal with, we can start prototyping the graphical user interface that is also common between the two implementations. To accomplish this hard task that can be adjusted to solve future requirements, we decided to divide the screen in 5 different relevant points explained below:
@@ -142,6 +162,7 @@ Taking into account the previous steps, we can see the result of the database in
 \centering
 \includegraphics[width=0.6\textwidth]{EER_Diagram.png}
 \caption{Diagram of the relational database model created during the design}
+\label{fig:RelDBdiagram}
 \end{figure}
 
 Notice that part of the process of development and parsing of the data from OpenStreetMap into our databases was accomplished together with the rest of the groups.
@@ -224,6 +245,181 @@ On the other hand, people can work in both senses and also use all king of roads
 
 Notice that in order to calculate the distance between two nodes the method \textit{distNode()} was implemented in class \textit{node } following the formula of the euclidean distance. 
 
-\subsection{Points of interest}
+\clearpage
+\section{Matlab Implementation}
+       
+In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, only the differences are presented and discussed.
 
+\subsection{Getting the data}
+
+As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure and all data were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
+
+The first difference comes in fact that variables in Matlab can be not even created, but as well saved and loaded in Matlab's data structure \textit{.mat} files. This allowed us to come to the solution where the connection to external data source (database) is made only one time for creating appropriate data structures/class objects (discussed in next section). As in Matlab project part queries to database are used only one, the program end-user does not need to have database and driver installed, because afterwards all calculations are created using generated data structures from .mat files.
+
+\subsection{Data Structure}
+
+The second important question which had to be answered - the types of data structures in Matlab.
+Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object classes with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, thus all of those will not be discussed since all information can be found in the web.\footnote{
+\url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
+}
+
+Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+
+As in C++ implementation, classes for representing the \textit{node}, \textit{road} and \textit{map} were created.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[node distance=5mm,
+terminal/.style={
+% The shape:
+rectangle,
+minimum size=6mm,
+% The rest
+very thick,draw=black!50,
+top color=white,bottom color=black!15,
+font=\ttfamily}]
+
+\node (Node) [terminal] {Node};
+\node (ArrNode) [terminal,right=of Node] {ArrayNodes};
+\node (Road) [terminal,right=of ArrNode] {Road};
+\node (Map) [terminal,right=of Road] {Map (Array of Roads)};
+\path
+(Node) edge[-latex] (ArrNode) % simple edges
+(ArrNode) edge[-latex] (Road)
+(Road) edge[-latex] (Map);
+
+\end{tikzpicture}
+\caption{Simplified diagram of relationship of a classes}
+\end{figure}
+
+As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent method was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
+
+Notwithstanding our option, the user could find an alternative or better data structure for the same goal.
+For example, together with the team we discussed another options such as keeping data in project in the same way as in kept in the database: roads and nodes and the dictionary (linking table) between roads and nodes. Such structure would have it's advantage that various connections between roads and nodes would be easier accessible, e.g. it would be possible to get all roads where node \textit{X} is included and vice versa, while the our methodology requires additional methods to get the same results. 
+
+% % matlab
+% % Shortest Path
+\subsection{The shortest path}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% projection figure
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[
+	%	style def
+    scale=1,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+    %circle representing user input			 
+    \fill[red] (2.6,2.5) circle (3pt) node[above] {$?$};
+\end{tikzpicture}
+\begin{tikzpicture}[
+	%	style def
+    scale=1,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+    %circle representing user input			 
+    \fill[red] (2.6,2.5) coordinate(user) circle (2pt) ;
+    			     
+
+    \draw[important line, blue] (user) -- (a3);
+    \draw[important line, blue] (user) -- (E);
+    \draw[important line, blue] (user) -- (J);
+    %connecting closest nodes
+        %circle representing user input			 
+        \fill[red] (user) circle (3pt) node[above] {$?$};
+    
+    
+\end{tikzpicture}
+\begin{tikzpicture}[
+	%	style def
+    scale=1,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+   %circle representing user input			 
+    \fill[red] (2.6,2.5) coordinate(user) circle (2pt) ;
+    			     
+	%connecting closest nodes
+    \draw[important line, blue] (user) -- (a3);
+    \draw[important line, blue] (user) -- (E);
+    \draw[important line, blue] (user) -- (J);
+    % projection
+    \draw[important line, green] (user) -- (2.73, 1.95) coordinate (intersect);
+    \fill[black] (intersect) circle (2pt) ;
+    
+    \draw[important line, green, ] (intersect)+(-0.14,0.07) node[minimum size=0.1cm,draw,green, rotate =14]{};
+    %circle representing user input			 
+    \fill[red] (user) circle (3pt) node[above] {$?$};
+    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);    
+\end{tikzpicture}
+
+\caption{Random point projections}
+\end{figure}
 \end{document}
+
+

@@ -40,7 +40,7 @@ QString POI::getAddress() {
 }
 
 // Mutator of the property name
-void POI::setName(QString &nname){
+void POI::setName(QString nname){
     name = nname;
 }
 

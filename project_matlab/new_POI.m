@@ -22,7 +22,7 @@ function varargout = new_POI(varargin)
 
 % Edit the above text to modify the response to help new_POI
 
-% Last Modified by GUIDE v2.5 26-Nov-2013 20:47:29
+% Last Modified by GUIDE v2.5 29-Dec-2013 17:46:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,6 +58,8 @@ handles.output = hObject;
 handles.name = 0;
 handles.lat = 0;
 handles.lon = 0;
+handles.class = 0;
+handles.adress = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -83,9 +85,9 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 load('POIdata');
-c = {handles.lat, handles.lon, handles.name};
+c = {handles.lat, handles.lon, handles.name, handles.class, handles.adress};
 POIdata = cat(1,POIdata,c);
-save('POIdata.mat', 'POIdata');
+save('.\dependencies\data\POIdata.mat', 'POIdata');
 
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -181,3 +183,57 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+
+function enter_adress_Callback(hObject, eventdata, handles)
+% hObject    handle to enter_adress (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of enter_adress as text
+%        str2double(get(hObject,'String')) returns contents of enter_adress as a double
+handles.adress = get(hObject,'String');
+% Update handles structure
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function enter_adress_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to enter_adress (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in enter_class.
+function enter_class_Callback(hObject, eventdata, handles)
+% hObject    handle to enter_class (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: contents = cellstr(get(hObject,'String')) returns enter_class contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from enter_class
+load('POIClasses.mat');
+contents = get(hObject,'Value');
+handles.class = POIClasses(contents);
+
+% Update handles structure
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function enter_class_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to enter_class (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+load('POIClasses.mat');
+set(hObject, 'String', POIClasses);
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

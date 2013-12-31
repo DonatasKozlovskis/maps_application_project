@@ -27,11 +27,11 @@ private slots:
     // Debug output 2
     void updateDebugInfo(int, int);
     void on_mapGLWidget_customContextMenuRequested(const QPoint &pos);
-    void showPOIWidget();
+    void showPOIWidgetNew();
 
     void on_driveRadioButton_clicked();
-
     void on_walkRadioButton_clicked();
+    void on_managePOIButton_clicked();
 
 private:
     // User interface
@@ -48,6 +48,12 @@ private:
     QAction* findNearestAct;
 
     void initializeContextMenu();
+    void initializeComboBoxes();
+
+    POIContainer* container;        // Not good
+
+    Node currentPOINode;
+
 
 
 protected:

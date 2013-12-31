@@ -46,7 +46,7 @@ void Patch::calcPatch(vector<Node*> path){
                 ostringstream aux;
                 aux << this->distance*4;
                 s = ahead+aux.str()+right;
-                cout<<s<<endl;
+                //cout<<s<<endl;
                 route.push_back(s);
             }
             if(angle<-10 && angle>-160){
@@ -58,7 +58,7 @@ void Patch::calcPatch(vector<Node*> path){
                 ostringstream aux;
                 aux << this->distance*4;
                 s = ahead+aux.str()+left;
-                cout<<s<<endl;
+                //cout<<s<<endl;
                 route.push_back(s);
             }
         }
@@ -67,7 +67,7 @@ void Patch::calcPatch(vector<Node*> path){
     ostringstream aux;
     aux << this->distance*4;
     s = ahead+aux.str()+end;
-    cout<<s<<endl;
+    //cout<<s<<endl;
     route.push_back(s);
     this->genTxt(route);
 }

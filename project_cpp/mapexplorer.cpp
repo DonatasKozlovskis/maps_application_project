@@ -2,6 +2,7 @@
 #include <QFileInfo>
 
 #include "mapexplorer.h"
+#include "poicontainer.h"
 
 
 // Default constructor
@@ -13,14 +14,17 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     poiwidget = new POIWidget(this);
     poiwidget->setWindowFlags(Qt::Window);
 
+    // Setup UI and ui elements
     ui->setupUi(this);
+    container = ui->mapGLWidget->getPois();         // Not good
+    poiwidget->setContainer(container);            // Not good
     initializeContextMenu();
+    initializeComboBoxes();
 
     // Connect signals and slots
     connect(ui->mapGLWidget, SIGNAL(mousePressedGL(int,int)), this, SLOT(updateDebugInfo(int,int)));
     connect(ui->driveRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT(updateAdjDriving()));
     connect(ui->walkRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT (updateAdjWalking()));
-
 }
 
 // Default destructor
@@ -62,8 +66,12 @@ void MapExplorer::updateDebugInfo(int w, int h) {
             (ui->mapGLWidget->getMaxLon() - ui->mapGLWidget->getMinLon());
     float bLon = (float)ui->mapGLWidget->getNormY() / 2 - ui->mapGLWidget->getMaxLon()*aLon;
 
-    float mpgeolat = (mpogly*1.65/ui->mapGLWidget->getScale() - bLat)/aLat;
+    // Why???
+    float mpgeolat = (mpogly*2*ui->mapGLWidget->getScale() - bLat)/aLat;
     float mpgeolon = (mpoglx*0.5/ui->mapGLWidget->getScale() - bLon)/aLon;
+
+    QPointF Test = ui->mapGLWidget->widgetToGeoCoordinates(QPointF(w,h));
+    QPointF Test2 = ui->mapGLWidget->geoToOpenGLCoordinates(Test);
 
     QString output("Map moved: \n" + QString::number(ui->mapGLWidget->getMovPos().x()) + " "
                    + QString::number(ui->mapGLWidget->getMovPos().y())
@@ -84,6 +92,13 @@ void MapExplorer::updateDebugInfo(int w, int h) {
                    + " Lon: "   + QString::number(mpgeolon)
 
                    + "\n\n Scale: " + QString::number(ui->mapGLWidget->getScale())
+
+                   + "\n\nTest : Lat: " + QString::number(Test.x())
+                   + " Lon :" + QString::number(Test.y())
+
+                   + "\n\n Test 2: x: " + QString::number(Test2.x())
+                   + " y: " + QString::number(Test2.y())
+
                    );
 
     ui->debugLabel->setText(output);
@@ -129,12 +144,13 @@ void MapExplorer::initializeContextMenu() {
     contextMenu->addAction(findNearestAct);
 
     // Connect the actions to the slots
-    connect(newPOIAct, SIGNAL(triggered()), this, SLOT(showPOIWidget()));
+    connect(newPOIAct, SIGNAL(triggered()), this, SLOT(showPOIWidgetNew()));
 }
 
 // Show function for POI widget
 // Any way to call it directly from connect()?
-void MapExplorer::showPOIWidget() {
+void MapExplorer::showPOIWidgetNew() {
+    poiwidget->adding();
     poiwidget->show();
 }
 
@@ -146,4 +162,31 @@ void MapExplorer::on_driveRadioButton_clicked()
 void MapExplorer::on_walkRadioButton_clicked()
 {
 
+}
+
+void MapExplorer::on_managePOIButton_clicked()
+{
+    poiwidget->browsing();
+    poiwidget->show();
+}
+
+void MapExplorer::initializeComboBoxes() {
+
+    QMap <int,QString> poiTypes = container->getTypeList();
+
+    ui->P1TypeComboBox->addItem("Custom");
+    ui->P1TypeComboBox->addItem("All");
+    ui->P2TypeComboBox->addItem("Custom");
+    ui->P2TypeComboBox->addItem("All");
+    ui->P3TypeComboBox->addItem("Custom");
+    ui->P3TypeComboBox->addItem("All");
+
+     QMap <int,QString>::Iterator i;
+
+    for (i = poiTypes.begin(); i != poiTypes.end(); i++) {
+        ui->P1TypeComboBox->addItem((*i));
+        ui->P2TypeComboBox->addItem((*i));
+        ui->P3TypeComboBox->addItem((*i));
+
+    }
 }
