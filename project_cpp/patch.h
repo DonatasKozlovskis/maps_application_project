@@ -20,6 +20,7 @@ public:
 
 private:
     float distance;
+    string curRoad;
 };
 
 #endif // PATCH_H

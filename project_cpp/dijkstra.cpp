@@ -1,4 +1,5 @@
 #include "dijkstra.h"
+#include <QTime>
 
 //This algorithm has been inspired in the basis suggested for the following link:
 //http://www.programming-techniques.com/2012/01/implementation-of-dijkstras-shortest.html
@@ -6,8 +7,9 @@
 // Old version o constructor added also in order to run it as of 26/12/2013 11.07PM Le Creusot
 // 27/12/2013 04.07AM Almaty
 // Andrey - I used out-of-date version in my route drawing test
-Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
-    this->adjMatrix = adj;
+
+Dijkstra::Dijkstra(Eigen::SparseMatrix<float> m1, int &initial, int &end, int num){
+    this->adjMatrix = m1;
     this->source = initial;
     this->dest = end;
     this->numOfVertices = num;
@@ -17,8 +19,8 @@ Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
     this->mark = new bool[this->numOfVertices];
 }
 
-Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num, bool driving){
-    this->adjMatrix = adj;
+Dijkstra::Dijkstra(Eigen::SparseMatrix<float> m1, int &initial, int &end, int num, bool driving){
+    this->adjMatrix = m1;
     this->source = initial;
     this->dest = end;
     this->numOfVertices = num;
@@ -59,6 +61,8 @@ int Dijkstra::getClosestUnmarkedNode(){
 }
 
 void Dijkstra::calculateDistance(){
+    QTime timer;
+    timer.start();
     initialize();
     int minDistance = INFINITY;
     int closestUnmarkedNode;
@@ -67,21 +71,21 @@ void Dijkstra::calculateDistance(){
         closestUnmarkedNode = getClosestUnmarkedNode();
         mark[closestUnmarkedNode] = true;
         for(int i=0;i<numOfVertices;i++) {
-            if((!mark[i]) && (adjMatrix[closestUnmarkedNode][i]>0) ) {
-                if(distance[i] > distance[closestUnmarkedNode]+adjMatrix[closestUnmarkedNode][i]) {
-                    distance[i] = distance[closestUnmarkedNode]+adjMatrix[closestUnmarkedNode][i];
+            if((!mark[i]) && (adjMatrix.coeff(closestUnmarkedNode,i)>0) ) {
+                if(distance[i] > distance[closestUnmarkedNode]+adjMatrix.coeff(closestUnmarkedNode,i)) {
+                    distance[i] = distance[closestUnmarkedNode]+adjMatrix.coeff(closestUnmarkedNode,i);
                     predecessor[i] = closestUnmarkedNode;
                 }
             }
         }
         count++;
     }
+    cout << "Dijkstra calculation: "<< timer.elapsed() << endl;
 }
 
 void Dijkstra::printPath(int node){
     if(node == source){
         cout<<node<<"..";
-        //this->result.push_back(node);
     }else if(predecessor[node] == -1){
         cout<<"No path from "<<source<<" to "<<node<<endl;
     }else {

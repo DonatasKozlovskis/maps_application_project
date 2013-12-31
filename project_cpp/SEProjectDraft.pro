@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SEProjectDraft
 TEMPLATE = app
 
+INCLUDEPATH += "..\..\eigen"
 
 SOURCES += main.cpp\
     mapexplorer.cpp \
@@ -38,4 +39,3 @@ FORMS    += mapexplorer.ui \
 
 RESOURCES += \
     maps.qrc
-

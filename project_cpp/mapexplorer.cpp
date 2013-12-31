@@ -93,7 +93,7 @@ void MapExplorer::updateDebugInfo(int w, int h) {
 void MapExplorer::connectDatabase(){
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
-    db.setDatabaseName("schneider");
+    db.setDatabaseName("bigschneider");
     db.setUserName("root");
     db.setPassword("root");
 

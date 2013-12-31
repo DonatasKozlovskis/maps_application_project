@@ -169,9 +169,51 @@ Composing the following relationship:
 As we can see our class map has dependencies with the class \textit{QtSQL}, necessary for making queries to the database but also contains a standard map structure. It is used in order to avoid checking node by node in some cases, a map that contains the node structures and its identifier is composed in the constructor. Finally, we can see some other dependences with standard libraries with \textit{QtOpenGL} the library that makes possible drawing the nodes that compose the map (explained in detail in the next section).
 
 \subsection{The shortest path}
+The first requirement from this kind of application is to be able to provide the shortest route between two specific nodes in the map. In order to carry on this task there are a lot of common and tested algorithms available such as Bellman-Ford, its variation called  Shortest Path Faster Algorithm (SPFA), Jonhson's algorithm, Floyd–Warshall algorithm, Dijkstra's algorithm.
 
+Bellman-Ford algorithm and its variation is believed to work properly with graphs that contain negative weights as edges although for graphs without negative values, Dijkstra improves the performance. In the same direction both Jonhson's and Floyd-Warshall algorithms are more suitable for graphs which contain negative values in the their edges. Because of that, we finally decide to use a Dijkstra's algorithm.
 
 \subsubsection{Dijkstra's algorithm}
+Despite the implementation of the algorithm is well known, we would explain slightly the basis using pseudo-code given a graph G, with edges E, vertices V and a source vertex s. We can define the following structures:
+
+\begin{itemize}
+  \item dist: Array of distances from the source to each vertex.
+  \item prev: Array of pointers to preceding vertices.
+  \item i: Loop index.
+  \item F: List of finished vertices
+  \item U: List or heap unfinished vertices
+\end{itemize}
+
+
+\begin{lstlisting}
+/* Initialization: set every distance to INFINITY until we discover a path */
+for i = 0 to |V| - 1
+    dist[i] = INFINITY
+    prev[i] = NULL
+end
+
+/* The distance from the source to the source is defined to be zero */
+dist[s] = 0
+
+/* This loop corresponds to sending out the explorers walking the paths, where
+ * the step of picking "the vertex, v, with the shortest path to s" corresponds
+ * to an explorer arriving at an unexplored vertex */
+
+while(F is missing a vertex)
+   pick the vertex, v, in U with the shortest path to s
+   add v to F
+   for each edge of v, (v1, v2)
+        /* The next step is sometimes given the confusing name "relaxation"
+        if(dist[v1] + length(v1, v2) < dist[v2])
+            dist[v2] = dist[v1] + length(v1, v2)
+            prev[v2] = v1
+            possibly update U, depending on implementation
+        end if
+    end for
+end while
+
+//Extracted from: http://www.cprogramming.com/tutorial/computersciencetheory/dijkstra.html
+\end{lstlisting}
 
 \subsubsection{The adjacency matrix}
 The following section describes a specific method of the \textit{map} class that allows us to create an adjacency matrix of dimensions NxN where N is the total amount of nodes that composes the map. This matrix will be used to calculate the shortest path between two or more points in the map. Such matrix is generated according to the method of transport chosen by the user. For instance, we can not drive in both senses in all roads or driving in a foot way.
@@ -181,5 +223,7 @@ We can also take into account querying the database, if a road is a foot way or 
 On the other hand, people can work in both senses and also use all king of roads, so we can generate the adjacency matrix in the same way without the restrictions explained above.
 
 Notice that in order to calculate the distance between two nodes the method \textit{distNode()} was implemented in class \textit{node } following the formula of the euclidean distance. 
-             
+
+\subsection{Points of interest}
+
 \end{document}

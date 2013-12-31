@@ -1,13 +1,13 @@
 #include "map.h"
 
 // Default constructor
-Map::~Map() {
+/*Map::~Map() {
     for (vector<Road*>::const_iterator it = roads.begin(); it != roads.end(); it++)
         delete (*it);
     for (int i = 0; i < this->numberNodes; i++)
             delete[] this->adj[i];
         delete[] this->adj;
-}
+}*/
 
 Map::Map()
 {
@@ -125,7 +125,7 @@ void Map::normalize(unsigned int height, unsigned int width, float* geoCoords){
 
 // TODO: Replace some code to the constructor i order to prevent the memory leak
 void Map::adjMatrix(bool driving){
-
+/*
     //Create structure
     this->adj = new float * [this->numberNodes];
     for (unsigned int i = 0; i<this->numberNodes; i++){
@@ -135,18 +135,18 @@ void Map::adjMatrix(bool driving){
     //Initialize matrix to 999 and 0;
     for (unsigned int i = 0; i<this->numberNodes; i++){
         for (unsigned int j = 0; j<this->numberNodes; j++){
-            this->adj[i][j]= 999;
+            this->adj[i][j]= 0;
             if(i==j)    this->adj[i][i]=0;
         }
     }
-
+*/
     //Compose matrix
     Node * current = new Node;
     Node * next = new Node;
     float dist = 0.0;
     int x,y;
     string s = "footway";
-
+/*
     if (driving == true){
         for(unsigned int i=0; i<this->roads.size(); i++){
             //if(this->getRoad(i)->getRoadType().compare(s) != 0 ){
@@ -181,7 +181,59 @@ void Map::adjMatrix(bool driving){
         }
         cout<<"walking adj matrix"<<endl;
     }
+
+*/
+    if (driving == true){
+        Eigen::SparseMatrix<float> mat(this->numberNodes,this->numberNodes);
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            if(this->getRoad(i)->getRoadType()!= s ){
+                for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
+                    current = this->getRoad(i)->getNode(j);
+                    next = this->getRoad(i)->getNode(j+1);
+                    //Call function distance
+                    dist = current->distNode(next);
+                    x = current->getId();                 //The indices of the database starts from 1 !
+                    y = next->getId();
+                    mat.coeffRef(x,y) = dist;
+                    if (this->getRoad(i)->isOneWay() == false)  mat.coeffRef(y,x) = dist;
+                }
+            }
+        }
+        this->m1 = mat;
+        cout<<"driving adj matrix loaded"<<endl;
+    }
+    if (driving == false){
+        Eigen::SparseMatrix<float> mat(this->numberNodes,this->numberNodes);
+        for(unsigned int i=0; i<this->roads.size(); i++){
+            for (unsigned int j=0; j<this->getRoad(i)->length()-1; j++){
+                current = this->getRoad(i)->getNode(j);
+                next = this->getRoad(i)->getNode(j+1);
+                //Call function distance
+                dist = current->distNode(next);
+                x = current->getId();                 //The indices of the database starts from 1 !
+                y = next->getId();
+                mat.coeffRef(x,y) = dist;
+                mat.coeffRef(y,x) = dist;
+            }
+        }
+        this->m1 = mat;
+        cout<<"walking adj matrix loaded"<<endl;
+    }
+
+
+    //(this->* funcArray[0])();  (c.* funcArray[0])();
+    /*for (int k=0; k<mat.outerSize(); ++k)
+      for (Eigen::SparseMatrix<float>::InnerIterator it(mat,k); it; ++it)
+      {
+        cout<<"value: "<<it.value()<<endl;
+        cout<<"row: "<<it.row()<<endl;   // row index
+        cout<<"col: "<<it.col()<<endl;   // col index (here it is equal to k)
+        it.index(); // inner index, here it is equal to it.row()
+      }*/
+
+    //cout<<this->m1.coeffRef(1065,984)<<endl;
 }
+
 
 vector<Node*> Map::getPath(vector<int> in){
 
@@ -224,7 +276,5 @@ unsigned int Map::findClosest(float x, float y) {
 }
 
 void Map::rmAdjMatrix(){
-    for (int i = 0; i < this->numberNodes; i++)
-            delete[] this->adj[i];
-        delete[] this->adj;
+    this->m1.resize(0,0);  //Only way to deallocate memory
 }
