@@ -82,15 +82,15 @@ void POIWidget::on_newRadioButton_clicked()
 
 void POIWidget::initializeComboBoxes() {
 
-    QVector < QString > poiTypes = container->getTypeList();
+    QMap <int, QString> poiTypes = container->getTypeList();
 
-    ui->poiTypeViewComboBox->addItem("All");
+    ui->poiTypeViewComboBox->addItem("All",QVariant(0));
 
-    QVector < QString > :: iterator i;
+    QMap <int, QString> :: iterator i;
 
     for (i = poiTypes.begin(); i!= poiTypes.end(); i++) {
-        ui->poiTypeViewComboBox->addItem((*i));
-        ui->poiTypeComboBox->addItem((*i));
+        ui->poiTypeViewComboBox->addItem(i.value(),(QVariant)i.key());
+        ui->poiTypeComboBox->addItem(i.value(),(QVariant)i.key());
     }
 
     updatePOIComboBox();
@@ -101,7 +101,7 @@ void POIWidget::initializeComboBoxes() {
 // Then, it cleans the combobox items
 // After both are updated
 void POIWidget::updatePOIComboBox() {
-    QString typeSelected = ui->poiTypeViewComboBox->currentText();
+    int typeSelected = ui->poiTypeViewComboBox->itemData(ui->poiTypeViewComboBox->currentIndex()).toInt();
 
     // Delete previously entered values
     qDeleteAll(currentComboBoxPOIs);
@@ -201,7 +201,9 @@ void POIWidget::on_saveButton_clicked()
                     QMessageBox::information(this,"Success","POI Modified Successfully!");
             //sucModMessageBox.exec();
 
+
             ui->saveButton->setEnabled(false);
+
 
         } else {
 

@@ -172,7 +172,7 @@ void MapExplorer::on_managePOIButton_clicked()
 
 void MapExplorer::initializeComboBoxes() {
 
-    QVector < QString > poiTypes = container->getTypeList();
+    QMap <int,QString> poiTypes = container->getTypeList();
 
     ui->P1TypeComboBox->addItem("Custom");
     ui->P1TypeComboBox->addItem("All");
@@ -181,7 +181,7 @@ void MapExplorer::initializeComboBoxes() {
     ui->P3TypeComboBox->addItem("Custom");
     ui->P3TypeComboBox->addItem("All");
 
-    QVector <QString>::Iterator i;
+     QMap <int,QString>::Iterator i;
 
     for (i = poiTypes.begin(); i != poiTypes.end(); i++) {
         ui->P1TypeComboBox->addItem((*i));

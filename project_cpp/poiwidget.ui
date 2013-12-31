@@ -173,9 +173,9 @@
   <widget class="QComboBox" name="poiComboBox">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>60</x>
      <y>90</y>
-     <width>131</width>
+     <width>151</width>
      <height>22</height>
     </rect>
    </property>
@@ -183,9 +183,9 @@
   <widget class="QComboBox" name="poiTypeViewComboBox">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>60</x>
      <y>60</y>
-     <width>131</width>
+     <width>151</width>
      <height>22</height>
     </rect>
    </property>
