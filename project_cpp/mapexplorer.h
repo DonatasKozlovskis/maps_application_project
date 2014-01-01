@@ -33,6 +33,13 @@ private slots:
     void on_walkRadioButton_clicked();
     void on_managePOIButton_clicked();
 
+    void on_P1TypeComboBox_currentIndexChanged(int);
+    void on_P2TypeComboBox_currentIndexChanged(int);
+    void on_P3TypeComboBox_currentIndexChanged(int);
+
+    void on_poiDisplayComboBox_currentIndexChanged(int);
+
+
 private:
     // User interface
     Ui::MapExplorer *ui;
@@ -47,8 +54,17 @@ private:
     QAction* newPOIAct;
     QAction* findNearestAct;
 
+    QMap <int, POI*> currentComboBoxPOIs[3];
+    QComboBox* poiComboBoxes[3];
+
     void initializeContextMenu();
     void initializeComboBoxes();
+
+    void updateP1ComboBox();
+    void updateP2ComboBox();
+    void updateP3ComboBox();
+
+    void updateComboBox(int,int);
 
     POIContainer* container;        // Not good
 

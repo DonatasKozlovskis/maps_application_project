@@ -5,7 +5,15 @@
 #include "poicontainer.h"
 
 
-// Default constructor
+/**
+ * @brief MapExplorer::MapExplorer
+ * Default constructor of the {@link MapExplorer} class.
+ *
+ * Connects to the database, initializes ComboBoxes, Context Menus, etc.
+ * Iitializes the child {@link POIWidget}. Connects signals and slots.
+ *
+ * @param parent
+ */
 MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapExplorer) {
     // Connect to the database
     this->connectDatabase();
@@ -16,6 +24,11 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
 
     // Setup UI and ui elements
     ui->setupUi(this);
+
+    poiComboBoxes[0] = ui->P1ComboBox;
+    poiComboBoxes[1] = ui->P2ComboBox;
+    poiComboBoxes[2] = ui->P3ComboBox;
+
     container = ui->mapGLWidget->getPois();         // Not good
     poiwidget->setContainer(container);            // Not good
     initializeContextMenu();
@@ -25,29 +38,53 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     connect(ui->mapGLWidget, SIGNAL(mousePressedGL(int,int)), this, SLOT(updateDebugInfo(int,int)));
     connect(ui->driveRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT(updateAdjDriving()));
     connect(ui->walkRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT (updateAdjWalking()));
+
+    ui->driveRadioButton->click();
+
 }
 
-// Default destructor
+/**
+ * @brief MapExplorer::~MapExplorer
+ * Default destructor.
+ *
+ * Disconnects from the database and deletes the UI.
+ */
 MapExplorer::~MapExplorer() {
-    delete ui;
 
-    // Disconnect from the database
+    delete ui;
     disconnectDatabase();
 }
 
-// Exit button action
+/**
+ * @brief MapExplorer::on_actionExit_triggered
+ * Exit button action, also available via Ctrl + Q shortcut.
+ */
 void MapExplorer::on_actionExit_triggered()
 {
     QApplication::quit();
 }
 
-// About button action
+/**
+ * @brief MapExplorer::on_actionAbout_triggered.
+ * About button action, also available via F1 shortcut.
+ * Displays the {@link QMesageBox with the help information.}
+ */
 void MapExplorer::on_actionAbout_triggered()
 {
     QMessageBox::about(this,    tr("About Map Explorer"),
                                 tr("<p>This is a Qt <b>GUI</b> test. Will be used in further projects.</p><p>VIBOT Promotion 8</p>"));
 }
 
+/**
+ * @brief MapExplorer::updateDebugInfo
+ * Debug label update function.
+ *
+ * This function was used in the development, in order to track the conversion
+ * between the widget, openGL and geographic coordiates.
+ *
+ * @param w - width of the {@link MapGLWidget}
+ * @param h - height of the {@link MapGLWidget}
+ */
 void MapExplorer::updateDebugInfo(int w, int h) {
     ui->debugLabel->clear();
 
@@ -104,35 +141,62 @@ void MapExplorer::updateDebugInfo(int w, int h) {
     ui->debugLabel->setText(output);
 }
 
-// Database stuff
+/**
+ * @brief MapExplorer::connectDatabase
+ * Database connection function.
+ */
 void MapExplorer::connectDatabase(){
+
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setDatabaseName("schneider");
     db.setUserName("root");
     db.setPassword("root");
 
-    if (!db.open()) QMessageBox::critical(0, QObject::tr("Database Error"), db.lastError().text());
-    else cout << "Database connected MapExplorer" << endl;
+    if (!db.open()) {
+        QMessageBox::critical(0, QObject::tr("Database conectionError"), db.lastError().text());
+        qDebug() << db.lastError().text();
+    }
+
+    else qDebug() << "Database connected MapExplorer";
 }
 
+/**
+ * @brief MapExplorer::disconnectDatabase
+ * Database disconnection function
+ */
 void MapExplorer::disconnectDatabase() {
+
     if (db.open()) {
         db.close();
-        cout << "Database disconnected MapExplorer" << endl;
-    }
+        qDebug() << "Database disconnected MapExplorer";
+    } else
+        qDebug() << "Database already disconnected, no need to close the connection.";
 }
 
-// Context menu call slot
-// Called on right-click
+/**
+ * @brief MapExplorer::on_mapGLWidget_customContextMenuRequested
+ * The function displays the context menu once called by right-click from the MapGLWdiget.
+ * @param pos - the position of the call (in widget coordinates)
+ */
 void MapExplorer::on_mapGLWidget_customContextMenuRequested(const QPoint &pos)
 {
+    cout << pos.x() << " " << pos.y() << endl;
     QPoint newPos = mapToParent(pos);
     contextMenu->move(newPos.x()+this->pos().x(),newPos.y()+this->pos().y());   // Any other way to translate coordinates
     contextMenu->show();
+
+    // Update the possible POI
+    poiwidget->setPossiblePOICoords(ui->mapGLWidget->widgetToGeoCoordinates(QPointF(pos.x(),pos.y())));
 }
 
-// Context menu initialization
+/**
+ * @brief MapExplorer::initializeContextMenu
+ * Context menu initialization.
+ *
+ * Creates two actions - one for adding the new POI on right-click selection.
+ * Another one for finding newarest POI.
+ */
 void MapExplorer::initializeContextMenu() {
 
     // Two actions, that appear once user right-clicks the screen
@@ -147,46 +211,226 @@ void MapExplorer::initializeContextMenu() {
     connect(newPOIAct, SIGNAL(triggered()), this, SLOT(showPOIWidgetNew()));
 }
 
-// Show function for POI widget
-// Any way to call it directly from connect()?
+/**
+ * @brief MapExplorer::showPOIWidgetNew
+ * Displays the {@link POIWidget} with the settings to add new POI.
+ */
 void MapExplorer::showPOIWidgetNew() {
     poiwidget->adding();
     poiwidget->show();
 }
 
+/**
+ * @brief MapExplorer::on_driveRadioButton_clicked
+ * Switch (Driving) between drive and walk road types (adjacency matrices affected).
+ */
 void MapExplorer::on_driveRadioButton_clicked()
 {
 
 }
 
+/**
+ * @brief MapExplorer::on_driveRadioButton_clicked
+ * Switch (Walking) between drive and walk road types (adjacency matrices affected).
+ */
 void MapExplorer::on_walkRadioButton_clicked()
 {
 
 }
 
+/**
+ * @brief MapExplorer::on_managePOIButton_clicked
+ * Displays the {@link POIWidget} with the setting set to browsing current POIs.
+ */
 void MapExplorer::on_managePOIButton_clicked()
 {
+    poiwidget->setPossiblePOICoords(QPointF(-1,-1));
     poiwidget->browsing();
     poiwidget->show();
 }
 
+/**
+ * @brief MapExplorer::initializeComboBoxes
+ * Initializes the ComboBoxes of the {@link MapExplorer} window.
+ *
+ * The function populates the POI types' ComboBoxes and then updates the POI ComboBoxes.
+ * (In this function it only dispables it because the "Custom" text in the POI type ComboBox
+ * corresponds to manual point picking on the map and the POI ComboBox is disabled.)
+ */
 void MapExplorer::initializeComboBoxes() {
 
     QMap <int,QString> poiTypes = container->getTypeList();
 
-    ui->P1TypeComboBox->addItem("Custom");
-    ui->P1TypeComboBox->addItem("All");
-    ui->P2TypeComboBox->addItem("Custom");
-    ui->P2TypeComboBox->addItem("All");
-    ui->P3TypeComboBox->addItem("Custom");
-    ui->P3TypeComboBox->addItem("All");
+    ui->P1TypeComboBox->addItem("Custom",QVariant(-1));
+    ui->P1TypeComboBox->addItem("All", QVariant(0));
+    ui->P2TypeComboBox->addItem("Custom",QVariant(-1));
+    ui->P2TypeComboBox->addItem("All", QVariant(0));
+    ui->P3TypeComboBox->addItem("Custom",QVariant(-1));
+    ui->P3TypeComboBox->addItem("All",QVariant(0));
 
-     QMap <int,QString>::Iterator i;
+    ui->poiDisplayComboBox->addItem("None",QVariant(-1));
+    ui->poiDisplayComboBox->addItem("All",QVariant(0));
+
+    QMap <int,QString>::Iterator i;
 
     for (i = poiTypes.begin(); i != poiTypes.end(); i++) {
-        ui->P1TypeComboBox->addItem((*i));
-        ui->P2TypeComboBox->addItem((*i));
-        ui->P3TypeComboBox->addItem((*i));
+        ui->P1TypeComboBox->addItem(i.value(),(QVariant)i.key());
+        ui->P2TypeComboBox->addItem(i.value(),(QVariant)i.key());
+        ui->P3TypeComboBox->addItem(i.value(),(QVariant)i.key());
+        ui->poiDisplayComboBox->addItem(i.value(), (QVariant)i.key());
+    }
 
+    // Update the POI ComboBoxes
+    updateP1ComboBox();
+    updateP2ComboBox();
+    updateP3ComboBox();
+
+}
+
+/**
+ * @brief MapExplorer::updateP1ComboBox
+ * Updates the POI #1 ComboBox. Disables if "Custom" type is selected.
+ *
+ * Deprecated - replaced by the {@link MapExplorer::updateComboBox(int index, int type)} function.
+ */
+void MapExplorer::updateP1ComboBox() {
+    int typeSelected = ui->P1TypeComboBox->itemData(ui->P1TypeComboBox->currentIndex()).toInt();
+
+    qDeleteAll(currentComboBoxPOIs[0]);
+    ui->P1ComboBox->clear();
+
+    if (typeSelected != -1) {
+        currentComboBoxPOIs[0] = container->getPOITypeFiltered(typeSelected);
+        QMap <int, POI*>::iterator i;
+
+        for (i = currentComboBoxPOIs[0].begin(); i != currentComboBoxPOIs[0].end(); i++)
+            ui->P1ComboBox->addItem( (*i)->getName(), QVariant((*i)->getId()));
+
+        ui->P1ComboBox->setEnabled(true);
+
+    } else {
+        ui->P1ComboBox->setEnabled(false);
+    }
+}
+
+/**
+ * @brief MapExplorer::updateP2ComboBox
+ * Updates the POI #2 ComboBox. Disables if "Custom" type is selected.
+ *
+ * Deprecated - replaced by the {@link MapExplorer::updateComboBox(int index, int type)} function.
+ */
+void MapExplorer::updateP2ComboBox() {
+    int typeSelected = ui->P2TypeComboBox->itemData(ui->P2TypeComboBox->currentIndex()).toInt();
+
+    qDeleteAll(currentComboBoxPOIs[1]);
+    ui->P2ComboBox->clear();
+
+    if (typeSelected != -1) {
+        currentComboBoxPOIs[1] = container->getPOITypeFiltered(typeSelected);
+        QMap <int, POI*>::iterator i;
+
+        for (i = currentComboBoxPOIs[1].begin(); i != currentComboBoxPOIs[1].end(); i++)
+            ui->P2ComboBox->addItem( (*i)->getName(), QVariant((*i)->getId()));
+
+        ui->P2ComboBox->setEnabled(true);
+
+    } else {
+        ui->P2ComboBox->setEnabled(false);
+    }
+}
+
+/**
+ * @brief MapExplorer::updateP3ComboBox
+ * Updates the POI #3 ComboBox. Disables if "Custom" type is selected.
+ *
+ * Deprecated - replaced by the {@link MapExplorer::updateComboBox(int index, int type)} function.
+ */
+void MapExplorer::updateP3ComboBox() {
+    int typeSelected = ui->P3TypeComboBox->itemData(ui->P3TypeComboBox->currentIndex()).toInt();
+
+    qDeleteAll(currentComboBoxPOIs[2]);
+    ui->P3ComboBox->clear();
+
+    if (typeSelected != -1) {
+        currentComboBoxPOIs[2] = container->getPOITypeFiltered(typeSelected);
+        QMap <int, POI*>::iterator i;
+
+        for (i = currentComboBoxPOIs[2].begin(); i != currentComboBoxPOIs[2].end(); i++)
+            ui->P3ComboBox->addItem( (*i)->getName(), QVariant((*i)->getId()));
+
+        ui->P3ComboBox->setEnabled(true);
+
+    } else {
+        ui->P3ComboBox->setEnabled(false);
+    }
+}
+
+/**
+ * @brief MapExplorer::on_P1TypeComboBox_currentIndexChanged
+ * Updates the POI ComboBox accroding to the type selected.
+ * @param index
+ */
+void MapExplorer::on_P1TypeComboBox_currentIndexChanged(int index)
+{
+    //updateP1ComboBox();
+    updateComboBox(0,ui->P1TypeComboBox->itemData(index).toInt());
+}
+
+/**
+ * @brief MapExplorer::on_P1TypeComboBox_currentIndexChanged
+ * Updates the POI ComboBox accroding to the type selected.
+ * @param index
+ */
+void MapExplorer::on_P2TypeComboBox_currentIndexChanged(int index)
+{
+    //updateP2ComboBox();
+    updateComboBox(1,ui->P2TypeComboBox->itemData(index).toInt());
+}
+
+/**
+ * @brief MapExplorer::on_P1TypeComboBox_currentIndexChanged
+ * Updates the POI ComboBox accroding to the type selected.
+ * @param index
+ */
+void MapExplorer::on_P3TypeComboBox_currentIndexChanged(int index)
+{
+    //updateP3ComboBox();
+    updateComboBox(2,ui->P3TypeComboBox->itemData(index).toInt());
+}
+
+/**
+ * @brief ::MapExplorer::updateComboBox
+ * The function updates the ComboBox stored in the {@link MapExplorer::poiComboBoxes},
+ * according to the index specified.
+ *
+ * @param index - the index of the ComboBox (0,1 or 2)
+ * @param type - the POI type selected
+ */
+void::MapExplorer::updateComboBox(int index, int type) {
+
+    qDeleteAll(currentComboBoxPOIs[index]);
+    poiComboBoxes[index]->clear();
+
+    if (type != -1) {
+        currentComboBoxPOIs[2] = container->getPOITypeFiltered(type);
+        QMap <int, POI*>::iterator i;
+
+        for (i = currentComboBoxPOIs[2].begin(); i != currentComboBoxPOIs[2].end(); i++)
+            poiComboBoxes[index]->addItem( (*i)->getName(), QVariant((*i)->getId()));
+
+        poiComboBoxes[index]->setEnabled(true);
+
+    } else
+         poiComboBoxes[index]->setEnabled(false);
+}
+
+/**
+ * @brief MapExplorer::on_poiDisplayComboBox_currentIndexChanged
+ * @param index
+ */
+void MapExplorer::on_poiDisplayComboBox_currentIndexChanged(int index)
+{
+    if (ui->poiDisplayComboBox->itemData(index).toInt() != -1) {
+        ui->mapGLWidget->updateSpecificPOIs(ui->poiDisplayComboBox->itemData(index).toInt());
     }
 }

@@ -43,6 +43,8 @@ public:
     QPointF widgetToGeoCoordinates(QPointF);
     QPointF geoToOpenGLCoordinates(QPointF);
 
+    void updateSpecificPOIs(int);
+
 signals:
 
 public slots:
@@ -65,6 +67,8 @@ signals:
     void mouseReleasedGL(int,int);
     void mouseWheeledGL(float);
 
+    void possibleNewPOISelected(float,float);
+
 
 private:
     void draw();
@@ -74,6 +78,8 @@ private:
     void drawPoints();                      // 24.12 ------------------------------
     void drawPath();
     void loadTextures();
+
+    void drawSpecificPOIs();
 
     void detectPoint(float, float);         // 24.12 -------------------------------
 
@@ -98,10 +104,14 @@ private:
 
     Patch *directions;
 
-    QTimer clickTimer;
+    QTime clickTimer;
+
+    QMap < int, POI* > specificPOIs;
+
+
 
 protected:
-    POIContainer* poiContainer;
+    POIContainer* container;
     Map *mymap;                 // Map instance
 
 };

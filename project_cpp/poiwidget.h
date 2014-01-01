@@ -11,6 +11,10 @@ namespace Ui {
     class POIWidget;
 }
 
+/**
+ * @brief The POIWidget class
+ * This widget is used tho perform various actions on the points of interest on the map.
+ */
 class POIWidget : public QWidget {
     Q_OBJECT
 
@@ -24,24 +28,30 @@ public:
     void editing();
     void adding();
 
+    void setPossiblePOICoords (QPointF);
+
 signals:
 
 public slots:
 
 private:
-    Ui::POIWidget *ui;
+    Ui::POIWidget *ui;      /** A pointer to the UI instance. */
 
     void initializeComboBoxes();
     void updatePOIComboBox();
     void updatePOIFields();
 
-    QMap <int, POI*> currentComboBoxPOIs;
+    // Do I really need this variable?
+    QMap <int, POI*> currentComboBoxPOIs;       /** Contains the current comboBox POIs that are currently displayed.*/
+    // I've found no other normal way to store it.
+    QPointF possiblePOICoords;                  /** Contains the possible coordinates of the new POI.*/
 
 protected:
-    POIContainer* container;
-    POI* poiSelected;
+    POIContainer* container;                    /** A pointer to the {@link POIContainer} class.*/
+    POI* poiSelected;                           /** Stores the pointer to the currently selected POI. */
 
 private slots:
+
     void on_browseRadioButton_clicked();
     void on_editRadioButton_clicked();
     void on_newRadioButton_clicked();
@@ -53,8 +63,7 @@ private slots:
     void on_poiImagePathLineEdit_textChanged(const QString &arg1);
     void on_cancelButton_clicked();
     void on_saveButton_clicked();
+    void on_deleteButton_clicked();
 };
-
-
 
 #endif // POIWIDGET_H
