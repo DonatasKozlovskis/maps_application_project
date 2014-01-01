@@ -46,7 +46,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     poiContainer = new POIContainer();
     poiContainer->loadData();
 
-    int ini = 1000;
+    /*int ini = 1000;
     int dest = 1500;
 
     this->mydijkstra = new Dijkstra(mymap->m1, ini, dest, mymap->numberNodes, true);
@@ -56,7 +56,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
 
     path = mymap->getPath(result);
     this->directions = new Patch;
-    directions->calcPatch(path);
+    directions->calcPatch(path);*/
 
 }
 
@@ -179,7 +179,7 @@ void MapGLWidget::drawMap() {
         glColor3f(1.0f,0.0f,0.0f);
         glBegin(GL_LINE_STRIP);
             Road *road = this->mymap->getRoad(i);
-            for (unsigned int j=0; j<road->length(); j++){
+            for (int j=0; j<road->length(); j++){
                 x = road->getNode(j)->getPoint().x;
                 y = road->getNode(j)->getPoint().y;
                 glVertex3f(y,x,0.0f);
