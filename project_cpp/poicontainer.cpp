@@ -110,7 +110,7 @@ POI* POIContainer::getPOI(int &index) {
  *
  * @return true if database insert successful, false otherwise
  */
-bool POIContainer::addPOI(float &lat, float &lon, QString &nname, int &ntype, QString &npath, QString &naddress) {
+bool POIContainer::addPOI(float lat, float lon, QString nname, int ntype, QString npath, QString naddress) {
 
     // I don't know if it is a good way to check for the index that will be assigned to the ne POI once added
     // to the database. It's autoincrement, so it should add maximum index + 1
@@ -128,14 +128,15 @@ bool POIContainer::addPOI(float &lat, float &lon, QString &nname, int &ntype, QS
         POI* newPOI = new POI(maxIndex+1,lat,lon,nname,typeList.value(ntype), npath,naddress);
 
         QSqlQuery insertPoi;
-        insertPoi.prepare("INSERT INTO poi (Latitude, Longitude, Name, Type, PicturePath) "
-                          "VALUES (:lat, :lon, :name, :type, :pic)");
+        insertPoi.prepare("INSERT INTO poi (Latitude, Longitude, Name, Type, PicturePath, Address) "
+                          "VALUES (:lat, :lon, :name, :type, :pic, :address)");
 
         insertPoi.bindValue(":lat", lat);
         insertPoi.bindValue(":lon", lon);
         insertPoi.bindValue(":name", nname);
         insertPoi.bindValue(":type", ntype);
         insertPoi.bindValue(":pic", npath);
+        insertPoi.bindValue(":address",naddress);
 
         if (insertPoi.exec()) {
 
@@ -166,7 +167,7 @@ bool POIContainer::addPOI(float &lat, float &lon, QString &nname, int &ntype, QS
  *
  * @return true if deletion was successful, false otherwise
  */
-bool POIContainer::removePOI(int &id) {
+bool POIContainer::removePOI(int id) {
 
     QSqlQuery deletePoi;
     deletePoi.prepare("DELETE FROM poi WHERE ID= :id");
@@ -196,7 +197,7 @@ bool POIContainer::removePOI(int &id) {
  *
  * @return
  */
-bool POIContainer::modifyPOI(int id, QString nname, QString ntype, QString npath, QString naddress) {
+bool POIContainer::modifyPOI(int id, QString nname, int ntype, QString npath, QString naddress) {
     QSqlQuery modPoi;
 
     QString Type = "Type";
@@ -216,7 +217,7 @@ bool POIContainer::modifyPOI(int id, QString nname, QString ntype, QString npath
 
         POI* poi = pois.find(id).value();
         poi->setName(nname);
-        poi->setType(ntype);
+        poi->setType(typeList.value(ntype));
         poi->setAdress(naddress);
         poi->setImgPath(npath);
 
@@ -282,10 +283,7 @@ QMap < int , POI* > POIContainer::getPOITypeFiltered(int type) {
         qDebug() << "POIs failed to filter, type = ";
     }
 
-
     qDebug() << getLastExecutedQuery(poiFiltered);
-    cout << getLastExecutedQuery(poiFiltered).toStdString() << endl;
-
     return result;
 }
 
@@ -294,8 +292,11 @@ QMap < int , POI* > POIContainer::getPOITypeFiltered(int type) {
  * This function is necessary to get QString representation of the last
  * execured query for the specified QSqlQuery
  *
+ * Source taken here:
+ * // http://stackoverflow.com/questions/5777409/how-to-get-last-prepared-and-executed-query-using-qsqlquery
+ *
  * @param query - a QSqlQuery instance to be validated
- * @return
+ * @return the QString representation of the last executed query
  */
 QString POIContainer::getLastExecutedQuery(const QSqlQuery& query) {
 
@@ -310,6 +311,11 @@ QString POIContainer::getLastExecutedQuery(const QSqlQuery& query) {
     return str;
 }
 
+/**
+ * @brief POIContainer::getPoiType
+ * @param index the index of the POI type
+ * @return the QString representation of the POI type
+ */
 QString POIContainer::getPoiType(int index) {
     return typeList.value(index);
 }

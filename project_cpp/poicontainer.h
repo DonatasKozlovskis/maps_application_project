@@ -4,6 +4,11 @@
 #include <QMap>
 #include "poi.h"
 
+/**
+ * @brief The POIContainer class
+ * The class is used to store the POIs from the database in a QMap <int, POI*> variable.
+ * The class is also responsible for filtering the POIs by the type specified.
+ */
 class POIContainer
 {
 public:
@@ -11,23 +16,19 @@ public:
     ~POIContainer();
 
     bool loadData();
-    bool addPOI(float &, float&, QString &, int &, QString &, QString &);
-    bool removePOI(int &);
-    bool modifyPOI(int , QString , QString , QString , QString );
+    bool addPOI(float, float, QString, int, QString, QString);
+    bool removePOI(int);
+    bool modifyPOI(int , QString , int , QString , QString );
     POI* getPOI(int &);
-
     QMap < int, QString> getTypeList();
     QMap < int, POI* > getPOITypeFiltered(int);
     QString getPoiType(int);
-
     int size() ;
+    QString getLastExecutedQuery(const QSqlQuery&);
 
 private:
-    QMap < int, POI* > pois;
-    QMap < int, QString> typeList;
-
-    // http://stackoverflow.com/questions/5777409/how-to-get-last-prepared-and-executed-query-using-qsqlquery
-    QString getLastExecutedQuery(const QSqlQuery&);
+    QMap < int, POI* > pois;            /** An instance of {@link QMap} that contains the POIs*/
+    QMap < int, QString> typeList;      /** An instance of {@link QMap} that contains the ids and the names of the corresponding types of the POIs */
 
 };
 

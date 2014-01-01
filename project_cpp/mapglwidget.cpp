@@ -3,7 +3,11 @@
 
 #include "mapglwidget.h"
 
-// Default constructor
+/**
+ * @brief MapGLWidget::MapGLWidget
+ * Default constructor of the {@link MapGLWidget} class.
+ * @param parent
+ */
 MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -43,8 +47,8 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     cout << "Adj: "<< timer.elapsed() << endl;
 
     // POI container contains QMap of all POIs and a QVector of POI types
-    poiContainer = new POIContainer();
-    poiContainer->loadData();
+    container = new POIContainer();
+    container->loadData();
 
     /*int ini = 1000;
     int dest = 1500;
@@ -60,14 +64,21 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
 
 }
 
-// Default destructor
+/**
+ * @brief MapGLWidget::~MapGLWidget
+ * Default destructor of the {@link MapGLWidget} class.
+ */
 MapGLWidget::~MapGLWidget() {
     makeCurrent();
     glDeleteTextures(1,&textureID);
     //cout << "Map Texture Deleted" << endl;
 }
 
-// OpenGL Initalization routine
+/**
+ * @brief MapGLWidget::initializeGL
+ * Overloaded function of the {@link QGLWidget} class.
+ * Initializes OpenGL parameters.
+ */
 void MapGLWidget::initializeGL() {
 
     qglClearColor(Qt::gray);                                // Background color
@@ -98,7 +109,12 @@ void MapGLWidget::initializeGL() {
     resizeGL(1000,500);                                      // ? checking
 }
 
-// OpenGL rendering
+/**
+ * @brief MapGLWidget::paintGL
+ * Overloaded function of the {@link QGLWidget}
+ *
+ *
+ */
 void MapGLWidget::paintGL() {
 
     // Textures
@@ -122,9 +138,10 @@ void MapGLWidget::paintGL() {
     glDisable(GL_TEXTURE_2D);                               // Disable the texture state, otherwise impossible to change the color of the lines
 
     drawAxices();                                           // Draw axices for testing purposes
-    drawMap();                                              // Draw the roads
+    //drawMap();                                              // Draw the roads
     drawPath();
     drawPoints();
+    drawSpecificPOIs();
 }
 
 // Size change routine OpenGL
@@ -260,6 +277,7 @@ void MapGLWidget::mousePressEvent(QMouseEvent *event) {
 
         updateGL();
     } else if (event->button() == Qt::RightButton) {
+
         // emit something here
     }
 }
@@ -400,7 +418,7 @@ void MapGLWidget::updateAdjWalking() {
 
 // Accessor of the POIs container
 POIContainer* MapGLWidget::getPois() {
-    return poiContainer;
+    return container;
 }
 
 // x,y,width,height
@@ -440,3 +458,34 @@ QPointF MapGLWidget::geoToOpenGLCoordinates(QPointF geoCoordinates) {
     return QPointF(y*2,x/2);
 }
 
+
+void MapGLWidget::updateSpecificPOIs(int type) {
+
+    qDeleteAll(specificPOIs);
+
+    specificPOIs = container->getPOITypeFiltered(type);
+
+    updateGL();
+}
+
+void MapGLWidget::drawSpecificPOIs() {
+
+    glBegin(GL_LINES);
+    glColor3f(0.0f,0.0f, 1.0f);
+    glLineWidth(3);
+    for (QMap <int, POI*>::iterator i = specificPOIs.begin(); i != specificPOIs.end(); i++) {
+
+
+        QPointF result = geoToOpenGLCoordinates(QPointF((*i)->getPoint().x,(*i)->getPoint().y));
+
+        float x = result.x();
+        float y = result.y();
+
+        glVertex3f(x-3,y-3,0.0);
+        glVertex3f(x+3,y+3,0.0);
+
+        glVertex3f(x-3,y+3,0.0);
+        glVertex3f(x+3,y-3,0.0);
+    }
+    glEnd();
+}

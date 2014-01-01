@@ -1,9 +1,23 @@
 #include "poi.h"
 
-// An empty constructor
-POI::POI() {}
+/**
+ * @brief POI::POI
+ * An empty constructor.
+ */
+POI::POI() : Node() {}
 
-// Default constructor
+/**
+ * @brief POI::POI
+ * A default constructor.
+ *
+ * @param id - id of the POI
+ * @param lat - latitude
+ * @param lon - longitude
+ * @param nname - name
+ * @param ntype - type (QString, not int)
+ * @param npath - image path
+ * @param naddress - address
+ */
 POI::POI(unsigned int id, float lat, float lon, QString nname, QString ntype, QString npath, QString naddress)
     : Node(id,lat,lon) {
 
@@ -11,30 +25,48 @@ POI::POI(unsigned int id, float lat, float lon, QString nname, QString ntype, QS
     imgPath = npath;
     type = ntype;
     address = naddress;
-
 }
 
 // Default destructor
 // ?? Memory leak or not?
 // http://stackoverflow.com/questions/3261694/why-base-class-destructor-virtual-is-called-when-a-derived-class-object-is-del
+/**
+ * @brief POI::~POI
+ * Default destructor.
+ */
 POI::~POI() {}
 
-// Accessor of the property name
+/**
+ * @brief POI::getName
+ * Accessor of the property name
+ * @return the name of the POI.
+ */
 QString POI::getName(){
     return name;
 }
 
-// Accessor of the property image path
+/**
+ * @brief POI::getImgPath
+ * Accessor of the property imgPath.
+ * @return the image path of the POI.
+ */
 QString POI::getImgPath() {
     return imgPath;
 }
 
-// Accessor of the property type
+/**
+ * @brief POI::getType
+ * @return type of the POI
+ */
 QString POI::getType() {
     return type;
 }
 
 // Accessor of the property address
+/**
+ * @brief POI::getAddress
+ * @return
+ */
 QString POI::getAddress() {
     return address;
 }
