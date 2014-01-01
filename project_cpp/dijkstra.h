@@ -4,6 +4,7 @@
 #include <iostream>
 #include <QtSql>
 #include <vector>
+#include <Eigen/Sparse>
 
 #include "node.h"
 
@@ -16,8 +17,8 @@ class Dijkstra
 {
 public:
 
-    Dijkstra(float**, int &, int &, int);
-    Dijkstra(float**, int &, int &, int, bool);
+    Dijkstra(Eigen::SparseMatrix<float>/*float***/, int &, int &, int);
+    Dijkstra(/*float***/Eigen::SparseMatrix<float>, int &, int &, int, bool);
     ~Dijkstra();
 
 
@@ -33,7 +34,8 @@ public:
 
 private:
 
-    float** adjMatrix;
+    //float** adjMatrix;
+    Eigen::SparseMatrix<float> adjMatrix;
     int * predecessor;
     float * distance;
     bool * mark; //keep track of visited node

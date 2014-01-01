@@ -8,21 +8,37 @@ void Patch::calcPatch(vector<Node*> path){
     vector<string> route;
     string s;
     string ahead = "Go ahead ";
-    string right = " meters and turn right";
-    string left = " meters and turn left";
+    string right = " meters and turn right in ";
+    string left = " meters and turn left in ";
     string end = " meters for arriving!";
 
     Node* init = path[0];
     Node* dest;
 
+    /*QSqlQuery roadName;
+    Node* road;
+    string name;
+    int id = 0;*/
+
     //Until the path finishes
     for(unsigned int i=1; i<path.size()-1; i++){
+        /*road = path[i-1];
+        id= road->getId();
+        roadName.prepare("select RoadName from (select roadID from road_node, node where road_node.NodeID = node.ID and node.ind= :id) t1 inner join (select ID, RoadName from road) t2 on t1.roadID = t2.ID;");
+        roadName.bindValue(":id", id);
+        roadName.exec();
+        roadName.next();
+        name = roadName.value(0).toString().toStdString();
+        cout<<road->getId()<<" "<<name<<endl;*/
+
         //Compare if the couple of points belong to the same road
         bel = this->belong(path[i-1], path[i]);
-        //If two points does not belong to the same road means that it is a cross where we have to turn
+        //If two points does not belong to the same road means
+        //that it is a cross where we have to turn
         if(bel == false){
             float angle= this->checkAngle(path[i], path[i-1] ,path[i+1]);
             if(angle>=30 && angle<160){
+
                 dest = path[i];
                 this->distance = init->distNode(dest);
                 init = path[i];
@@ -34,6 +50,7 @@ void Patch::calcPatch(vector<Node*> path){
                 route.push_back(s);
             }
             if(angle<-10 && angle>-160){
+
                 dest = path[i];
                 this->distance = init->distNode(dest);
                 init = path[i];
@@ -67,7 +84,6 @@ float Patch::checkAngle(Node* M, Node* P, Node* O){
     float alpha = atan2(cross, dot);
 
     return (int) floor(alpha * 180. / 3.14159265359 + 0.5);
-
 }
 
 //Compares if two nodes belong to the same road
@@ -93,7 +109,6 @@ bool Patch::belong(Node* node1, Node* node2){
     for(unsigned int i=0; i<belongId1.size(); i++){
         belongId1.next();
         road1=belongId1.value(0).toString().toStdString();
-        //cout<<id1<<" "<<road1<<endl;
         for(unsigned int j=0; j<belongId2.size()-1; j++){
             belongId2.next();
             road2 = belongId2.value(0).toString().toStdString();
@@ -109,7 +124,6 @@ bool Patch::belong(Node* node1, Node* node2){
 //Generates a txt file with name route.txt with all previous instructions
 //The file is deleted overwrited each time the txt is generated in the compile folder
 void Patch::genTxt(vector<string> route){
-
     ofstream file;
     file.open("route.txt");
     for(int i=0; i<route.size(); i++){

@@ -1,4 +1,5 @@
 #include "dijkstra.h"
+#include <QTime>
 
 //This algorithm has been inspired in the basis suggested for the following link:
 //http://www.programming-techniques.com/2012/01/implementation-of-dijkstras-shortest.html
@@ -6,8 +7,9 @@
 // Old version o constructor added also in order to run it as of 26/12/2013 11.07PM Le Creusot
 // 27/12/2013 04.07AM Almaty
 // Andrey - I used out-of-date version in my route drawing test
-Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
-    this->adjMatrix = adj;
+
+Dijkstra::Dijkstra(Eigen::SparseMatrix<float> m1, int &initial, int &end, int num){
+    this->adjMatrix = m1;
     this->source = initial;
     this->dest = end;
     this->numOfVertices = num;
@@ -17,8 +19,8 @@ Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num){
     this->mark = new bool[this->numOfVertices];
 }
 
-Dijkstra::Dijkstra(float** adj, int &initial, int &end, int num, bool driving){
-    this->adjMatrix = adj;
+Dijkstra::Dijkstra(Eigen::SparseMatrix<float> m1, int &initial, int &end, int num, bool driving){
+    this->adjMatrix = m1;
     this->source = initial;
     this->dest = end;
     this->numOfVertices = num;
@@ -59,6 +61,8 @@ int Dijkstra::getClosestUnmarkedNode(){
 }
 
 void Dijkstra::calculateDistance(){
+    QTime timer;
+    timer.start();
     initialize();
     int minDistance = INFINITY;
     int closestUnmarkedNode;
@@ -67,26 +71,27 @@ void Dijkstra::calculateDistance(){
         closestUnmarkedNode = getClosestUnmarkedNode();
         mark[closestUnmarkedNode] = true;
         for(int i=0;i<numOfVertices;i++) {
-            if((!mark[i]) && (adjMatrix[closestUnmarkedNode][i]>0) ) {
-                if(distance[i] > distance[closestUnmarkedNode]+adjMatrix[closestUnmarkedNode][i]) {
-                    distance[i] = distance[closestUnmarkedNode]+adjMatrix[closestUnmarkedNode][i];
+            if((!mark[i]) && (adjMatrix.coeff(closestUnmarkedNode,i)>0) ) {
+                if(distance[i] > distance[closestUnmarkedNode]+adjMatrix.coeff(closestUnmarkedNode,i)) {
+                    distance[i] = distance[closestUnmarkedNode]+adjMatrix.coeff(closestUnmarkedNode,i);
                     predecessor[i] = closestUnmarkedNode;
                 }
             }
         }
         count++;
     }
+    cout << "Dijkstra calculation: "<< timer.elapsed() << endl;
 }
 
 void Dijkstra::printPath(int node){
     if(node == source){
-        //cout<<node<<"..";
-        //this->result.push_back(node);
+        cout<<node<<"..";
+        this->result.push_back(node);
     }else if(predecessor[node] == -1){
-        //cout<<"No path from "<<source<<" to "<<node<<endl;
+        cout<<"No path from "<<source<<" to "<<node<<endl;
     }else {
         printPath(predecessor[node]);
-        //cout<<node<<"..";
+        cout<<node<<"..";
         this->result.push_back(node);
     }
 }
@@ -96,10 +101,10 @@ vector<int> Dijkstra::output(){
 
     int i = this->dest;
         if(i == source){
-            //cout<<source<<".."<<source;
+            cout<<source<<".."<<source;
         }else{
             printPath(i);
-            //cout<<"->"<<distance[i]*4<<" meters"<<endl;
+            cout<<"->"<<distance[i]*4<<" meters"<<endl;
         }
     calcTime();
     return this->result;
@@ -111,12 +116,12 @@ void Dijkstra::calcTime(){
     if (driving == true){
         float car = 11.12;          //The average speed by car is setted to 40 km/h or 11.12 m/s
         this->time = ((this->distance[this->dest]/car)*4)/60;
-        //cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
+        cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
     }
     if (driving == false){
         float person = 1.12;        //The average speed by walking is setted to 4 km/h or 1.12 m/s
         this->time = ((this->distance[this->dest]/person)*4)/60;
-        //cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
+        cout<<"Distance: "<<this->distance[this->dest]*4<<" Time: "<<this->time<<" minutes"<<endl;
     }
 }
 
