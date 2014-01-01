@@ -30,6 +30,7 @@ public:
     int roadsCount;
     int nodesCount;
     int numberNodes;
+
 };
 
 
