@@ -871,6 +871,7 @@ POI_in_range = find_range( handles.class_range, handles.lat1, handles.lon1, hand
 POI_in_range = POI_in_range';
 latitudes = cell2mat(POI_in_range(1,:));
 longitudes = cell2mat(POI_in_range(2,:));
+names = POI_in_range(3,:);
 
 hold on;
 if handles.h == 1; 
@@ -883,6 +884,16 @@ handles.g = plot ( longitudes, latitudes, 'ro',...
                                           'MarkerSize',10);
 handles.h = 1;
 
+output_names = {};
+for i=1:length(names)
+    output_names = cat(2, output_names, names(i), ' and ');
+end
+
+[i,j] = size(output_names);
+output_names(j) = [];
+output_text = cat(2, 'The points of interest in the range are ', output_names);
+output_text = cell2mat(output_text);
+GUI_error(output_text);
 
 % Update handles structure
 guidata(hObject, handles);
