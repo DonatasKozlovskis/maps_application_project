@@ -2,16 +2,22 @@
 #define ROAD_H
 #include "node.h"
 
-class Road
-{
+/**
+ * @brief The Road class
+ * Creates a structure composed by several nodes with specific parameters
+ * such as id, name, type or one way. Also it allows to render the road
+ */
+class Road{
+
 public:
     Road();
-    Road(const Road&);              // Added Andrey 02.12
+    Road(const Road&);
     Road(string);
     Road(string,string,string,bool);
-    ~Road();                        // Added Andrey 02.12
+    ~Road();
 
     void addNode(Node*);
+    void render();
 
     // Mutators
     void setRoadID(const string&);
@@ -25,16 +31,14 @@ public:
     string getRoadName() const;
     string getRoadType() const;
     bool isOneWay();
-
-    void render();
     int length();
 
 private:
     string roadID;
     string roadName;
-    string roadType;                // Changed from roadtype Andrey 02.12
-    bool oneWay;                  // Changed from oneWay Andrey 02.12
-    vector<Node*> nodes;            // Changed from roadNodes Andrey 02.12
+    string roadType;
+    bool oneWay;
+    vector<Node*> nodes;
 };
 
 #endif // ROAD_H

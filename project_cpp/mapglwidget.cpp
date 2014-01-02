@@ -27,10 +27,10 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
 
     // This is not good as this coordinates are approximate
     // Map's node max/min altitude and max/min longitude
-    mapGeoCoordinates[0] = 46.77265; //46.7696832;   // Min Latitude
-    mapGeoCoordinates[1] = 46.8217; //46.8230965;  // Max Latitude
-    mapGeoCoordinates[2] = 4.36545; //4.3899093;   // Min Longitude
-    mapGeoCoordinates[3] = 4.5086; //4.4844505;   // Max Longitude
+    mapGeoCoordinates[0] = 46.77265f; //46.7696832;   // Min Latitude
+    mapGeoCoordinates[1] = 46.8217f; //46.8230965;  // Max Latitude
+    mapGeoCoordinates[2] = 4.36545f; //4.3899093;   // Min Longitude
+    mapGeoCoordinates[3] = 4.5086f; //4.4844505;   // Max Longitude
 
     // Create a new map and populate it.
     mymap = new Map;
@@ -41,7 +41,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     timer.start();
     mymap->normalize(mapNormalization[1],mapNormalization[0], mapGeoCoordinates);
     cout << "Data normalization: " << timer.elapsed() << endl;
-    bool driving = false;
+    bool driving = true;
     mymap->adjMatrix(driving);
     cout << "Adj: "<< timer.elapsed() << endl;
 
@@ -49,7 +49,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     container = new POIContainer();
     container->loadData();
 
-    int ini = 1000;
+    /*int ini = 1000;
     int dest = 1500;
 
     this->mydijkstra = new Dijkstra(mymap->m1, ini, dest, mymap->numberNodes, true);
@@ -60,6 +60,9 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     path = mymap->getPath(result);
     this->directions = new Patch;
     directions->calcPatch(path);
+*/
+
+
 }
 
 /**
@@ -110,8 +113,6 @@ void MapGLWidget::initializeGL() {
 /**
  * @brief MapGLWidget::paintGL
  * Overloaded function of the {@link QGLWidget}
- *
- *
  */
 void MapGLWidget::paintGL() {
 
@@ -162,26 +163,21 @@ void MapGLWidget::draw() {}
 void MapGLWidget::drawAxices(){
 
     glPushMatrix();
-
     glLineWidth((GLfloat) 2.0);
-
     glBegin(GL_LINES);
 
     glColor3f(1.0f,0.0f,0.0f);
     glVertex3f(0.0f,0.0f,0.0f);
     glVertex3f(0.0f,0.0f,50.0f);
-
     glColor3f(0.0f,1.0f,0.0f);
     glVertex3f(0.0f,0.0f,0.0f);
     glVertex3f(0.0f,100.0f,0.0f);
-
     glColor3f(0.0f,0.0f,1.0f);
     glVertex3f(0.0f,0.0f,0.0f);
-    glVertex3f(50.0f,0.0f,0.0);
+    glVertex3f(50.0f,0.0f,0.0f);
 
     glEnd();
     glPopMatrix();
-
 }
 
 // Map rendering function
@@ -194,7 +190,7 @@ void MapGLWidget::drawMap() {
         glColor3f(1.0f,0.0f,0.0f);
         glBegin(GL_LINE_STRIP);
             Road *road = this->mymap->getRoad(i);
-            for (unsigned int j=0; j<road->length(); j++){
+            for (int j=0; j<road->length(); j++){
                 x = road->getNode(j)->getPoint().x;
                 y = road->getNode(j)->getPoint().y;
                 glVertex3f(y,x,0.0f);
@@ -439,11 +435,13 @@ QPointF MapGLWidget::getCamPos() {
 }
 
 void MapGLWidget::updateAdjDriving() {
-    // TODO: Change to adj to driving here
+    this->mymap->rmAdjMatrix();
+    this->mymap->adjMatrix(true);
 }
 
 void MapGLWidget::updateAdjWalking() {
-    // TODO: Change to adj walking here
+    this->mymap->rmAdjMatrix();
+    this->mymap->adjMatrix(false);
 }
 
 // Accessor of the POIs container
@@ -500,6 +498,7 @@ void MapGLWidget::drawSpecificPOIs() {
     glColor3f(0.0f,0.0f, 1.0f);
     glLineWidth(3);
     for (QMap <int, POI*>::iterator i = specificPOIs.begin(); i != specificPOIs.end(); i++) {
+
         glColor3f(0.0f,0.0f, 1.0f);
         QPointF result = geoToOpenGLCoordinates(QPointF((*i)->getPoint().x,(*i)->getPoint().y));
 

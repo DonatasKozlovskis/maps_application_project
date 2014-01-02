@@ -91,7 +91,7 @@ Despite sharing the same EER schema, the database chosen for the Matlab part it 
 
 \subsection{Related works}
 
-In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.es/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
+In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.com/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
 
 For user's information, OpenStreetMap data is stored topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
 
@@ -172,7 +172,7 @@ Notice that part of the process of development and parsing of the data from Open
 The present section has been divided in two different parts: The first one explains how the map structure is created evolving the three basic classes, the correspondent adjacency matrix depending on the choice of the user (walking or driving), how the shortest path is calculated using Dijkstra's algorithm and the logic behind the management of the points of interest. During the second part, we will focus on how the data is shown and obtained directly from the screen and its process of normalization and denormalization, taking into account the different spatial coordinates we work with during the implementation. But also we will see how the graphical user interface provides the input/output to the user and how is managed.
 
 \subsection{Creating the map}
-The implementation of the application started with classes \textit{Node}, \textit{Road} and \textit{Map} according to the three tables already existing in the database and with the goal of loading all necessary points that composes the map of le Creusot in memory. However, at the same time, we wanted to take profit of the whole process storing all nodes that composes one road in the same structure. As a consequence, the map structure is a vector container that keeps as many pointers to road structures as number of roads are in the map. At the same time, each road is a vector container whose size is defined by the number of nodes that compose it. However, what is stored in the road structure are pointers to nodes.
+The implementation of the application started with classes \textit{Node}, \textit{Road} and \textit{Map} according to the three tables already existing in the database and with the goal of loading all necessary points that composes the map of Le Creusot in memory. However, at the same time, we wanted to take profit of the whole process storing all nodes that composes one road in the same structure. As a consequence, the map structure is a vector container that keeps as many pointers to road structures as number of roads are in the map. At the same time, each road is a vector container whose size is defined by the number of nodes that compose it. However, what is stored in the road structure are pointers to nodes.
 
 \begin{lstlisting}
 vector<Road*> myMap 	//Definition of map structure
@@ -248,7 +248,7 @@ Notice that in order to calculate the distance between two nodes the method \tex
 \clearpage
 \section{Matlab Implementation}
        
-In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, only the differences are presented and discussed.
+In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, the text will focus reader on only the differences.
 
 \subsection{Getting the data}
 
@@ -259,7 +259,7 @@ The first difference comes in fact that variables in Matlab can be not even crea
 \subsection{Data Structure}
 
 The second important question which had to be answered - the types of data structures in Matlab.
-Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object classes with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, thus all of those will not be discussed since all information can be found in the web.\footnote{
+Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object \textit{classes} with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, all of those will not be discussed since all information can be found in the web.\footnote{
 \url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
 }
 
@@ -292,7 +292,7 @@ font=\ttfamily}]
 \caption{Simplified diagram of relationship of a classes}
 \end{figure}
 
-As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent method was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
+As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent approach was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
 
 Notwithstanding our option, the user could find an alternative or better data structure for the same goal.
 For example, together with the team we discussed another options such as keeping data in project in the same way as in kept in the database: roads and nodes and the dictionary (linking table) between roads and nodes. Such structure would have it's advantage that various connections between roads and nodes would be easier accessible, e.g. it would be possible to get all roads where node \textit{X} is included and vice versa, while the our methodology requires additional methods to get the same results. 
@@ -300,6 +300,18 @@ For example, together with the team we discussed another options such as keeping
 % % matlab
 % % Shortest Path
 \subsection{The shortest path}
+This issue was common between both versions (C++ and Matlab) of programs, thus the same algorithms were used to get a solution to the question of shortest path (Dijkstra was employed on a weighted graph represented as adjacency (sparse) matrix). Therefore in this section the user's attention will be focused on a question how to find a shortest path starting from a random Map Point, which is not pre-included in a adjacency matrix.\\
+Firstly, the random point needs to be obtained from the map with relevant Longitude/Latitude coordinates. The second step is to answer the question, how should we include this new point into already existing weighted graph? After discussion with team members, we came up to the solution where the new point should be connected with a closest existing node. However, there could be a case where the already existing node is closest to the new point, but another perpendicular projection to the line segment, represented using to other nodes is shorter then the distance between new point and already existing node. Thus, finally we decided employ both methods. Please note, that the latter method (projection) requires adding two new points to the weighted graph and the weights between user input - projected point, projected point and two nodes of line segment should be added as well.
+Basically, all algorithm can be summarized in such steps:
+\begin{itemize}
+\item Determine the window on which the closest nodes and projections will be searched.
+\item Find the closest node on determined window.
+\item Find the closest projection (if possible) on the same window.
+\item Update the adjacency matrix according shortest distance.
+\end{itemize}
+
+ 
+
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % projection figure
 \begin{figure}[!h]
@@ -371,7 +383,9 @@ For example, together with the team we discussed another options such as keeping
     %connecting closest nodes
         %circle representing user input			 
         \fill[red] (user) circle (3pt) node[above] {$?$};
-    
+        
+    %square window line (dashed)
+    \draw[important line, black, dashed] (2.6-0.9,2.5-0.9) -- (2.6-0.9,2.5+0.9) -- (2.6+0.9,2.5+0.9) -- (2.6+0.9,2.5-0.9) -- (2.6-0.9,2.5-0.9);
     
 \end{tikzpicture}
 \begin{tikzpicture}[
@@ -415,11 +429,13 @@ For example, together with the team we discussed another options such as keeping
     \draw[important line, green, ] (intersect)+(-0.14,0.07) node[minimum size=0.1cm,draw,green, rotate =14]{};
     %circle representing user input			 
     \fill[red] (user) circle (3pt) node[above] {$?$};
-    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);    
+    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);   
+    
+    %square window line (dashed)
+    \draw[important line, black, dashed] (2.6-0.9,2.5-0.9) -- (2.6-0.9,2.5+0.9) -- (2.6+0.9,2.5+0.9) -- (2.6+0.9,2.5-0.9) -- (2.6-0.9,2.5-0.9);	 
 \end{tikzpicture}
-
-\caption{Random point projections}
+\caption{Finding the shortest point/projection for the random point on window domain}
 \end{figure}
+
+
 \end{document}
-
-

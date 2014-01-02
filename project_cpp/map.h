@@ -1,39 +1,44 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <QtSql>
 #include <map>
+#include <QtSql>
 #include <Eigen/Sparse>
 #include "road.h"
 
 using namespace std;
 
-class Map
-{
+/**
+ * @brief The Map class
+ * The class is used to generate the structure map that is composed by roads and nodes,
+ * make the normalization of the nodes and display them the screen, capture the closest
+ * node of a point pressed and generate the correspondent adjacency matrix
+ */
+class Map{
+
 public:
     Map();
-    Map(const Map&);                                // Added Andrey 02.12
+    Map(const Map&);
     ~Map();
     void addData();
+    void normalize(unsigned int, unsigned int, float*);
     void renderMap();
     Road* getRoad(unsigned int);
-    void normalize(unsigned int, unsigned int, float*);
 
     unsigned int findClosest(float,float);
     QPointF findClosest(QPointF);
 
-    void adjMatrix(bool);
-    void rmAdjMatrix();
     vector<Node*> getPath(vector<int>);
-    Eigen::SparseMatrix<float> m1;
+    void adjMatrix(bool);
+    void rmAdjMatrix(); 
 
-    vector<Road*> roads;                            // Changed from myRoads Adrey 02.12
-    map<unsigned int,Node*> nodes;                           // Added 24.12
+// TO DO: Change some parameters to private
+    Eigen::SparseMatrix<float> m1;
+    vector<Road*> roads;
+    map<unsigned int,Node*> nodes;
     int roadsCount;
     int nodesCount;
     int numberNodes;
-
 };
-
 
 #endif // MAP_H

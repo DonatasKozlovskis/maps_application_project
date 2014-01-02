@@ -6,27 +6,32 @@
 #include <QtOpenGL>
 
 using namespace std;
-
+/**
+ * @brief The Point struct
+ * Structure that contains two floats as x, y position of the node in the axis
+ */
 struct Point {
     float x;
     float y;
 };
 
-class Node
-{
+/**
+* @brief The Node class
+* Contains a node structure composed by it ID and the previous struct
+* Also allows to calculate the euclidian distance between two nodes
+*/
+class Node{
+
 public:
     Node();
-    Node(const Node&);          // Added Andrey 02.12
-    Node(unsigned int,float,float);   // Added Andrey 02.12
-
+    Node(const Node&);
+    Node(unsigned int,float,float);
     ~Node();
 
-    Point getPoint() const;           // Name changed from getValue() Andrey 02.12
+    Point getPoint() const;
     unsigned int getId() const;
-
-    void setPoint(const float &, const float &);    // Name changed from setValue() Andrey 02.12
+    void setPoint(const float &, const float &);
     void setId(unsigned int &);
-
     float distNode(Node*);
 
 private:

@@ -7,7 +7,14 @@ Road::Road(string id) {
     roadID = id;
 }
 
-// Constructor that takes four parameters
+/**
+ * @brief Road::Road
+ * Constructor of {@link Road} class
+ * @param id
+ * @param name
+ * @param type
+ * @param way
+ */
 Road::Road(string id, string name, string type, bool way) {
     roadID = id;
     roadName = name;
@@ -15,7 +22,7 @@ Road::Road(string id, string name, string type, bool way) {
     oneWay = way;
 }
 
-// Added - Copy constructor
+//Copy constructor
 Road::Road(const Road &road) {
 
     for (vector<Node*>::const_iterator it = road.nodes.begin();
@@ -28,16 +35,32 @@ Road::Road(const Road &road) {
 
     // passing 'const Road' as 'this' argument of 'bool Road::isOneWay()' discards qualifiers [-fpermissive]
     this->oneWay = road.oneWay;
-
 }
 
-// Destructor
+/**
+ * @brief Road::~Road
+ * Destructor of {@link Road} class
+ * Cleans everynode in the road
+ */
 Road::~Road() {
-
-    // We have to clear every node
     for (vector<Node*>::const_iterator it = nodes.begin();
          it != nodes.end(); it++)
         delete *it;
+}
+
+/**
+ * @brief Road::render
+ * Renders all nodes of a road
+ */
+void Road::render(){
+    float x,y;
+    glBegin(GL_LINE_STRIP);
+        for (unsigned int i=0; i<this->nodes.size(); i++){
+            x = this->getNode(i)->getPoint().x;
+            y = this->getNode(i)->getPoint().y;
+            glVertex2f(x,y);
+        }
+    glEnd();
 
 }
 
@@ -54,19 +77,6 @@ Node* Road::getNode(const unsigned int &i){
 // Accessor of the nodes' length
 int Road::length(){
     return this->nodes.size();
-}
-
-// Road rendering
-void Road::render(){
-    float x,y;
-    glBegin(GL_LINE_STRIP);
-        for (unsigned int i=0; i<this->nodes.size(); i++){
-            x = this->getNode(i)->getPoint().x;
-            y = this->getNode(i)->getPoint().y;
-            glVertex2f(x,y);
-        }
-    glEnd();
-
 }
 
 // Accessor of the property road

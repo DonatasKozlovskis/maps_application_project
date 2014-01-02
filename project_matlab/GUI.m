@@ -103,8 +103,12 @@ handles.c = 0;
 handles.d = 0;
 handles.e = 0;
 handles.f = 0;
+handles.g = 0; %for go_range
+handles.h = 0; %for go_range
 handles.ShortestPathPlotted = 0;
 handles.ShortestPathPlotted2 = 0;
+handles.distance_range = 0; 
+handles.class_range = 0;
 
 %This handle will store the distance in the itinerary
 handles.distance = 0;
@@ -610,7 +614,10 @@ function distance_range_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Hints: get(hObject,'String') returns contents of distance_range as text
 %        str2double(get(hObject,'String')) returns contents of distance_range as a double
+handles.distance_range = str2double(get(hObject,'String'));
 
+% Update handles structure
+guidata(hObject, handles)
 
 % --- Executes during object creation, after setting all properties.
 function distance_range_CreateFcn(hObject, eventdata, handles)
@@ -632,10 +639,7 @@ function class4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Hints: contents = cellstr(get(hObject,'String')) returns class4 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from class4
-contents = get(hObject,'Value');
-
-handles.ActualPOIs = FilterClass(contents);
-set(handles.popupmenu3, 'String', handles.ActualPOIs(:,3));
+handles.class_range = get(hObject,'Value');
 
 % Update handles structure
 guidata(hObject, handles);
@@ -863,7 +867,36 @@ function go_range_Callback(hObject, eventdata, handles)
 % hObject    handle to go_range (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+POI_in_range = find_range( handles.class_range, handles.lat1, handles.lon1, handles.distance_range, handles);
+POI_in_range = POI_in_range';
+latitudes = cell2mat(POI_in_range(1,:));
+longitudes = cell2mat(POI_in_range(2,:));
+names = POI_in_range(3,:);
 
+hold on;
+if handles.h == 1; 
+    delete(handles.g);
+end
+handles.g = plot ( longitudes, latitudes, 'ro',...
+                                          'LineWidth',2,...
+                                          'MarkerEdgeColor','k',...
+                                          'MarkerFaceColor',[0.5 .5 .5],...
+                                          'MarkerSize',10);
+handles.h = 1;
+
+output_names = {};
+for i=1:length(names)
+    output_names = cat(2, output_names, names(i), ' and ');
+end
+
+[i,j] = size(output_names);
+output_names(j) = [];
+output_text = cat(2, 'The points of interest in the range are ', output_names);
+output_text = cell2mat(output_text);
+GUI_error(output_text);
+
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Executes on button press in walk.
 function walk_Callback(hObject, eventdata, handles)
@@ -898,7 +931,6 @@ function output_instructions2_Callback(hObject, eventdata, handles)
 % hObject    handle to output_instructions2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Hints: get(hObject,'String') returns contents of output_instructions2 as text
 %        str2double(get(hObject,'String')) returns contents of output_instructions2 as a double
 
