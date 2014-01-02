@@ -106,10 +106,10 @@ bool Patch::belong(Node* node1, Node* node2){
     belongId2.exec();
 
 //Take into account that the node can belong to more than one road
-    for(unsigned int i=0; i<belongId1.size(); i++){
+    for(int i=0; i<belongId1.size(); i++){
         belongId1.next();
         road1=belongId1.value(0).toString().toStdString();
-        for(unsigned int j=0; j<belongId2.size()-1; j++){
+        for(int j=0; j<belongId2.size()-1; j++){
             belongId2.next();
             road2 = belongId2.value(0).toString().toStdString();
             if(road1 == road2){
@@ -126,7 +126,7 @@ bool Patch::belong(Node* node1, Node* node2){
 void Patch::genTxt(vector<string> route){
     ofstream file;
     file.open("route.txt");
-    for(int i=0; i<route.size(); i++){
+    for(unsigned int i=0; i<route.size(); i++){
         file<<route[i]<<endl;
     }
 

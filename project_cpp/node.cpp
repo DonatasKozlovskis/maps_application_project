@@ -2,7 +2,17 @@
 
 Node::Node(){}
 
-// Added - copy constructor
+/**
+ * @brief Node::Node
+ * Default constructor of {@link Node} class
+ */
+Node::Node(unsigned int nid, float x, float y) {
+    point.x = x;
+    point.y = y;
+    id = nid;
+}
+
+// Copy constructor
 Node::Node(const Node &node) {
     point.x = node.point.x;
     point.y = node.point.y;
@@ -10,15 +20,22 @@ Node::Node(const Node &node) {
     id = node.getId();
 }
 
-// Added - default constructor
-Node::Node(unsigned int nid, float x, float y) {
-    point.x = x;
-    point.y = y;
-    id = nid;
-}
-
 // Empty destructor
 Node::~Node() {}
+
+/**
+ * @brief Node::distNode
+ * @param next
+ * @return the euclidean distance between two nodes
+ */
+float Node::distNode(Node* next){
+    float x, y, dist;
+    x = next->getPoint().x - this->getPoint().x;
+    y = next->getPoint().y - this->getPoint().y;
+
+    dist = sqrt(x*x + y*y);
+    return dist;
+}
 
 // Accessor of the property point
 Point Node::getPoint() const{
@@ -39,13 +56,4 @@ void Node::setPoint(const float &x, const float &y){
 // Mutator of the property id
 void Node::setId(unsigned int &s){
     this->id=s;
-}
-
-float Node::distNode(Node* next){
-    float x, y, dist;
-    x = next->getPoint().x - this->getPoint().x;
-    y = next->getPoint().y - this->getPoint().y;
-
-    dist = sqrt(x*x + y*y);
-    return dist;
 }
