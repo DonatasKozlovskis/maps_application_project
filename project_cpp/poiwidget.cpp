@@ -178,6 +178,7 @@ void POIWidget::updatePOIComboBox() {
 
     // Delete previously entered values
     qDeleteAll(currentComboBoxPOIs);
+    currentComboBoxPOIs.clear();
     ui->poiComboBox->clear();
 
     // Request new POIs

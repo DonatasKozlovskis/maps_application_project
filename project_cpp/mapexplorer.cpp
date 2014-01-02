@@ -29,6 +29,10 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     poiComboBoxes[1] = ui->P2ComboBox;
     poiComboBoxes[2] = ui->P3ComboBox;
 
+    currentPOIs[0] = NULL;
+    currentPOIs[1] = NULL;
+    currentPOIs[2] = NULL;
+
     container = ui->mapGLWidget->getPois();         // Not good
     poiwidget->setContainer(container);            // Not good
     initializeContextMenu();
@@ -373,7 +377,9 @@ void MapExplorer::updateP3ComboBox() {
 void MapExplorer::on_P1TypeComboBox_currentIndexChanged(int index)
 {
     //updateP1ComboBox();
-    updateComboBox(0,ui->P1TypeComboBox->itemData(index).toInt());
+    int typeSelected = ui->P1TypeComboBox->itemData(index).toInt();
+    updateComboBox(0,typeSelected);
+    //if ()
 }
 
 /**
@@ -396,6 +402,7 @@ void MapExplorer::on_P3TypeComboBox_currentIndexChanged(int index)
 {
     //updateP3ComboBox();
     updateComboBox(2,ui->P3TypeComboBox->itemData(index).toInt());
+
 }
 
 /**
@@ -408,20 +415,27 @@ void MapExplorer::on_P3TypeComboBox_currentIndexChanged(int index)
  */
 void::MapExplorer::updateComboBox(int index, int type) {
 
+    cout << "Before deleteion: " << currentComboBoxPOIs[index].count() << endl;
     qDeleteAll(currentComboBoxPOIs[index]);
+    currentComboBoxPOIs[index].clear();
+    cout << "After deleteion: " << currentComboBoxPOIs[index].count() << endl;
+    poiComboBoxes[index]->setDisabled(true);
     poiComboBoxes[index]->clear();
 
     if (type != -1) {
-        currentComboBoxPOIs[2] = container->getPOITypeFiltered(type);
+        currentComboBoxPOIs[index] = container->getPOITypeFiltered(type);
         QMap <int, POI*>::iterator i;
 
-        for (i = currentComboBoxPOIs[2].begin(); i != currentComboBoxPOIs[2].end(); i++)
+        for (i = currentComboBoxPOIs[index].begin(); i != currentComboBoxPOIs[index].end(); i++)
             poiComboBoxes[index]->addItem( (*i)->getName(), QVariant((*i)->getId()));
 
         poiComboBoxes[index]->setEnabled(true);
+        ui->mapGLWidget->setCustomAllowed(index,false);
 
-    } else
-         poiComboBoxes[index]->setEnabled(false);
+    } else {
+        poiComboBoxes[index]->setEnabled(false);
+        ui->mapGLWidget->setCustomAllowed(index,true);
+    }
 }
 
 /**
@@ -433,4 +447,69 @@ void MapExplorer::on_poiDisplayComboBox_currentIndexChanged(int index)
     if (ui->poiDisplayComboBox->itemData(index).toInt() != -1) {
         ui->mapGLWidget->updateSpecificPOIs(ui->poiDisplayComboBox->itemData(index).toInt());
     }
+}
+/**
+ * @brief MapExplorer::on_P1ComboBox_currentIndexChanged
+ * @param index
+ */
+void MapExplorer::on_P1ComboBox_currentIndexChanged(int index)
+{
+    if (ui->P1ComboBox->count() != 0) {
+        currentPOIs[0] = container->getPOI(ui->P1ComboBox->itemData(index).toInt());
+        ui->mapGLWidget->addPOI(0,currentPOIs[0]);
+    } else {
+        ui->mapGLWidget->setCustomAllowed(0,true);
+        ui->mapGLWidget->removePOI(0);
+    }
+}
+
+/**
+ * @brief MapExplorer::on_P2ComboBox_currentIndexChanged
+ * @param index
+ */
+void MapExplorer::on_P2ComboBox_currentIndexChanged(int index)
+{
+    if (ui->P2ComboBox->count() != 0) {
+        currentPOIs[1] = container->getPOI(ui->P2ComboBox->itemData(index).toInt());
+        ui->mapGLWidget->addPOI(1,currentPOIs[1]);
+    } else {
+        ui->mapGLWidget->setCustomAllowed(1,true);
+        ui->mapGLWidget->removePOI(1);
+    }
+}
+
+/**
+ * @brief MapExplorer::on_P3ComboBox_currentIndexChanged
+ * @param index
+ */
+void MapExplorer::on_P3ComboBox_currentIndexChanged(int index)
+{
+    if (ui->P3ComboBox->count() != 0) {
+        currentPOIs[2] = container->getPOI(ui->P3ComboBox->itemData(index).toInt());
+        ui->mapGLWidget->addPOI(2,currentPOIs[2]);
+    } else {
+        ui->mapGLWidget->setCustomAllowed(2,true);
+        ui->mapGLWidget->removePOI(2);
+    }
+}
+
+void MapExplorer::on_deleteP1Button_clicked()
+{
+    ui->P1TypeComboBox->setCurrentIndex(0);
+    ui->mapGLWidget->removePOI(0);
+    ui->mapGLWidget->setCustomAllowed(0,true);
+}
+
+void MapExplorer::on_deleteP2Button_clicked()
+{
+    ui->P2TypeComboBox->setCurrentIndex(0);
+    ui->mapGLWidget->removePOI(1);
+    ui->mapGLWidget->setCustomAllowed(1,true);
+}
+
+void MapExplorer::on_deleteP3Button_clicked()
+{
+    ui->P3TypeComboBox->setCurrentIndex(0);
+    ui->mapGLWidget->removePOI(2);
+    ui->mapGLWidget->setCustomAllowed(2,true);
 }

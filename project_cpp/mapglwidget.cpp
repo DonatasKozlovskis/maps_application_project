@@ -32,7 +32,6 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     mapGeoCoordinates[2] = 4.36545; //4.3899093;   // Min Longitude
     mapGeoCoordinates[3] = 4.5086; //4.4844505;   // Max Longitude
 
-
     // Create a new map and populate it.
     mymap = new Map;
     QTime timer;
@@ -61,7 +60,6 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     path = mymap->getPath(result);
     this->directions = new Patch;
     directions->calcPatch(path);
-
 }
 
 /**
@@ -137,7 +135,7 @@ void MapGLWidget::paintGL() {
     drawTextureMap();                                       // Place the texture
     glDisable(GL_TEXTURE_2D);                               // Disable the texture state, otherwise impossible to change the color of the lines
 
-    drawAxices();                                           // Draw axices for testing purposes
+    //drawAxices();                                           // Draw axices for testing purposes
     //drawMap();                                              // Draw the roads
     drawPath();
     drawPoints();
@@ -254,25 +252,38 @@ void MapGLWidget::mousePressEvent(QMouseEvent *event) {
         lastPos = event->pos();
         emit mousePressedGL(event->pos().x(),event->pos().y());
 
-        float xt = event->pos().x() - width()/2 - movPos.x();
-        float yt = -event->pos().y() + height()/2 - movPos.y();
+//        float xt = event->pos().x() - width()/2 - movPos.x();
+//        float yt = -event->pos().y() + height()/2 - movPos.y();
 
-        // For now, we do not need more than three points
-        if (!(points.size() >= 3)) {
+//        // For now, we do not need more than three points
+//        if (!(points.size() >= 3)) {
 
-            detectPoint(adjustmentX*xt,adjustmentY*yt);
-            // If user picks up more than one point, start to calculate the paths
-            if (points.size() > 1) {
+//            detectPoint(adjustmentX*xt,adjustmentY*yt);
+//            // If user picks up more than one point, start to calculate the paths
+//            if (points.size() > 1) {
 
-                int source = points.at(points.size()-2)->getId();
-                int destination = points.at(points.size()-1)->getId();
+//                int source = points.at(points.size()-2)->getId();
+//                int destination = points.at(points.size()-1)->getId();
 
-                mydijkstra = new Dijkstra(mymap->m1, source,
-                                         destination ,mymap->numberNodes);
-                mydijkstra->calculateDistance();
-                paths.push_back(mymap->getPath(mydijkstra->output()));
-                delete mydijkstra;
-            }
+//                mydijkstra = new Dijkstra(mymap->m1, source,
+//                                         destination ,mymap->numberNodes);
+//                mydijkstra->calculateDistance();
+//                paths.push_back(mymap->getPath(mydijkstra->output()));
+//                delete mydijkstra;
+//            }
+//        }
+        int custom = getFirstCustomAllowed();
+        if (custom != -1) {
+            float xt = event->pos().x() - width()/2 - movPos.x();
+            float yt = -event->pos().y() + height()/2 - movPos.y();
+
+            int closest = mymap->findClosest(yt,xt);
+            pointsMap.erase(pointsMap.find(custom));
+            pointsMap.insert(custom,mymap->nodes.at(closest));
+
+            setCustomAllowed(custom,false);
+            recalculatePaths();
+            updateGL();
         }
 
         updateGL();
@@ -374,24 +385,43 @@ void MapGLWidget::detectPoint(float x, float y) {
 
 void MapGLWidget::drawPoints() {
 
+//    glPushMatrix();
+//    glColor3f(0,0,0);
+//    glLineWidth((GLfloat)2.0);
+//    glBegin(GL_LINES);
+
+//    for (vector<Node*>::const_iterator i = points.begin(); i != points.end(); i++) {
+//        float x = (*i)->getPoint().x;
+//        float y = (*i)->getPoint().y;
+
+//        glVertex3f(y-3,x-3,0.0);
+//        glVertex3f(y+3,x+3,0.0);
+
+//        glVertex3f(y-3,x+3,0.0);
+//        glVertex3f(y+3,x-3,0.0);
+//    }
+
+//    glEnd();
+
+//    glPopMatrix();
+
     glPushMatrix();
     glColor3f(0,0,0);
     glLineWidth((GLfloat)2.0);
     glBegin(GL_LINES);
 
-    for (vector<Node*>::const_iterator i = points.begin(); i != points.end(); i++) {
-        float x = (*i)->getPoint().x;
-        float y = (*i)->getPoint().y;
+    for (QMap<int,Node*>::iterator i = pointsMap.begin(); i != pointsMap.end(); i++) {
 
-        glVertex3f(y-3,x-3,0.0);
-        glVertex3f(y+3,x+3,0.0);
+        float x = (*i)->getPoint().y;
+        float y = (*i)->getPoint().x;
+        cout << "Draw: " << (*i)->getId() << endl;
+        glVertex3f(x-3,y-3,0.0);
+        glVertex3f(x+3,y+3,0.0);
 
-        glVertex3f(y-3,x+3,0.0);
-        glVertex3f(y+3,x-3,0.0);
+        glVertex3f(x-3,y+3,0.0);
+        glVertex3f(x+3,y-3,0.0);
     }
-
     glEnd();
-
     glPopMatrix();
 }
 
@@ -458,13 +488,9 @@ QPointF MapGLWidget::geoToOpenGLCoordinates(QPointF geoCoordinates) {
     return QPointF(y*2,x/2);
 }
 
-
 void MapGLWidget::updateSpecificPOIs(int type) {
-
     qDeleteAll(specificPOIs);
-
     specificPOIs = container->getPOITypeFiltered(type);
-
     updateGL();
 }
 
@@ -474,8 +500,7 @@ void MapGLWidget::drawSpecificPOIs() {
     glColor3f(0.0f,0.0f, 1.0f);
     glLineWidth(3);
     for (QMap <int, POI*>::iterator i = specificPOIs.begin(); i != specificPOIs.end(); i++) {
-
-
+        glColor3f(0.0f,0.0f, 1.0f);
         QPointF result = geoToOpenGLCoordinates(QPointF((*i)->getPoint().x,(*i)->getPoint().y));
 
         float x = result.x();
@@ -486,6 +511,104 @@ void MapGLWidget::drawSpecificPOIs() {
 
         glVertex3f(x-3,y+3,0.0);
         glVertex3f(x+3,y-3,0.0);
+
+        glColor3f(1.0f,0.0f, 1.0f);
+
+//        //QPointF result2 = mymap->findClosest(QPointF(y,x));
+//        int result2int = mymap->findClosest(y,x);
+
+//        cout << (*i)->getName().toStdString()  << " Node index: " << result2int << endl;
+
+//        float x1 = mymap->nodes.at(result2int)->getPoint().x;
+//        float y1 = mymap->nodes.at(result2int)->getPoint().y;
+
+//        cout << "Source: " << x << " " << y
+//             << " Closest: " << y1 << " " << x1 << endl;
+
+//        glVertex3f(y1-3,x1-3,0.0);
+//        glVertex3f(y1+3,x1+3,0.0);
+
+//        glVertex3f(y1-3,x1+3,0.0);
+//        glVertex3f(y1+3,x1-3,0.0);
+
+
     }
     glEnd();
+}
+
+void MapGLWidget::recalculatePaths() {
+
+    paths.clear();
+    if (pointsMap.size() > 1) {
+
+        QMap <int, Node*>::iterator i;
+        QMap <int, Node*>::iterator end = pointsMap.end() - 1;
+
+        for (i = pointsMap.begin(); i != end; i++) {
+            int source = (*i)->getId();
+            int destination = (*(i+1))->getId();
+
+            cout << "source: " << source << endl;
+            cout << "destination: " << source << endl;
+
+            mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->numberNodes);
+            mydijkstra->calculateDistance();
+            paths.push_back(mymap->getPath(mydijkstra->output()));
+            delete mydijkstra;
+        }
+    }
+}
+
+void MapGLWidget::drawPaths() {
+
+    glPushMatrix();
+    glLineWidth((GLfloat) 3.0);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_LINE_STRIP);
+
+    for (vector < vector <Node*> >::iterator i = paths.begin(); i != paths.end(); i++)
+        for (vector <Node*>::iterator j = (*i).begin(); j != (*i).end(); j++)
+            glVertex3f((*j)->getPoint().x,(*j)->getPoint().y,0.0f);
+
+    glEnd();
+    glPopMatrix();
+}
+
+void MapGLWidget::addPOI(int position, POI* poi) {
+    QPointF coordinates = geoToOpenGLCoordinates(QPointF(poi->getPoint().x,poi->getPoint().y));
+
+    int closest = mymap->findClosest(coordinates.y(),coordinates.x());
+
+    // Operating the same pointer as in the map,
+    // so no need to delete allocated memory
+    pointsMap.erase(pointsMap.find(position));
+    pointsMap.insert(position,mymap->nodes.at(closest));
+
+    cout << "POI Added: " << poi->getName().toStdString()
+         << " Closest: " << closest;
+
+    cout << " x " << coordinates.x() << " y " << coordinates.y()
+            << " x1 " << mymap->nodes.at(closest)->getPoint().x
+            << " y1 " << mymap->nodes.at(closest)->getPoint().y << endl;
+
+    recalculatePaths();
+    updateGL();
+
+}
+
+void MapGLWidget::removePOI(int index) {
+    pointsMap.erase(pointsMap.find(index));
+    recalculatePaths();
+    updateGL();
+}
+
+void MapGLWidget::setCustomAllowed(int index, bool state) {
+    customAllowed[index] = state;
+}
+
+int MapGLWidget::getFirstCustomAllowed() {
+    for (int i = 0; i < MAX_POINTS; i++)
+        if (customAllowed[i]) return i;
+
+    return -1;
 }

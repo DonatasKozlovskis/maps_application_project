@@ -19,7 +19,7 @@ public:
     bool addPOI(float, float, QString, int, QString, QString);
     bool removePOI(int);
     bool modifyPOI(int , QString , int , QString , QString );
-    POI* getPOI(int &);
+    POI* getPOI(int);
     QMap < int, QString> getTypeList();
     QMap < int, POI* > getPOITypeFiltered(int);
     QString getPoiType(int);

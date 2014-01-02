@@ -18,7 +18,9 @@ public:
     void renderMap();
     Road* getRoad(unsigned int);
     void normalize(unsigned int, unsigned int, float*);
+
     unsigned int findClosest(float,float);
+    QPointF findClosest(QPointF);
 
     void adjMatrix(bool);
     void rmAdjMatrix();
