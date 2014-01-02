@@ -14,7 +14,7 @@ function output = FilterClass(item)
             %in the next line we use setdiff to look for diferences between
             %two cells. If the words are equal it will return an empty cell
             %that we will check with isempte
-            if isempty(setdiff(POIdata(i,4), class))
+            if strcmp(POIdata(i,4), class)
                 %we add every element that has the same 'class' with cat()
                 FilteredClass = cat(1,FilteredClass,POIdata(i,:));
             end
