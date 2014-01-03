@@ -29,10 +29,16 @@ public:
     void adjMatrix(bool);
     void rmAdjMatrix(); 
 
-// TO DO: Change some parameters to private
-    Eigen::SparseMatrix<float> m1;
+    //Accessors
+    int getRoadsCount();
+    int getNodesCount();
+    int getnumberNodes();
+
     vector<Road*> roads;
+    Eigen::SparseMatrix<float> m1;
     map<unsigned int,Node*> nodes;
+
+private:
     int roadsCount;
     int nodesCount;
     int numberNodes;

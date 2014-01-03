@@ -91,9 +91,9 @@ Despite sharing the same EER schema, the database chosen for the Matlab part it 
 
 \subsection{Related works}
 
-In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.com/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
+In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.es/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
 
-For user's information, \textit{OpenStreetMap} data is stored topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
+For user's information, OpenStreetMap data is stored topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
 
 \textit{OpenStreetMap} has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way. For example, all elements as roads, forest, buildings, rivers, linear structures are represented as polygons of way elements, thus additional data filtering, subsets were used to prepare required datasets for implementation of project database.
 
@@ -153,14 +153,14 @@ With the aim of creating a robust database where solving the problems proposed b
 
 Here, we can identify two tables, its attributes and the relation between them which can e defined as N:M because of the fact that one node can belong to multiple roads, and one road have multiple nodes. But also this relationship has to be defined taking into account the order the node has in the road that belongs to, giving an attribute of the relationship called ORDER.
 
-On the other hand, the user has to be able to see the points of interest, create news, delete them and also modify the ones which already exist. We decided to create two tables in the same schema without any relationship with the previous tables in order to maintain the isolation from the points updated all the time because it does not belong to any specific road.
+On the other hand, the user has to be able to see the points of interest, create news, delete them and also modify the ones which already exist. We decided to create a table in the same schema without any relationship with the previous tables in order to maintain the isolation from the points updated all the time because it does not belong to any specific road.
 The number of attributes considered from the very beginning for the points of interest (POI) table are: The ID and the position in LATITUDE and LONGITUDE, the NAME of the point, as well as the ADDRESS and the TYPE.
 
 Taking into account the previous steps, we can see the result of the database in the following schema:
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{big_schneider.png}
+\includegraphics[width=0.6\textwidth]{EER_Diagram.png}
 \caption{Diagram of the relational database model created during the design}
 \label{fig:RelDBdiagram}
 \end{figure}
@@ -172,15 +172,14 @@ Notice that part of the process of development and parsing of the data from Open
 The present section has been divided in two different parts: The first one explains how the map structure is created evolving the three basic classes, the correspondent adjacency matrix depending on the choice of the user (walking or driving), how the shortest path is calculated using Dijkstra's algorithm and the logic behind the management of the points of interest. During the second part, we will focus on how the data is shown and obtained directly from the screen and its process of normalization and denormalization, taking into account the different spatial coordinates we work with during the implementation. But also we will see how the graphical user interface provides the input/output to the user and how is managed.
 
 \subsection{Creating the map}
-The implementation of the application started with classes \textit{Node}, \textit{Road} and \textit{Map} according to the three tables already existing in the database and with the goal of loading all necessary points that composes the map of Le Creusot in memory. However, at the same time, we wanted to take profit of the whole process storing all nodes that composes one road in the same structure. As a consequence, the map structure is a vector container that keeps as many pointers to road structures as number of roads are in the map. At the same time, each road is a vector container whose size is defined by the number of nodes that compose it. However, what is stored in the road structure are pointers to nodes.
+The implementation of the application started with classes \textit{Node}, \textit{Road} and \textit{Map} according to the three tables already existing in the database and with the goal of loading all necessary points that composes the map of le Creusot in memory. However, at the same time, we wanted to take profit of the whole process storing all nodes that composes one road in the same structure. As a consequence, the map structure is a vector container that keeps as many pointers to road structures as number of roads are in the map. At the same time, each road is a vector container whose size is defined by the number of nodes that compose it. However, what is stored in the road structure are pointers to nodes.
 
 \begin{lstlisting}
-vector<Road*> myMap 			//Definition of map structure
-vector<Node*> myRoad;			//Definition of road structure
-map<unsigned int,Node*> nodes;	//Definition of translator ID/Node
+vector<Road*> myMap 	//Definition of map structure
+vector<Node*> myRoad;	//Definition of road structure
 \end{lstlisting}
 
-Trying to improve the performance, the class also has a structure used as a dictionary between the ID node and the node itself. Then, all searches have a complexity $ O(log(n)) $.
+Composing the following relationship:
 
 \begin{figure}[h]
 \centering
@@ -188,14 +187,12 @@ Trying to improve the performance, the class also has a structure used as a dict
 \caption{UML diagram of the three classes that composes the logic map: Map, Road and Node}
 \end{figure}
 
-As we can see our class \textit{map} has dependencies with the class \textit{QtSQL}, necessary for making queries to the database but also contains a standard map structure. It is used in order to avoid checking node by node in some cases, a map that contains the node structures and its identifier is composed in the constructor. Finally, we can see some other dependences with standard libraries with \textit{QtOpenGL} the library that makes possible drawing the nodes that compose the map (explained in detail in the next section).
+As we can see our class map has dependencies with the class \textit{QtSQL}, necessary for making queries to the database but also contains a standard map structure. It is used in order to avoid checking node by node in some cases, a map that contains the node structures and its identifier is composed in the constructor. Finally, we can see some other dependences with standard libraries with \textit{QtOpenGL} the library that makes possible drawing the nodes that compose the map (explained in detail in the next section).
 
 \subsection{The shortest path}
 The first requirement from this kind of application is to be able to provide the shortest route between two specific nodes in the map. In order to carry on this task there are a lot of common and tested algorithms available such as Bellman-Ford, its variation called  Shortest Path Faster Algorithm (SPFA), Jonhson's algorithm, Floyd–Warshall algorithm, Dijkstra's algorithm.
 
 Bellman-Ford algorithm and its variation is believed to work properly with graphs that contain negative weights as edges although for graphs without negative values, Dijkstra improves the performance. In the same direction both Jonhson's and Floyd-Warshall algorithms are more suitable for graphs which contain negative values in the their edges. Because of that, we finally decide to use a Dijkstra's algorithm.
-
-Finally, the class has a method called \textit{calcTime()} which calculates the time spend if the user had did the route walking or driving considering the speed as 4km/h for people and an average of 40km/h for cars.
 
 \subsubsection{Dijkstra's algorithm}
 Despite the implementation of the algorithm is well known, we would explain slightly the basis using pseudo-code given a graph G, with edges E, vertices V and a source vertex s. We can define the following structures:
@@ -242,62 +239,21 @@ end while
 \subsubsection{The adjacency matrix}
 The following section describes a specific method of the \textit{map} class that allows us to create an adjacency matrix of dimensions NxN where N is the total amount of nodes that composes the map. This matrix will be used to calculate the shortest path between two or more points in the map. Such matrix is generated according to the method of transport chosen by the user. For instance, we can not drive in both senses in all roads or driving in a foot way.
 
-First of all, the structure is allocated in memory and initialized to the maximum distance in all positions, in our case 0 units, and 0 in the diagonal of the squared matrix. Then, the rest of the matrix is filed taking into account the distance between the nodes identified by the index of the rows and columns of the matrix. From this point, the only thing we have to do is to go over the map structure checking which nodes are consecutive meaning that exists a connection between them. In this way, the position $M_{adj}(1,2)$ would contain the distance between node 1 and node 2. But what happens with the position $M_{adj}(2,1)$? This position contains the same distance if and only if the road is two ways, fact that can be checked querying the attribute \textit{oneWay} located in table \textit{Roads} in the database. 
+First of all, the structure is allocated in memory and initialized to the maximum distance in all positions, in our case 999 units, and 0 in the diagonal of the squared matrix. Then, the rest of the matrix is filed taking into account the distance between the nodes identified by the index of the rows and columns of the matrix. From this point, the only thing we have to do is to go over the map structure checking which nodes are consecutive meaning that exists a connection between them. In this way, the position $M_{adj}(1,2)$ would contain the distance between node 1 and node 2. But what happens with the position $M_{adj}(2,1)$? This position contains the same distance if and only if the road is two ways, fact that can be checked querying the attribute \textit{oneWay} located in table \textit{Roads} in the database. 
 We can also take into account querying the database, if a road is a foot way or not and calculate the appropriate distance.
-On the other hand, people can work in both senses and also use all king of roads, so we can generate the adjacency matrix in the same way without the restrictions explained above. Notice that in order to calculate the distance between two nodes the method \textit{distNode()} was implemented in class \textit{node } following the formula of the euclidean distance. 
-However, during the process of development the number of nodes was increased in order to test the real performance of the algorithm with a larger number. It highlight the weaknesses of performance generating and storing the adjacency matrix in memory. Let us see and example:
+On the other hand, people can work in both senses and also use all king of roads, so we can generate the adjacency matrix in the same way without the restrictions explained above.
 
-\begin{center}
-4 Bytes (float) * 84·$10^{6}$ (number of nodes) $\simeq$ 336 MB
-\end{center}
+Notice that in order to calculate the distance between two nodes the method \textit{distNode()} was implemented in class \textit{node } following the formula of the euclidean distance. 
 
-In order to solve this issue and at the same time improving the access response to the elements, we decided to use sparse matrices to take out, somehow, all zeros that composes the adjacency matrix, reducing its size. For carrying out this task, we have used Eigen \footnote{Eigen is an open source C++ library of template headers for linear algebra, matrices, vectors and operations between them. See \url{ http://eigen.tuxfamily.org/index.php?title=Main_Page}} library. The main idea behind this is the compression of the data through the compressed sparse column (CCS) where the values are readed by column and a row index is stored for each one in a vector. Then, all non zero values are stored in an a new array. 
-
-In addition, among the benefits already explained, we can also see how the performance of the Dijkstra's algorithm improves according to the size of the matrix in the following table:
-
-\begin{table}[ht] 
-\caption{Sum up of the benefits of Sparse matrices} 
-\centering
-\begin{tabular}{c c c}
-\hline\hline 
-~ & Matrix & Sparse \\ [0.5ex]  
-\hline 
-Num. nodes & $\simeq$84·$10^{6}$ & $\simeq$16·$10^{3}$ \\
-Memory & $\simeq$336 MB & $\simeq$64 KB + Zero vector\\ 
-Time & $>$30 sec & $<$1 sec \\ 
-Dijkstra &  $>$30 sec & $<$3 sec \\ [1ex]
-\hline
-\end{tabular} 
-\label{table:nonlin}
-\end{table} 
-
-\subsection{Route path}
-
-The current functionality is compressed in the \textit{patch} class and allows the user to see the way which has to follow to perform the shortest path between the points already selected.
-The main working principle is based on the angle defined by groups of three nodes. Let us consider a specific clarifier example where the nodes provided by the shortest path algorithm are in red. If the i-2 and i nodes belongs to the Road 2 we know we are just going straight ahead. However, when we consider if the nodes i-1 and i+1 belongs to the Road 2, we can notice that they are not meaning that we turned right or left. Then, we can calculate the angle of the three points and obtain a value around 90 degrees if we are turning right according to the point of view of the user. Or conversely, if we obtain an angle around -90 means that we are turning left.
-
-Now, we can imagine a lot of exceptions derived from the general case as when the same street changes its name or when we find a intersection of more than 2 roads involved on it. In the first case, the algorithm takes into account that the angle is still around 180. And in the second one, we can stablish some borders where we can show messages such as: "turn slightly...".
-
-Finally, all these orders can be exported to a \textit{txt} file using \textit{genTxt()} method of the class.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.3\textwidth]{angle.png}
-\caption{Example of road cross in the calculation of the route path}
-\end{figure}
-
-\clearpage
+<<<<<<< HEAD
 \subsection{Points of interest}
-Regarding to the points of interest, our first decision was to keep them in the database because of the large list we had collected (around 200 points of interest of more than 20 types). However, this table has no relationship with table \textit{node} because, in general, all points have a specific location that does not correspond to any node in the map: Maybe because of the real latitude and longitude setted manually using a GPS or maybe because of the point pressed on the screen does not correspond to any node.
 
-In this way, we can print all points of interest in their specific location in the map, over buildings, parks... away from roads but at the same time keeping the independence with the table \textit{node}. Then, when the user wants two calculate the shortest path to a point of interest, the route brings him to the closest node that composes the map. Otherwise, we should generate an adjacency matrix including all points of interest when a new point is created taking an overhead of memory.
-
-The different types of points of interest are composed in the following: Bakery, Bank, Bar/Restaurant, Cars, Church/Cemetery, Cigar Store, Cultural place, Florist, Fuel, Grocery, Hairdressing, Hospital, Hotel, Park/Library, Pharmacy, Post Office, Residence, School, Shop, Sports/Gym, Train Station, University Building and Variety store.
-
+\end{document}
+=======
 \clearpage
 \section{Matlab Implementation}
        
-In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, the text will focus reader on only the differences.
+In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, only the differences are presented and discussed.
 
 \subsection{Getting the data}
 
@@ -308,7 +264,7 @@ The first difference comes in fact that variables in Matlab can be not even crea
 \subsection{Data Structure}
 
 The second important question which had to be answered - the types of data structures in Matlab.
-Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object \textit{classes} with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, all of those will not be discussed since all information can be found in the web.\footnote{
+Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object classes with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, thus all of those will not be discussed since all information can be found in the web.\footnote{
 \url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
 }
 
@@ -341,7 +297,7 @@ font=\ttfamily}]
 \caption{Simplified diagram of relationship of a classes}
 \end{figure}
 
-As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent approach was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
+As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent method was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
 
 Notwithstanding our option, the user could find an alternative or better data structure for the same goal.
 For example, together with the team we discussed another options such as keeping data in project in the same way as in kept in the database: roads and nodes and the dictionary (linking table) between roads and nodes. Such structure would have it's advantage that various connections between roads and nodes would be easier accessible, e.g. it would be possible to get all roads where node \textit{X} is included and vice versa, while the our methodology requires additional methods to get the same results. 
@@ -349,18 +305,6 @@ For example, together with the team we discussed another options such as keeping
 % % matlab
 % % Shortest Path
 \subsection{The shortest path}
-This issue was common between both versions (C++ and Matlab) of programs, thus the same algorithms were used to get a solution to the question of shortest path (Dijkstra was employed on a weighted graph represented as adjacency (sparse) matrix). Therefore in this section the user's attention will be focused on a question how to find a shortest path starting from a random Map Point, which is not pre-included in a adjacency matrix.\\
-Firstly, the random point needs to be obtained from the map with relevant Longitude/Latitude coordinates. The second step is to answer the question, how should we include this new point into already existing weighted graph? After discussion with team members, we came up to the solution where the new point should be connected with a closest existing node. However, there could be a case where the already existing node is closest to the new point, but another perpendicular projection to the line segment, represented using to other nodes is shorter then the distance between new point and already existing node. Thus, finally we decided employ both methods. Please note, that the latter method (projection) requires adding two new points to the weighted graph and the weights between user input - projected point, projected point and two nodes of line segment should be added as well.
-Basically, all algorithm can be summarized in such steps:
-\begin{itemize}
-\item Determine the window on which the closest nodes and projections will be searched.
-\item Find the closest node on determined window.
-\item Find the closest projection (if possible) on the same window.
-\item Update the adjacency matrix according shortest distance.
-\end{itemize}
-
- 
-
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % projection figure
 \begin{figure}[!h]
@@ -432,9 +376,7 @@ Basically, all algorithm can be summarized in such steps:
     %connecting closest nodes
         %circle representing user input			 
         \fill[red] (user) circle (3pt) node[above] {$?$};
-        
-    %square window line (dashed)
-    \draw[important line, black, dashed] (2.6-0.9,2.5-0.9) -- (2.6-0.9,2.5+0.9) -- (2.6+0.9,2.5+0.9) -- (2.6+0.9,2.5-0.9) -- (2.6-0.9,2.5-0.9);
+    
     
 \end{tikzpicture}
 \begin{tikzpicture}[
@@ -478,13 +420,13 @@ Basically, all algorithm can be summarized in such steps:
     \draw[important line, green, ] (intersect)+(-0.14,0.07) node[minimum size=0.1cm,draw,green, rotate =14]{};
     %circle representing user input			 
     \fill[red] (user) circle (3pt) node[above] {$?$};
-    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);   
-    
-    %square window line (dashed)
-    \draw[important line, black, dashed] (2.6-0.9,2.5-0.9) -- (2.6-0.9,2.5+0.9) -- (2.6+0.9,2.5+0.9) -- (2.6+0.9,2.5-0.9) -- (2.6-0.9,2.5-0.9);	 
+    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);    
 \end{tikzpicture}
-\caption{Finding the shortest point/projection for the random point on window domain}
+
+\caption{Random point projections}
 \end{figure}
-
-
 \end{document}
+
+
+
+>>>>>>> 2baca9583aa655caae007d6de16255a951da1972
