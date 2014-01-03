@@ -24,8 +24,11 @@ public:
     void normalize(unsigned int, unsigned int, float*);
     void renderMap();
     Road* getRoad(unsigned int);
-    vector<Node*> getPath(vector<int>);
+
     unsigned int findClosest(float,float);
+    QPointF findClosest(QPointF);
+
+    vector<Node*> getPath(vector<int>);
     void adjMatrix(bool);
     void rmAdjMatrix(); 
 

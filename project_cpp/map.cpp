@@ -239,10 +239,31 @@ unsigned int Map::findClosest(float x, float y) {
     return result;
 }
 
+
+QPointF Map::findClosest(QPointF point) {
+
+    QPointF result = QPointF(-1,-1);
+    float distance = 9999;      // Test for now
+
+    for (map<unsigned int,Node*>::iterator i = nodes.begin(); i != nodes.end(); i++) {
+
+        float c = sqrt( pow(point.x() - i->second->getPoint().x,2) + pow(point.y() - i->second->getPoint().y,2) );
+        if (c < distance) {
+            result.setX(i->second->getPoint().x);
+            result.setY(i->second->getPoint().y);
+        }
+
+    }
+    //cout << result << endl;
+
+    return result;
+}
+
 /**
  * @brief Map::rmAdjMatrix
  * Removes the adjacency matrix making resize being the only way to perform the task
  */
+
 void Map::rmAdjMatrix(){
     this->m1.resize(0,0);
 }

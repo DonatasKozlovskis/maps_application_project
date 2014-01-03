@@ -11,6 +11,8 @@
 #include "patch.h"
 #include "poicontainer.h"
 
+#define MAX_POINTS 3
+
 
 class MapGLWidget : public QGLWidget
 {
@@ -44,6 +46,11 @@ public:
     QPointF geoToOpenGLCoordinates(QPointF);
 
     void updateSpecificPOIs(int);
+    void recalculatePaths();
+    void addPOI(int, POI*);
+    void removePOI(int);
+    void setCustomAllowed(int,bool);
+
 
 signals:
 
@@ -77,6 +84,7 @@ private:
     void drawTextureMap();
     void drawPoints();                      // 24.12 ------------------------------
     void drawPath();
+    void drawPaths();
     void loadTextures();
 
     void drawSpecificPOIs();
@@ -100,6 +108,9 @@ private:
     vector < vector<Node*> > paths;
 
     vector <Node*> points;      // Points for painting (testing) --------------------------
+    // New stuff
+    QMap <int, Node*> pointsMap;
+
     vector <Node*> path;
 
     Patch *directions;
@@ -108,6 +119,9 @@ private:
 
     QMap < int, POI* > specificPOIs;
 
+    bool customAllowed[3];
+
+    int getFirstCustomAllowed();
 
 
 protected:

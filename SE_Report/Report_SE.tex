@@ -144,6 +144,7 @@ ROUTE: Finally, number five the distance and time that the user will spend havin
 \centering
 \includegraphics[width=0.7\textwidth]{Prototype.png}
 \caption{First GUI prototype conceived at early stages of the design process}
+\label{fig:GUIprototype}
 \end{figure}
 
 \subsection{Getting the data}
@@ -485,6 +486,81 @@ Basically, all algorithm can be summarized in such steps:
 \end{tikzpicture}
 \caption{Finding the shortest point/projection for the random point on window domain}
 \end{figure}
+
+\subsection{Graphical User Interface, GUI}
+
+The \textit{Graphical User Interface} is one of the most important parts of every program nowadays. The user requires a simple way to interact with the software and the GUI provides it. We came up with a simple idea shown in Figure \ref{fig:GUIprototype}, and after a few updates and modifications we got the next one:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{gui.png}
+\caption{Graphical User Interface designed in Matlab}
+\label{fig:guiMatlab}
+\end{figure}
+
+As we can see it is divided into 5 parts. In the next points we will explain briefly what each part does and after we will discuss it thoroughly.
+
+\begin{enumerate}
+\item
+In this first part we will be able to modify the points represented on the map. As we can see we will have three different options in order to choose a point:
+	\begin{itemize}
+	\item
+	Choose an element from the whole list.
+	\item
+	Filter the points by class, for example to show only the restaurants.
+	\item
+	Choose a random point by clicking on the map.
+	\end{itemize}
+We have \textit{Point 1} and \textit{Point 2}, which will be the basic points.
+
+\item
+In the second part of the GUI we can decide if we want to go by foot or by car. This parameter will affect the button \textit{GO!} that will compute the shortest path between the two selected points.
+
+\item
+In this third part we can observe four different buttons: \textit{POI, Itinerary, Find in a Range} and \textit{Instructions}. This will change the panel shown in the point 4.
+
+\item
+In this part we will change the panels according to the button we pushed. At the beginning the POI menu is visible but the user can interact with anyone.
+
+\item
+The last one, the number five, is the map. Here is where we will plot all the results computed in the background operations.
+\end{enumerate}
+
+In the next subsections we will explain in detail how every part of the GUI works and how it interacts with the background functions.
+
+\subsubsection{Introduction of points by the user}
+Selecting two points and going from the first to the second is probably the most basic thing one would expect from this kind of application. That's why we made it simple and easy to access. As shown in the previous figure for every point we will be able to choose three different methods. 
+
+The first one and very simple is to choose a point from a list. At the beginning we load all the Points Of Interest (POIs) from a .mat file. All this POIs were extracted from a common work between all the groups and contain a great amount of interesting places of Le Creusot. We do a little filter in order to choose only the name of the places since this file contains other information. Then the user selects a point by scrolling and clicking or by typing in the keyboard and pressing enter. When a point is selected the program follows the next steps:
+
+\begin{itemize}
+\item
+First of all the callback of the function is called.
+\item
+Then we extract the index number and we will use it to know which POI has been selected. We do this by using the next function:
+	\begin{lstlisting}
+	contents = get(hObject,'Value');
+	\end{lstlisting}
+The \textit{contents} variable will be a number.
+\item
+We initialize two arrays containing the latitudes and longitudes of the actual POIs list, by the moment all of them. Then we extract the latitude and longitude of the point selected by accessing at the posicion \textit{contents} of these variables. Note that in this point we will store the variables in the handles since we want this point to be accessible from another part of the program and not only this callback.
+\item
+The next thing to do is to check if we have any Point1 displayed, if this is the case we delete it. Then it is plotted in the map so the user can easily see it. Note that the points will appear according to the colour used in the background of the selection menu of each point. The points are plotted also in a handle so it can be deleted in anywhere without deleting the background map.
+\item
+Finally we actualize the handles.
+\end{itemize} 
+
+The second way to introduce a point allows the filtering by classes. It is very similar to the first one but it adds extra possibilities to the common way. It is easier and faster to find points.
+
+To do this the user must select one of the classes introduced in the program. When it is selected we go into a function that will filter the main data file into a smaller one. This function compares the class of each POI and if it matches with the selected one it adds the information of this point to a new variable. To compare the two strings we use \textit{strcmp()}, used in the C++ labs. This will create a new list with only one class POI information. When going back to the main GUI program we will store this list into the actual POI data and we will update the information in the main pop-up menu. In this way when the user will see only the selected class points in the pop-up menu.
+
+In this part we faced some problems when selecting first a POI by the first method and the filtering by classes. After a few hours we saw the error was caused by the index of the menu. If we selected first the POI number 35 and then we filtered by a class that only contains 6 elements it crashed. This is because it was trying to access the 35th position of the new list and it didn't exist. The way to solve this problem was to reset this value to 1 so whenever the user changes anything the pop-up menu it is updated to the first position automatically.
+
+
+
+
+
+ 
 
 
 \end{document}

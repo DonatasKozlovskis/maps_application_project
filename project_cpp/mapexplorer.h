@@ -39,6 +39,15 @@ private slots:
 
     void on_poiDisplayComboBox_currentIndexChanged(int);
 
+    void on_P1ComboBox_currentIndexChanged(int index);
+    void on_P2ComboBox_currentIndexChanged(int index);
+    void on_P3ComboBox_currentIndexChanged(int index);
+
+    void on_deleteP1Button_clicked();
+
+    void on_deleteP2Button_clicked();
+
+    void on_deleteP3Button_clicked();
 
 private:
     // User interface
@@ -57,6 +66,11 @@ private:
     QMap <int, POI*> currentComboBoxPOIs[3];
     QComboBox* poiComboBoxes[3];
 
+    POIContainer* container;        // Not good
+    Node currentPOINode;
+
+    POI* currentPOIs[3];
+
     void initializeContextMenu();
     void initializeComboBoxes();
 
@@ -66,9 +80,7 @@ private:
 
     void updateComboBox(int,int);
 
-    POIContainer* container;        // Not good
 
-    Node currentPOINode;
 
 
 

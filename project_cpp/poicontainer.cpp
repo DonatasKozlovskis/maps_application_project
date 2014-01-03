@@ -93,7 +93,7 @@ int POIContainer::size() {
  *
  * @return the pointer to the POI with the specified index
  */
-POI* POIContainer::getPOI(int &index) {
+POI* POIContainer::getPOI(int index) {
     return pois.value(index);
 }
 
