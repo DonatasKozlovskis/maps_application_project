@@ -645,6 +645,8 @@ As we can see we go down with the scrollbar and finally at the end there exists 
 
 As the data was collected by all the groups and jointed together some roads are missing and sometimes we can find unnamed streets in the instructions. This can be solved by manually finishing the own database of points of interest.
 
+\subsubsection{Plotting the map}
+
 Finishing the menus we only have one thing left and it is the \textbf{map plotting}. This is done initially in the beginning of the program when the opening function of the GUI is executed. We call the plotMap function that is executed in two parts. First of all to understand how will it work we should think in a plot painted by layers where we can remove or add parts to show. First of all we should start filling the plot by the last layer, the one that we will always to be visible and this one is the image of the map, to give a view like the classical \textit{Google Maps}. Secondly we will plot all the roads in an upper layer so we can see both of them (map and roads). Up to this part we can consider it the static part of the map. Then during the execution of the program, as we have already explained, we will plot some points and lines in an upper layer that can be removed.
 
 See the next figure to try to understand how it works.
@@ -669,5 +671,17 @@ Shortest path (in red).
 \end{enumerate}
 
 If you take a look again in the map plot you will be able to see the roads represented in different colours and width. This is a visual way to recognise the bigger streets and also the paths only for pedestrians only.
+
+\subsubsection{Organization of the data}
+
+In this subsection we will explain a little bit how the data is structured inside the main GUI program and how it works. One of our great friends in this part has been the \textbf{Handles}. This is a structure containing handles to all the objects created in the graphical user interface so we can manipulate everything from any point of the code. This has been very useful for storing data such the latitudes and longitudes of the actual points or the different variables that will determine if a point is plotted or not.
+
+One important thing about the handles is they need to be updated whenever we change the value of them, otherwise they will not update. This was a minor problem at the beginning when learning how it worked the callbacks and GUIs of Matlab since sometimes we forgot to update the handles and the results were not the expected ones.
+
+When calling the function \textit{twoInputShortestPath} we cannot give the handles to it. Instead we must create a \textit{mapNodeStart} and a \textit{mapNodeTarget} points, which belongs to a class. This is the way the background functions work, with classes.
+
+The files of data are stored in \textit{dependencies\textbackslash data}. The two important ones for the GUI are \textit{POIdata.mat} and \textit{POIClasses.mat}. The first one is a file that contains all the points of interest gathered by all the groups. We needed some filtering of this data before storing it here since some data was wrong. The file is a matrix of cells and it contains as many rows as POIs has and 5 columns. In these we can find the latitude, longitude, name, class and address of each POI.
+
+We access this cells in different parts of the program depending on which data do we need. When we create a new class filter we preserve this 5 columns but we only select a few POIs. Then we store it directly in the handles instead of saving it in a file.
 
 \end{document}
