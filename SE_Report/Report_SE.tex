@@ -38,6 +38,7 @@
 }
 
 \usepackage{caption}
+\usepackage{subcaption}
 \DeclareCaptionFont{white}{\color{white}}
 \DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox[c]{\textwidth}{#1#2#3}}}
 \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
@@ -531,7 +532,7 @@ In the next subsections we will explain in detail how every part of the GUI work
 \subsubsection{Introduction of points by the user}
 Selecting two points and going from the first to the second is probably the most basic thing one would expect from this kind of application. That's why we made it simple and easy to access. As shown in the previous figure for every point we will be able to choose three different methods. 
 
-The first one and very simple is to choose a point from a list. At the beginning we load all the Points Of Interest (POIs) from a .mat file. All this POIs were extracted from a common work between all the groups and contain a great amount of interesting places of Le Creusot. We do a little filter in order to choose only the name of the places since this file contains other information. Then the user selects a point by scrolling and clicking or by typing in the keyboard and pressing enter. When a point is selected the program follows the next steps:
+The \textbf{first} one and very simple is to choose a point from a list. At the beginning we load all the Points Of Interest (POIs) from a .mat file. All this POIs were extracted from a common work between all the groups and contain a great amount of interesting places of Le Creusot. We do a little filter in order to choose only the name of the places since this file contains other information. Then the user selects a point by scrolling and clicking or by typing in the keyboard and pressing enter. When a point is selected the program follows the next steps:
 
 \begin{itemize}
 \item
@@ -550,15 +551,73 @@ The next thing to do is to check if we have any Point1 displayed, if this is the
 Finally we actualize the handles.
 \end{itemize} 
 
-The second way to introduce a point allows the filtering by classes. It is very similar to the first one but it adds extra possibilities to the common way. It is easier and faster to find points.
+The \textbf{second} way to introduce a point allows the filtering by classes. It is very similar to the first one but it adds extra possibilities to the common way. It is easier and faster to find points.
 
 To do this the user must select one of the classes introduced in the program. When it is selected we go into a function that will filter the main data file into a smaller one. This function compares the class of each POI and if it matches with the selected one it adds the information of this point to a new variable. To compare the two strings we use \textit{strcmp()}, used in the C++ labs. This will create a new list with only one class POI information. When going back to the main GUI program we will store this list into the actual POI data and we will update the information in the main pop-up menu. In this way when the user will see only the selected class points in the pop-up menu.
 
 In this part we faced some problems when selecting first a POI by the first method and the filtering by classes. After a few hours we saw the error was caused by the index of the menu. If we selected first the POI number 35 and then we filtered by a class that only contains 6 elements it crashed. This is because it was trying to access the 35th position of the new list and it didn't exist. The way to solve this problem was to reset this value to 1 so whenever the user changes anything the pop-up menu it is updated to the first position automatically.
 
+The \textbf{third} method had a very simple implementation. By clicking on the button \textit{Get Loc.} the user is able to point anywhere in the map and select a point, that is stored in the handles of longitude and latitude. The function used is \textit{ginput(1)}, very common in Matlab. The we plot the point in the map the same way we did in the other two methods.
 
+\subsubsection{Selecting how to reach the point and calculating the shortest path}
 
+In this second part we will explain how the selection of going by foot or by car is done and also how the shortest path will be computed.
 
+Starting by the beginning, we can see in point two of the GUI image the user is able to select going by car or by foot. This will affect the way we call the functions in the background when selecting \textit{GO!}. Depending on which one is selected we will pass the handle of the sparse matrix \textbf{Car} or the sparse matrix of \textbf{Walk}. The function \textit{twoInputShortestPath} will compute the shortest path and return it together with the distance. Right now we can ignore the last parameter since we don't need it.
+
+When we get the shortest path we plot it so the user can see in the map the way to follow. It will also generate a set of instructions, but this will be explained in a few pages.
+
+Finally we have to take in care the case the user entered wrongly some points or he left one by mistake. If this occurs we have designed a special window that will appear showing an error message. In order to avoid the creation of multiple windows for different errors that we may encounter, this little GUI will show the message passed by the main program. So in this case we will have something like this:
+
+\begin{lstlisting}
+GUI_error('One or more points are invalid, please recheck it');
+\end{lstlisting}
+
+\subsubsection{Menus for interaction}
+
+In this subsection we will be explaining how the menus works and which are the possibilities for the user to interact. This part concerns the points 3 and 4 of the image since they are strongly linked.
+
+The \textbf{POI} menu has two main functionalities: manipulation of the \textit{Points of Interest} and the \textit{Refresh} button. The POIs can be modified or created depending on the needing of the user. In the two cases a new user interface will appear. In the case of modifying a POI in the first thing to do is to choose an existing point. In this moment all the data of this point is charged in the window and the user can see it. The user changes the wrong information to update it and then saves it. At this point the .mat file containing the data of all POIs is updated and there is no way back to restore this file.
+
+The same happens with the creation of a new POI. The user is asked to insert all the data needed. Here we are not controlling all the data fields are filled, so you can save an empty point or with invalid data. In addition the user cannot create a new class of points of interest.
+
+In th next figure we can see the two windows and how are organized:
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \includegraphics[width=\textwidth]{modify_poi}
+                \caption{Modify a POI}
+                \label{fig:modify_poi}
+        \end{subfigure}%
+        \qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.3\textwidth}
+                \includegraphics[width=\textwidth]{new_poi}
+                \caption{Set new POI}
+                \label{fig:new_poi}
+        \end{subfigure}
+        \caption{Manipulation of Points of Interest}\label{fig:manipulation_poi}
+\end{figure}
+
+The \textbf{Refresh} button is quite useful in this application. Since the user will be computing multiple paths or itineraries it will be necessary to clean the plots of the screen and to reset the variables (classes, POIs, etc.). The implementation is very easy since the only things to do will be: resetting the pop-up menus in order to look like in the opening of the program, check if there are some plots to delete and set all the handles of the points to 0. Despite some of this functions are implemented in buttons such as \textit{GO!} it is recommended to do a refresh every time we want to compute a new path so we will avoid to have corrupted data if we forget to change some parameters or points.
+
+The \textbf{Itinerary} button will allow the user to choose a middle point when calculating the path. For example we can go from Carrefour to IUT passing by a bakery and we want the path to be shorter than XXXX meters. Let's see how the menu itinerary looks when pressing the button:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{itinerary}
+\caption{Itinerary menu}
+\label{fig:itinerary}
+\end{figure}
+
+As you can see we are able now to set 3 POIs in the map. Note that automatically the button GO has disappeared since a new one is placed in the menu. This is done because here we will need to calculate the shortest path two times in order to show it. Basically the working principle is the same as the simple GO but now duplicating the work since we have 3 points.
+
+Unlike when we are working only with two points we need now the distance of the two paths in order to compare it with the one inserted by the user. If the distance is greater than the requested one we display an error message using the previously created error GUI, otherwise we display the path and create the instructions.
+
+The part of the itinerary takes approximately twice of time than the two points shortest path. So the user will have to wait for a few seconds while the program is computing it.
+
+When we press the third button \textbf{Find in range}
 
  
 
