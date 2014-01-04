@@ -21,7 +21,6 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     // Set scale to 1
     scale = 1;
 
-    // Why the fuck does it works?
     mapNormalization[0] = 2048; //2210;
     mapNormalization[1] = 1024; //670;
 
@@ -49,10 +48,12 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     container = new POIContainer();
     container->loadData();
 
+    directions = new Patch;
+
     /*int ini = 1000;
     int dest = 1500;
 
-    this->mydijkstra = new Dijkstra(mymap->m1, ini, dest, mymap->getnumberNodes(), true);
+    this->mydijkstra = new Dijkstra(mymap->m1, ini, dest, mymap->numberNodes, true);
     this->mydijkstra->calculateDistance();
     cout<<"calc dist"<<endl;
     vector <int> result = this->mydijkstra->output();
@@ -61,6 +62,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     this->directions = new Patch;
     directions->calcPatch(path);
 */
+
 
 }
 
@@ -649,24 +651,43 @@ void MapGLWidget::drawSpecificPOIs() {
 void MapGLWidget::recalculatePaths() {
 
     paths.clear();
+    QString dir = "";
     if (pointsMap.size() > 1) {
 
         QMap <int, Node*>::iterator i;
         QMap <int, Node*>::iterator end = pointsMap.end() - 1;
 
+        unsigned int counter = 0;
+
         for (i = pointsMap.begin(); i != end; i++) {
             int source = (*i)->getId();
             int destination = (*(i+1))->getId();
 
-            cout << "source: " << source << endl;
-            cout << "destination: " << source << endl;
+            qDebug() << "No.: " << counter << "Source: " << source << " Destination: " << source;
 
-            mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->numberNodes);
+            mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->getnumberNodes());
             mydijkstra->calculateDistance();
-            paths.push_back(mymap->getPath(mydijkstra->output()));
+
+            vector<Node*> temp = mymap->getPath(mydijkstra->output());
+            paths.push_back(temp);
+
+            vector <string> badOutput = directions->calcPatch(temp);
+
+            vector <string>::iterator it;
+
+            dir.append(QString("\nRoute #%1").arg(counter+1).append(":"));
+
+            for (it = badOutput.begin(); it != badOutput.end(); it++) {
+                string temp1 = (*it);
+                dir.append(QString::fromStdString("\n\t" + temp1));
+            }
+
+            counter++;
+
             delete mydijkstra;
         }
     }
+    emit routeUpdated(dir);
 }
 
 /**
@@ -704,14 +725,6 @@ void MapGLWidget::addPOI(int position, POI* poi) {
     // so no need to delete allocated memory
     pointsMap.erase(pointsMap.find(position));
     pointsMap.insert(position,mymap->nodes.at(closest));
-
-    cout << "POI Added: " << poi->getName().toStdString()
-         << " Closest: " << closest;
-
-    cout << " x " << coordinates.x() << " y " << coordinates.y()
-            << " x1 " << mymap->nodes.at(closest)->getPoint().x
-            << " y1 " << mymap->nodes.at(closest)->getPoint().y << endl;
-
     recalculatePaths();
     updateGL();
 

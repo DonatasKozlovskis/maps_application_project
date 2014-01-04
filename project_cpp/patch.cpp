@@ -8,7 +8,7 @@ Patch::Patch(){}
  * Gives all the indications for the user in order to follow the shortest-path route
  * @param path is the vector of nodes that composes the shortest path
  */
-void Patch::calcPatch(vector<Node*> path){
+vector <string> Patch::calcPatch(vector<Node*> path){
     bool bel = true;
     vector<string> route;
     string s;
@@ -34,7 +34,7 @@ void Patch::calcPatch(vector<Node*> path){
                 init = path[i];
                 //Composing the string in order to show and store in 'route'
                 ostringstream aux;
-                aux << this->distance*4;
+                aux << floor(this->distance*4);
                 s = ahead+aux.str()+right;
                 cout<<s<<endl;
                 route.push_back(s);
@@ -46,7 +46,7 @@ void Patch::calcPatch(vector<Node*> path){
                 init = path[i];
                 //Composing the string in order to show and store in 'route'
                 ostringstream aux;
-                aux << this->distance*4;
+                aux << floor(this->distance*4);
                 s = ahead+aux.str()+left;
                 cout<<s<<endl;
                 route.push_back(s);
@@ -55,11 +55,12 @@ void Patch::calcPatch(vector<Node*> path){
     }
     this->distance = init->distNode(path.back());
     ostringstream aux;
-    aux << this->distance*4;
+    aux << floor(this->distance*4);
     s = ahead+aux.str()+end;
-    cout<<s<<endl;
+    //cout<<s<<endl;
     route.push_back(s);
-    this->genTxt(route);
+    //this->genTxt(route);
+    return route;
 }
 
 /**

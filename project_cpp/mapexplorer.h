@@ -52,6 +52,11 @@ private slots:
 
     void updateDebugInfo(int, int);
 
+    void on_saveRouteButton_clicked();
+
+public slots:
+    void updateRouteInfo(QString);
+
 private:
     // User interface
     Ui::MapExplorer *ui;                        /** A pointer to the UI instance. (Singleton) */
@@ -77,6 +82,8 @@ private:
     void updateP2ComboBox();
     void updateP3ComboBox();
     void updateComboBox(int,int);
+
+
 
 protected:
     QSqlDatabase db;                        /** A QSqlDatabase instance that is responsible for the database connection. */

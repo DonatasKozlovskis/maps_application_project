@@ -43,7 +43,13 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     connect(ui->driveRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT(updateAdjDriving()));
     connect(ui->walkRadioButton, SIGNAL(clicked()), ui->mapGLWidget, SLOT (updateAdjWalking()));
 
+    connect(ui->mapGLWidget, SIGNAL(routeUpdated(QString)), this, SLOT (updateRouteInfo(QString)));
+
     ui->driveRadioButton->click();
+
+    ui->debugLabel->hide();
+    ui->saveRouteButton->setEnabled(false);
+
 
 }
 
@@ -524,4 +530,34 @@ void MapExplorer::on_deleteP3Button_clicked()
     ui->P3TypeComboBox->setCurrentIndex(0);
     ui->mapGLWidget->removePOI(2);
     ui->mapGLWidget->setCustomAllowed(2,true);
+}
+
+/**
+ * @brief MapExplorer::on_saveRouteButton_clicked
+ * Save route info button action. Disabled if info is empty.
+ */
+void MapExplorer::on_saveRouteButton_clicked()
+{
+    QString filename = QFileDialog::getSaveFileName(this,"Save file","",tr("Plaint Text (*.txt)"));
+    QFile file(filename);
+    if (file.open(QIODevice::WriteOnly|QFile::Truncate)) {
+        file.write(QByteArray(ui->routeInfoTextBrowser->toPlainText().toStdString().c_str()));
+        file.close();
+    } else {
+        QMessageBox::critical(this,"Error","An error occurder while saving the file.");
+    }
+}
+
+void MapExplorer::updateRouteInfo(QString info) {
+
+    ui->routeInfoTextBrowser->clear();
+
+    if (!info.isEmpty()) {
+    ui->routeInfoTextBrowser->append(info);
+    ui->routeInfoTextBrowser->verticalScrollBar()->setValue(ui->routeInfoTextBrowser->verticalScrollBar()->minimum());
+    ui->saveRouteButton->setEnabled(true);
+    } else {
+        ui->saveRouteButton->setEnabled(false);
+    }
+
 }
