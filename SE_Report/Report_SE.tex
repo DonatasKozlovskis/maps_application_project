@@ -617,8 +617,19 @@ Unlike when we are working only with two points we need now the distance of the 
 
 The part of the itinerary takes approximately twice of time than the two points shortest path. So the user will have to wait for a few seconds while the program is computing it.
 
-When we press the third button \textbf{Find in range}
+When we press the third button \textbf{Find in range} a new menu appears. This allows the user to find places near one point. Since it will look for classes of points of interest this will become very useful. It makes it really easy to find bakeries for example. Let's see how this new menu looks like.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{find_range}
+\caption{Find in range menu}
+\label{fig:find_range}
+\end{figure}
+
+ As we can see the first thing to do is to determine the position of the user in order to start looking for POIs. To do this we ask the user to interact with \textit{Point 1} so we can avoid creating a new insertion of POIs. Once the user has defined this position we ask for the class of point to find. Here appears a pop-up menu updated with all the classes and the user selects one of them. Finally introduces the maximum distance from the point and the program will compute the result when pressing the button \textit{FIND!}. Once computed it will display the points in the map and we will use again the error GUI but this time not for showing any error. The name of the POIs found will be shown in this window. 
+ 
+ Parameters such this maximum distance are stored in handle variables initialized in the beginning of the program. When the user inserts a value the callback of this function is called automatically and the value is stored. This makes the work easier since we don't need to be checking every time these values, they are updated when the user changes the value.
+ 
  
 
 
