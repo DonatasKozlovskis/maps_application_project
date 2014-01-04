@@ -56,44 +56,66 @@ QString POI::getImgPath() {
 
 /**
  * @brief POI::getType
+ * Accessor of the property type
  * @return type of the POI
  */
 QString POI::getType() {
     return type;
 }
 
-// Accessor of the property address
 /**
  * @brief POI::getAddress
+ * Accessor of the propery address
  * @return
  */
 QString POI::getAddress() {
     return address;
 }
 
-// Mutator of the property name
+/**
+ * @brief POI::setName
+ * Mutator of the property name.
+ * @param nname
+ */
 void POI::setName(QString nname){
     name = nname;
 }
 
-// Mutator of the property path
+/**
+ * @brief POI::setImgPath
+ * Mutator of the property path.
+ * @param path
+ */
 void POI::setImgPath(QString path) {
     imgPath = path;
 }
 
-// Mutator of the property type
+/**
+ * @brief POI::setType
+ * Mutator of the property type.
+ * @param ntype
+ */
 void POI::setType(QString ntype) {
     type = ntype;
 }
 
-// Mutator of the property address
+/**
+ * @brief POI::setAdress
+ * Mutator of the property address.
+ * @param naddress
+ */
 void POI::setAdress(QString naddress) {
     address = naddress;
 }
 
-//Shows all poi of a specific type around another poi
-//setted by the user according to a radius
-//Take into account that the point in the middle is the one which we use to call the function
+/**
+ * @brief POI::radiousPoi
+ * Shows all poi of a specific type around another poi set by the user according to a radius.
+ * Take into account that the point in the middle is the one which we use to call the function
+ * @param radius
+ * @param type
+ * @return
+ */
 vector<Node*> POI::radiousPoi(float &radius, int &type){
 
     float lat, lon, dist;
