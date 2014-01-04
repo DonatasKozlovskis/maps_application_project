@@ -98,12 +98,10 @@ For user's information, \textit{OpenStreetMap} data is stored topological data s
 
 \textit{OpenStreetMap} has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way. For example, all elements as roads, forest, buildings, rivers, linear structures are represented as polygons of way elements, thus additional data filtering, subsets were used to prepare required datasets for implementation of project database.
 
-
-
 \section{Application Design}
 In this section is explained how the application was devised starting by the definition of the database as well as the analysis of the use cases taking into account the user and the design of the resultant graphical user interface prototype.
 
-\subsection{Use cases}
+\subsection{Use cases} \label{use_cases}
 In order to prototype the graphical user interface of both parts, we conceived the diagram of cases of use that the user could find. But, first of all, which use cases we have?
 
 According to the statement provided we can identify the following cases:
@@ -170,7 +168,6 @@ Taking into account the previous steps, we can see the result of the database in
 Notice that part of the process of development and parsing of the data from OpenStreetMap into our databases was accomplished together with the rest of the groups.
 
 \section{C++ Implementation}
-
 The present section has been divided in two different parts: The first one explains how the map structure is created evolving the three basic classes, the correspondent adjacency matrix depending on the choice of the user (walking or driving), how the shortest path is calculated using Dijkstra's algorithm and the logic behind the management of the points of interest. During the second part, we will focus on how the data is shown and obtained directly from the screen and its process of normalization and denormalization, taking into account the different spatial coordinates we work with during the implementation. But also we will see how the graphical user interface provides the input/output to the user and how is managed.
 
 \subsection{Creating the map}
@@ -255,10 +252,10 @@ However, during the process of development the number of nodes was increased in 
 
 In order to solve this issue and at the same time improving the access response to the elements, we decided to use sparse matrices to take out, somehow, all zeros that composes the adjacency matrix, reducing its size. For carrying out this task, we have used Eigen \footnote{Eigen is an open source C++ library of template headers for linear algebra, matrices, vectors and operations between them. See \url{ http://eigen.tuxfamily.org/index.php?title=Main_Page}} library. The main idea behind this is the compression of the data through the compressed sparse column (CCS) where the values are readed by column and a row index is stored for each one in a vector. Then, all non zero values are stored in an a new array. 
 
-In addition, among the benefits already explained, we can also see how the performance of the Dijkstra's algorithm improves according to the size of the matrix in the following table:
+In addition, among the benefits already explained, we can also see how the performance of the Dijkstra's algorithm improves according to the size of the matrix in the following table \footnote{All this results have been measured in Debug mode and also depends completely on the performance of each processor speed}:
 
 \begin{table}[ht] 
-\caption{Sum up of the benefits of Sparse matrices} 
+\caption{Sum up of the benefits of Sparse matrices}
 \centering
 \begin{tabular}{c c c}
 \hline\hline 
@@ -274,7 +271,6 @@ Dijkstra &  $>$30 sec & $<$3 sec \\ [1ex]
 \end{table} 
 
 \subsection{Route path}
-
 The current functionality is compressed in the \textit{patch} class and allows the user to see the way which has to follow to perform the shortest path between the points already selected.
 The main working principle is based on the angle defined by groups of three nodes. Let us consider a specific clarifier example where the nodes provided by the shortest path algorithm are in red. If the i-2 and i nodes belongs to the Road 2 we know we are just going straight ahead. However, when we consider if the nodes i-1 and i+1 belongs to the Road 2, we can notice that they are not meaning that we turned right or left. Then, we can calculate the angle of the three points and obtain a value around 90 degrees if we are turning right according to the point of view of the user. Or conversely, if we obtain an angle around -90 means that we are turning left.
 
@@ -295,6 +291,33 @@ Regarding to the points of interest, our first decision was to keep them in the 
 In this way, we can print all points of interest in their specific location in the map, over buildings, parks... away from roads but at the same time keeping the independence with the table \textit{node}. Then, when the user wants two calculate the shortest path to a point of interest, the route brings him to the closest node that composes the map. Otherwise, we should generate an adjacency matrix including all points of interest when a new point is created taking an overhead of memory.
 
 The different types of points of interest are composed in the following: Bakery, Bank, Bar/Restaurant, Cars, Church/Cemetery, Cigar Store, Cultural place, Florist, Fuel, Grocery, Hairdressing, Hospital, Hotel, Park/Library, Pharmacy, Post Office, Residence, School, Shop, Sports/Gym, Train Station, University Building and Variety store.
+
+\subsection{Graphical user interface}
+The graphical user interface of the C++ implementation has been one of the challenges of this project because of the large amount of different relationships and dependencies with another already existing files and our goal to take control of all possible situations and exceptions generated by the user when is performing actions. We solve this situation using resources such as disabling buttons or showing pop-up messages when the user chooses an invalid option. Then, we are going to explain how the requirements specified in section \ref{use_cases} have been implemented.
+
+\subsubsection{Normalization and displaying}
+
+--TO BE WRITTEN BY ANDREY-- 
+
+\subsubsection{Selecting a route}
+In order to make the route selection as user friendly as possible, we have created a main menu which is able to perform all tasks related with routes divided in five parts (see figure ~\ref{fig:menu_poi}): Method of transport, type of point of interest in the second column, specific point of interest in the first column, deletion and points of interest management (explained in detail in section \ref{POI}).
+
+Fist of all, the user has to select the way of transport using the radio button. Once it is selected, whatever point of the map can be pressed as initial point "Custom" or by contrast, a point of interest can be selected in the first column sorting by type in the second one and finally, be setted as initial point. We also can do exactly the same with a target point, selecting from the map or from the list filtering by type. Moreover, we could select a third point in the same way and define a shortest path between an initial and end point, and a target in the middle. For sure, whatever of the three points could be deleted from the path maintaining the rest of the route unbroken.
+
+However, we have to take into account that for fiding the path to, for instance, the closest bakery, it does it calculating first the euclidean distance between all bakeries and then doing dijkstra to the closest one. This is because the cost to perform the shortest path to all bakeries and compare the distance is computationally really expensive despite the fact that is easy to code.
+
+In this way, we can get the distance of the whole path as well as the route path for the user in order to reach the different targets and also export this route as a \textit{txt} file.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{menu_points.png}
+\caption{Menu displayed for performing the shortest-path between two or more points in the map or points of interest from the database taking into account the method of transport defined. The second column sorts by type, the first one selects the specific point of interest and the third one deletes the piece of path selected.}
+\label{fig:menu_poi}
+\end{figure}
+
+\subsubsection{Points of interest management} \label{POI}
+The most simple thing we can do regarding to the points of interest is to show them according to the type belong to as we could see in figure ~\ref{fig:menu_poi}.
+In addition, the points of interest basically has three different functions that are: Searching for specific point, modify an already existing point of interest and also create a new one pressing directly in the position desired in the map. 
 
 \clearpage
 \section{Matlab Implementation}
