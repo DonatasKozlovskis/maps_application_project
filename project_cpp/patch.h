@@ -19,7 +19,7 @@ class Patch
 public:
     Patch();
     bool belong(Node*, Node*);
-    void calcPatch(vector<Node*>);
+    vector <string> calcPatch(vector<Node*>);
     float checkAngle(Node*, Node*, Node*);
     void genTxt(vector<string>);
 

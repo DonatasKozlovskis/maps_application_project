@@ -402,6 +402,11 @@ if handles.f == 1;
     handles.f = 0;
 end
 
+if handles.h == 1; 
+    delete(handles.g);
+    handles.h = 0;
+end
+
 %reseting the handles of the latitude and longitude
 handles.lat1 = 0;
 handles.lon1 = 0;

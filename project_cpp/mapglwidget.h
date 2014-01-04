@@ -76,6 +76,8 @@ signals:
 
     void possibleNewPOISelected(float,float);
 
+    void routeUpdated(QString);
+
 
 private:
     void draw();
