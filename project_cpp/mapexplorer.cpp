@@ -493,6 +493,10 @@ void MapExplorer::on_P3ComboBox_currentIndexChanged(int index)
     }
 }
 
+/**
+ * @brief MapExplorer::on_deleteP1Button_clicked
+ * Resets the selection of the first POI.
+ */
 void MapExplorer::on_deleteP1Button_clicked()
 {
     ui->P1TypeComboBox->setCurrentIndex(0);
@@ -500,6 +504,10 @@ void MapExplorer::on_deleteP1Button_clicked()
     ui->mapGLWidget->setCustomAllowed(0,true);
 }
 
+/**
+ * @brief MapExplorer::on_deleteP2Button_clicked
+ * Resets the selection of the second POI.
+ */
 void MapExplorer::on_deleteP2Button_clicked()
 {
     ui->P2TypeComboBox->setCurrentIndex(0);
@@ -507,6 +515,10 @@ void MapExplorer::on_deleteP2Button_clicked()
     ui->mapGLWidget->setCustomAllowed(1,true);
 }
 
+/**
+ * @brief MapExplorer::on_deleteP3Button_clicked
+ * Resets the selection of the third POI.
+ */
 void MapExplorer::on_deleteP3Button_clicked()
 {
     ui->P3TypeComboBox->setCurrentIndex(0);

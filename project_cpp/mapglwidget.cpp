@@ -143,7 +143,12 @@ void MapGLWidget::paintGL() {
     drawSpecificPOIs();
 }
 
-// Size change routine OpenGL
+/**
+ * @brief MapGLWidget::resizeGL
+ * Overloaded function of the {@link QGLWidget}.
+ * @param width - width of the widget
+ * @param height - height of the widget
+ */
 void MapGLWidget::resizeGL(int width, int height) {
 
     glViewport(0,0,width,height);						// Reset The Current Viewport
@@ -156,10 +161,17 @@ void MapGLWidget::resizeGL(int width, int height) {
     glLoadIdentity();                                   // Clear everything
 }
 
-// Just some random painitng
+/**
+ * @brief MapGLWidget::draw
+ * Testing function.
+ */
 void MapGLWidget::draw() {}
 
-// X - Blue, Y - Green, Z - Red
+/**
+ * @brief MapGLWidget::drawAxices
+ * Draws the axices of the coordinate system:
+ * X - Blue, Y - Green, Z - Red.
+ */
 void MapGLWidget::drawAxices(){
 
     glPushMatrix();
@@ -180,7 +192,12 @@ void MapGLWidget::drawAxices(){
     glPopMatrix();
 }
 
-// Map rendering function
+/**
+ * @brief MapGLWidget::drawMap
+ * Map rendering function.
+ * Retrieves the coordinates of each node and paints them into OpenGL in inverse manner,
+ * because they are stored in the latitude, logitude order.
+ */
 void MapGLWidget::drawMap() {
     float x,y;
     for(unsigned int i=0; i<this->mymap->roads.size(); i++){
@@ -201,7 +218,11 @@ void MapGLWidget::drawMap() {
     }
 }
 
-// Draw the texture under the map
+/**
+ * @brief MapGLWidget::drawTextureMap
+ * Maps the and the texture coordinates.
+ * Default texture size is 2048 x 1024 (the power of 2). Texture is centered in the 0,0 coordinate.
+ */
 void MapGLWidget::drawTextureMap() {
 
     glBegin(GL_QUADS);
@@ -215,6 +236,10 @@ void MapGLWidget::drawTextureMap() {
     glEnd();
 }
 
+/**
+ * @brief MapGLWidget::drawPath
+ * Draws the paths stored in the paths variable.
+ */
 void MapGLWidget::drawPath(){
     float x = 0;
     float y = 0;
@@ -238,7 +263,12 @@ void MapGLWidget::drawPath(){
     glPopMatrix();
 }
 
-// Once mouse is pressed, record the coordinates
+/**
+ * @brief MapGLWidget::mousePressEvent
+ * Overloaded mouse press event.
+ *
+ * @param event - a corresponding instance of the QEvent
+ */
 void MapGLWidget::mousePressEvent(QMouseEvent *event) {
 
     // Added Andrey 29/12/2013
@@ -268,6 +298,7 @@ void MapGLWidget::mousePressEvent(QMouseEvent *event) {
 //                delete mydijkstra;
 //            }
 //        }
+
         int custom = getFirstCustomAllowed();
         if (custom != -1) {
             float xt = event->pos().x() - width()/2 - movPos.x();
@@ -289,7 +320,12 @@ void MapGLWidget::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-// Once mouse is moved, change the camera position and call re-rendering
+/**
+ * @brief MapGLWidget::mouseMoveEvent
+ * Overloaded mouse move event.
+ *
+ * @param event- a corresponding instance of the QEvent
+ */
 void MapGLWidget::mouseMoveEvent(QMouseEvent *event) {
 
     // Get the difference between the current point and the previous position
@@ -315,7 +351,12 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent *event) {
     emit mouseMovedGL(dx,dy);
 }
 
-// Once mouse is released, just do some stuff (testing and debugging purposes)
+/**
+ * @brief MapGLWidget::mouseReleaseEvent
+ * Overloaded mouse released event.
+ *
+ * @param event - a corresponding instance of the QEvent
+ */
 void MapGLWidget::mouseReleaseEvent(QMouseEvent *event) {
     emit mouseReleasedGL(event->pos().x(),event->pos().y());
 }
@@ -341,7 +382,10 @@ void MapGLWidget::wheelEvent(QWheelEvent *event) {
     //updateGL();
 }
 
-// Load the images and bind them to the texture objects
+/**
+ * @brief MapGLWidget::loadTextures
+ * Texture loading function.
+ */
 void MapGLWidget::loadTextures() {
 
     // Load and bind image to the texture object
@@ -357,28 +401,65 @@ void MapGLWidget::loadTextures() {
 
 }
 
-// Testing
+/**
+ * @brief MapGLWidget::getMinLat
+ * @return the minimum latitude. (Testing, Unused)
+ */
 float MapGLWidget::getMinLat() { return *(mapGeoCoordinates); }
+
+/**
+ * @brief MapGLWidget::getMaxLat
+ * @return the maximum latitude. (Testing, Unused)
+ */
 float MapGLWidget::getMaxLat() { return *(mapGeoCoordinates+1); }
+
+/**
+ * @brief MapGLWidget::getMinLon
+ * @return the minimum longitude. (Testing, Unused)
+ */
 float MapGLWidget::getMinLon() { return *(mapGeoCoordinates+2); }
+
+/**
+ * @brief MapGLWidget::getMaxLon
+ * @return the maximum longitude. (Testing, Unused)
+ */
 float MapGLWidget::getMaxLon() { return *(mapGeoCoordinates+3); }
 
+/**
+ * @brief MapGLWidget::getNormX
+ * @return the normalization factor for the X axis. (Testing, Unused)
+ */
 int MapGLWidget::getNormX() { return *(mapNormalization); }
+
+/**
+ * @brief MapGLWidget::getNormY
+ * @return  the normalization factor for the Y axis. (Testing, Unused)
+ */
 int MapGLWidget::getNormY() { return *(mapNormalization+1); }
 
 // When clicked, detect the neares point on map (Euclidiean distance to the nearest node)
+/**
+ * @brief MapGLWidget::detectPoint
+ * Adds the node closest to the clicking position to the points.
+ * @param x - X coordinate
+ * @param y - Y coordinate
+ */
 void MapGLWidget::detectPoint(float x, float y) {
     int n = mymap->findClosest(y,x);
 
-    cout << "x: " << x << " y: " << y << " num : " << n << endl;
-    cout << "nearest: x" << mymap->nodes.find(n)->second->getPoint().y
-         << " " << " y: " << mymap->nodes.find(n)->second->getPoint().x << endl;
+    cout << "X: " << x << " Y: " << y << " Index Closest : " << n << endl;
+    cout << "Closest: X: " << mymap->nodes.find(n)->second->getPoint().y
+         << " " << " Y: " << mymap->nodes.find(n)->second->getPoint().x << endl;
 
     cout << "qty pts: " << points.size() << endl;
 
     points.push_back(mymap->nodes.find(n)->second);
 }
 
+/**
+ * @brief MapGLWidget::drawPoints
+ * Draws the nodes stored in the pointsMap.
+ */
 void MapGLWidget::drawPoints() {
 
 //    glPushMatrix();
@@ -421,35 +502,66 @@ void MapGLWidget::drawPoints() {
     glPopMatrix();
 }
 
-// Accessor of the property scale
+/**
+ * @brief MapGLWidget::getScale
+ * Accessor of the property scale
+ * @return current scale of the map
+ */
 float MapGLWidget::getScale() {
     return scale;
 }
 
+/**
+ * @brief MapGLWidget::getMovPos
+ * Accessor of the movPos variable. (Map displacement)
+ * @return movPos
+ */
 QPointF MapGLWidget::getMovPos() {
     return movPos;
 }
 
+/**
+ * @brief MapGLWidget::getCamPos
+ * Accessor of the camPos variable. (Current camera position regarding to the center of the OpenGL viewport.)
+ * @return camPos
+ */
 QPointF MapGLWidget::getCamPos() {
     return camPos;
 }
 
+/**
+ * @brief MapGLWidget::updateAdjDriving
+ * Updates the adjacency matrix to the driving mode.
+ */
 void MapGLWidget::updateAdjDriving() {
     this->mymap->rmAdjMatrix();
     this->mymap->adjMatrix(true);
 }
 
+/**
+ * @brief MapGLWidget::updateAdjWalking
+ * Updates the adjacenct matrix to the walking mode.
+ */
 void MapGLWidget::updateAdjWalking() {
     this->mymap->rmAdjMatrix();
     this->mymap->adjMatrix(false);
 }
 
-// Accessor of the POIs container
+/**
+ * @brief MapGLWidget::getPois
+ * Accessor of the POI container.
+ * @return container
+ */
 POIContainer* MapGLWidget::getPois() {
     return container;
 }
 
-// x,y,width,height
+/**
+ * @brief MapGLWidget::widgetToGeoCoordinates
+ * @param widgetCoordinates
+ * Translates widget coordinates to the geographic coordinates.
+ * @return QPointF containing the latitude - longitude
+ */
 QPointF MapGLWidget::widgetToGeoCoordinates(QPointF widgetCoordinates) {
     float mpoglx = (widgetCoordinates.x() - width()/2) - movPos.x();      // mpogl - Mouse Pressed OpenGL
     float mpogly = -(widgetCoordinates.y() - height()/2) - movPos.y();
@@ -469,7 +581,12 @@ QPointF MapGLWidget::widgetToGeoCoordinates(QPointF widgetCoordinates) {
 
 }
 
-// lat lon
+/**
+ * @brief MapGLWidget::geoToOpenGLCoordinates
+ * Translates between the geographic to OpenGL coordinates.
+ * @param geoCoordinates
+ * @return QPointF containing x - y
+ */
 QPointF MapGLWidget::geoToOpenGLCoordinates(QPointF geoCoordinates) {
 
     float aLat = (float)mapNormalization[0] /
@@ -483,15 +600,25 @@ QPointF MapGLWidget::geoToOpenGLCoordinates(QPointF geoCoordinates) {
     float x = geoCoordinates.x()*aLat + bLat;
     float y = geoCoordinates.y()*aLon + bLon;
 
+    // Why
     return QPointF(y*2,x/2);
 }
 
+/**
+ * @brief MapGLWidget::updateSpecificPOIs
+ * Updates the specific POIs to be painted.
+ * @param type - type of the POIs to be updated
+ */
 void MapGLWidget::updateSpecificPOIs(int type) {
     qDeleteAll(specificPOIs);
     specificPOIs = container->getPOITypeFiltered(type);
     updateGL();
 }
 
+/**
+ * @brief MapGLWidget::drawSpecificPOIs
+ * Draws the specific POIs
+ */
 void MapGLWidget::drawSpecificPOIs() {
 
     glBegin(GL_LINES);
@@ -512,29 +639,14 @@ void MapGLWidget::drawSpecificPOIs() {
         glVertex3f(x+3,y-3,0.0);
 
         glColor3f(1.0f,0.0f, 1.0f);
-
-//        //QPointF result2 = mymap->findClosest(QPointF(y,x));
-//        int result2int = mymap->findClosest(y,x);
-
-//        cout << (*i)->getName().toStdString()  << " Node index: " << result2int << endl;
-
-//        float x1 = mymap->nodes.at(result2int)->getPoint().x;
-//        float y1 = mymap->nodes.at(result2int)->getPoint().y;
-
-//        cout << "Source: " << x << " " << y
-//             << " Closest: " << y1 << " " << x1 << endl;
-
-//        glVertex3f(y1-3,x1-3,0.0);
-//        glVertex3f(y1+3,x1+3,0.0);
-
-//        glVertex3f(y1-3,x1+3,0.0);
-//        glVertex3f(y1+3,x1-3,0.0);
-
-
     }
     glEnd();
 }
 
+/**
+ * @brief MapGLWidget::recalculatePaths
+ * Recalculates all of the paths to currently present on the map.
+ */
 void MapGLWidget::recalculatePaths() {
 
     paths.clear();
@@ -558,6 +670,10 @@ void MapGLWidget::recalculatePaths() {
     }
 }
 
+/**
+ * @brief MapGLWidget::drawPaths
+ * Draws the paths.
+ */
 void MapGLWidget::drawPaths() {
 
     glPushMatrix();
@@ -573,9 +689,16 @@ void MapGLWidget::drawPaths() {
     glPopMatrix();
 }
 
+/**
+ * @brief MapGLWidget::addPOI
+ * Adds the route point to the map.
+ *
+ * @param position - order of the point in the route.
+ * @param poi - a poi that should be added
+ */
 void MapGLWidget::addPOI(int position, POI* poi) {
-    QPointF coordinates = geoToOpenGLCoordinates(QPointF(poi->getPoint().x,poi->getPoint().y));
 
+    QPointF coordinates = geoToOpenGLCoordinates(QPointF(poi->getPoint().x,poi->getPoint().y));
     int closest = mymap->findClosest(coordinates.y(),coordinates.x());
 
     // Operating the same pointer as in the map,
@@ -595,16 +718,33 @@ void MapGLWidget::addPOI(int position, POI* poi) {
 
 }
 
+/**
+ * @brief MapGLWidget::removePOI
+ * Removes the point from the route calculation map.
+ * @param index
+ */
 void MapGLWidget::removePOI(int index) {
     pointsMap.erase(pointsMap.find(index));
     recalculatePaths();
     updateGL();
 }
 
+/**
+ * @brief MapGLWidget::setCustomAllowed
+ * Changes the customAllowed value, so point of this index can be directly chosen from the map.
+ *
+ * @param index - index of the point
+ * @param state - state (true/false)
+ */
 void MapGLWidget::setCustomAllowed(int index, bool state) {
     customAllowed[index] = state;
 }
 
+/**
+ * @brief MapGLWidget::getFirstCustomAllowed
+ * If more than one point is customAllowed, return the index of the first one.
+ * @return
+ */
 int MapGLWidget::getFirstCustomAllowed() {
     for (int i = 0; i < MAX_POINTS; i++)
         if (customAllowed[i]) return i;
