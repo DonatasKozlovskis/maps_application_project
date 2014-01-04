@@ -267,3 +267,18 @@ QPointF Map::findClosest(QPointF point) {
 void Map::rmAdjMatrix(){
     this->m1.resize(0,0);
 }
+
+//Accessor of the property roadsCount
+int Map::getRoadsCount(){
+    return this->roadsCount;
+}
+
+//Accessor of the property nodesCount
+int Map::getNodesCount(){
+    return this->nodesCount;
+}
+
+//Accessor of the property numberNodes
+int Map::getnumberNodes(){
+    return this->numberNodes;
+}

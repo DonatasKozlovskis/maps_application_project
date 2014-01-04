@@ -64,6 +64,7 @@ load('nodesDataset.mat');
 load('sparseMatrices.mat');
 % adding needed data to handles;
 
+
 handles.dataBack.allRoads = allRoads;
 handles.dataBack.nodesDataset = nodesDataset;
 handles.dataBack.sparseMatCar = sparseMatCar;
@@ -351,6 +352,7 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 %handles.allRoads.plotMap(hObject, 'staticmap.png', handles.plotSpec);
 % Hint: place code in OpeningFcn to populate axes1
+
 
 % --- Executes on button press in refresh.
 function refresh_Callback(hObject, eventdata, handles)

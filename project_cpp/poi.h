@@ -34,8 +34,6 @@ private:
     QString type;
     QString address;
     float latitude, longitude;
-
-
 };
 
 #endif // POI_H

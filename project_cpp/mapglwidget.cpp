@@ -52,7 +52,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     /*int ini = 1000;
     int dest = 1500;
 
-    this->mydijkstra = new Dijkstra(mymap->m1, ini, dest, mymap->numberNodes, true);
+    this->mydijkstra = new Dijkstra(mymap->m1, ini, dest, mymap->getnumberNodes(), true);
     this->mydijkstra->calculateDistance();
     cout<<"calc dist"<<endl;
     vector <int> result = this->mydijkstra->output();
@@ -61,7 +61,6 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     this->directions = new Patch;
     directions->calcPatch(path);
 */
-
 
 }
 
