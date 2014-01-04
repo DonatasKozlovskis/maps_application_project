@@ -7,7 +7,9 @@
 
 #include "ui_mapexplorer.h"
 
-
+/**
+ * Namespace used for the UI.
+ */
 namespace Ui {
     class MapExplorer;
 }
@@ -60,15 +62,7 @@ private:
     QAction* newPOIAct;                         /** Action of the context menu responsible for calling the {@link POIWidget} */
     QAction* findNearestAct;                    /** Action responsible for the finding nearest POI. */
 
-    QMap <int, POI*> currentComboBoxPOIs[3];    /** An array of {@link QMap} containing the POIs located in the corresponding QComboBox. */
     QComboBox* poiComboBoxes[3];                /** An array of the pointers to the {@link QComboBox}*/
-
-    // Not good
-    POIContainer* container;                    /** A pointer to the POI container stored in the {@link MapGlWidget}. */
-    Node currentPOINode;                        /** Coordinates of the possible POI candidate. */
-
-    // Redundant. Can be derived from the ComboBox current index.
-    POI* currentPOIs[3];                        /** Three current POIs selected */
 
     // Database stuff
     void connectDatabase();
@@ -87,6 +81,12 @@ private:
 protected:
     QSqlDatabase db;                        /** A QSqlDatabase instance that is responsible for the database connection. */
 
+    // Not good
+    POIContainer* container;                    /** A pointer to the POI container stored in the {@link MapGlWidget}. */
+    Node currentPOINode;                        /** Coordinates of the possible POI candidate. */
+    QMap <int, POI*> currentComboBoxPOIs[3];    /** An array of {@link QMap} containing the POIs located in the corresponding QComboBox. */
+    // Redundant. Can be derived from the ComboBox current index.
+    POI* currentPOIs[3];                        /** Three current POIs selected */
 };
 
 #endif // MAPEXPLORER_H
