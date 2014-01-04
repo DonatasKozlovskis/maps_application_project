@@ -549,7 +549,7 @@ void MapGLWidget::recalculatePaths() {
             cout << "source: " << source << endl;
             cout << "destination: " << source << endl;
 
-            mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->numberNodes);
+            mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->getnumberNodes());
             mydijkstra->calculateDistance();
             paths.push_back(mymap->getPath(mydijkstra->output()));
             delete mydijkstra;
