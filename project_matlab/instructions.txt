@@ -1,41 +1,13 @@
-Continue 0.0091621 km on unnamed road. 
- Go straight to Rue Vaucanson road. 
- Continue 0.4499 km on Rue Vaucanson road. 
- Med. turn left to Rue Saint-Eugène road. 
- Continue 0.1137 km on Rue Saint-Eugène road. 
- Med. turn right to Rue Félix Martin road. 
- Continue 0.49758 km on Rue Félix Martin road. 
- Med. turn left to Rue Marcel Sembat road. 
- Continue 0.0041025 km on Rue Marcel Sembat road. 
- Sharp turn right to Promenade du Midi road. 
- Continue 0.065712 km on Promenade du Midi road. 
+Continue 0.020116 km on unnamed road. 
+ Med. turn left to Rue Marceau road. 
+ Continue 0.021229 km on Rue Marceau road. 
+ Med. turn left to Rue Victor Hugo road. 
+ Continue 0.36289 km on Rue Victor Hugo road. 
+ Slight turn left to Rue de la Marne road. 
+ Continue 0.19721 km on Rue de la Marne road. 
+ Med. turn left to Rue des Puddlers road. 
+ Continue 0.16832 km on Rue des Puddlers road. 
+ Med. turn right to Rue Anatole France road. 
+ Continue 0.087891 km on Rue Anatole France road. 
  Med. turn left to unnamed road. 
- Continue 0.61474 km on unnamed road. 
- Med. turn left to Rue Clémenceau road. 
- Continue 0.22485 km on Rue Clémenceau road. 
- Slight turn left to Rue du Centre road. 
- Continue 0.068033 km on Rue du Centre road. 
- Med. turn left to unnamed road. 
-  
-You arrived at the first POI 
-  
-Continue 0.0011757 km on unnamed road. 
- Go straight to Rue du Centre road. 
- Continue 0.068033 km on Rue du Centre road. 
- Go straight to Rue Clémenceau road. 
- Continue 0.22485 km on Rue Clémenceau road. 
- Go straight to unnamed road. 
- Continue 0.61474 km on unnamed road. 
- Med. turn right to Promenade du Midi road. 
- Continue 0.065712 km on Promenade du Midi road. 
- Sharp turn left to Rue Marcel Sembat road. 
- Continue 0.0041025 km on Rue Marcel Sembat road. 
- Go straight to Rue Félix Martin road. 
- Continue 0.49758 km on Rue Félix Martin road. 
- Med. turn left to Rue Saint-Eugène road. 
- Continue 0.1137 km on Rue Saint-Eugène road. 
- Go straight to Rue Vaucanson road. 
- Continue 0.43024 km on Rue Vaucanson road. 
- Med. turn left to unnamed road. 
- Continue 0.077393 km on unnamed road. 
   
