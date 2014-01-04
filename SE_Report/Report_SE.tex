@@ -626,11 +626,48 @@ When we press the third button \textbf{Find in range} a new menu appears. This a
 \label{fig:find_range}
 \end{figure}
 
- As we can see the first thing to do is to determine the position of the user in order to start looking for POIs. To do this we ask the user to interact with \textit{Point 1} so we can avoid creating a new insertion of POIs. Once the user has defined this position we ask for the class of point to find. Here appears a pop-up menu updated with all the classes and the user selects one of them. Finally introduces the maximum distance from the point and the program will compute the result when pressing the button \textit{FIND!}. Once computed it will display the points in the map and we will use again the error GUI but this time not for showing any error. The name of the POIs found will be shown in this window. 
- 
- Parameters such this maximum distance are stored in handle variables initialized in the beginning of the program. When the user inserts a value the callback of this function is called automatically and the value is stored. This makes the work easier since we don't need to be checking every time these values, they are updated when the user changes the value.
- 
- 
+As we can see the first thing to do is to determine the position of the user in order to start looking for POIs. To do this we ask the user to interact with \textit{Point 1} so we can avoid creating a new insertion of POIs. Once the user has defined this position we ask for the class of point to find. Here appears a pop-up menu updated with all the classes and the user selects one of them. Finally introduces the maximum distance from the point and the program will compute the result when pressing the button \textit{FIND!}. Once computed it will display the points in the map and we will use again the error GUI but this time not for showing any error. The name of the POIs found will be shown in this window. 
 
+Parameters such this maximum distance are stored in handle variables initialized in the beginning of the program. When the user inserts a value the callback of this function is called automatically and the value is stored. This makes the work easier since we don't need to be checking every time these values, they are updated when the user changes the value.
+ 
+Finally in this set of menus we have the option \textbf{Instructions} which as the name indicates it will show how to reach our destination. In the main GUI, when we have computed the shortest path, we simply call this function and it will return some text in a very long string. In order to read it we add the word 'NewLine' every time it should break and the we split it using \textit{strsplit}. This will create a cell array and in each cell we will have a sentence of this instructions. Using the function set we will insert this text in \textit{Edit Text} box where we have setted the \textit{Enable} property to \textit{inactive} so you cannot modify anything inside this box. Here we also added a scrollbar in the right side because sometimes the instructions are very long and they don't fit in the size of the text box.
+
+In the next figure we can observe an example of the instructions window with some text inside.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{instructions}
+\caption{Instructions menu}
+\label{fig:instructions}
+\end{figure}
+ 
+As we can see we go down with the scrollbar and finally at the end there exists the possibility to export the data in a .txt file. This will create a file in the directory where the program is executed with the name \textit{instructions.txt}. Note that this file will be overwritten every time we generate a new instruction set so if you want to save it you have to change the name of it.
+
+As the data was collected by all the groups and jointed together some roads are missing and sometimes we can find unnamed streets in the instructions. This can be solved by manually finishing the own database of points of interest.
+
+Finishing the menus we only have one thing left and it is the \textbf{map plotting}. This is done initially in the beginning of the program when the opening function of the GUI is executed. We call the plotMap function that is executed in two parts. First of all to understand how will it work we should think in a plot painted by layers where we can remove or add parts to show. First of all we should start filling the plot by the last layer, the one that we will always to be visible and this one is the image of the map, to give a view like the classical \textit{Google Maps}. Secondly we will plot all the roads in an upper layer so we can see both of them (map and roads). Up to this part we can consider it the static part of the map. Then during the execution of the program, as we have already explained, we will plot some points and lines in an upper layer that can be removed.
+
+See the next figure to try to understand how it works.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{map_plot}
+\caption{Map}
+\label{fig:map_plot}
+\end{figure}
+
+In this figure we use up to 4 layers to plot. From lower to higher are:
+\begin{enumerate}
+\item
+Background image.
+\item
+All the roads.
+\item
+Points of interest.
+\item
+Shortest path (in red).
+\end{enumerate}
+
+If you take a look again in the map plot you will be able to see the roads represented in different colours and width. This is a visual way to recognise the bigger streets and also the paths only for pedestrians only.
 
 \end{document}
