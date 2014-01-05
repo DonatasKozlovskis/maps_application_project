@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     mapglwidget.cpp \
     dijkstra.cpp patch.cpp poi.cpp \
     poiwidget.cpp \
-    poicontainer.cpp
+    poicontainer.cpp \
+    findnearestdialog.cpp
 
 HEADERS  += mapexplorer.h \
     road.h \
@@ -32,10 +33,12 @@ HEADERS  += mapexplorer.h \
     patch.h \
     poi.h \
     poiwidget.h \
-    poicontainer.h
+    poicontainer.h \
+    findnearestdialog.h
 
 FORMS    += mapexplorer.ui \
-    poiwidget.ui
+    poiwidget.ui \
+    findnearestdialog.ui
 
 RESOURCES += \
     maps.qrc

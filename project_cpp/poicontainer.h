@@ -26,6 +26,7 @@ public:
     int size() ;
     QString getLastExecutedQuery(const QSqlQuery&);
 
+
 private:
     QMap < int, POI* > pois;            /** An instance of {@link QMap} that contains the POIs*/
     QMap < int, QString> typeList;      /** An instance of {@link QMap} that contains the ids and the names of the corresponding types of the POIs */

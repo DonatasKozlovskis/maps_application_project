@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <QtSql>
-#include "poiwidget.h"
 
+#include "poiwidget.h"
+#include "findnearestdialog.h"
 #include "ui_mapexplorer.h"
+
 
 /**
  * Namespace used for the UI.
@@ -37,6 +39,8 @@ private slots:
     // POIWdiget
     void on_managePOIButton_clicked();
     void showPOIWidgetNew();
+    // Dialog
+    void showFindNearestDialog();
     // Combo boxes
     void on_P1TypeComboBox_currentIndexChanged(int);
     void on_P2TypeComboBox_currentIndexChanged(int);
@@ -56,11 +60,15 @@ private slots:
 
 public slots:
     void updateRouteInfo(QString);
+    void updateNearestPOI(QPointF,int);
+    void clearPointsSelection();
 
 private:
     // User interface
     Ui::MapExplorer *ui;                        /** A pointer to the UI instance. (Singleton) */
+
     POIWidget* poiwidget;                       /** A pointer to the {@link POIWidget}. (Singleton) */
+    FindNearestDialog* fDialog;
 
     // Context menu
     QMenu* contextMenu;                         /** Custom context menu called in the {@MapGLWidget}. */
@@ -82,8 +90,6 @@ private:
     void updateP2ComboBox();
     void updateP3ComboBox();
     void updateComboBox(int,int);
-
-
 
 protected:
     QSqlDatabase db;                        /** A QSqlDatabase instance that is responsible for the database connection. */

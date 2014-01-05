@@ -319,3 +319,4 @@ QString POIContainer::getLastExecutedQuery(const QSqlQuery& query) {
 QString POIContainer::getPoiType(int index) {
     return typeList.value(index);
 }
+

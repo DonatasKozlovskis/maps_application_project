@@ -276,9 +276,6 @@ void MapGLWidget::mousePressEvent(QMouseEvent *event) {
     // To select the point on the map, the user should click the left mouse button
     if (event->button() == Qt::LeftButton) {
 
-        lastPos = event->pos();
-        emit mousePressedGL(event->pos().x(),event->pos().y());
-
 //        float xt = event->pos().x() - width()/2 - movPos.x();
 //        float yt = -event->pos().y() + height()/2 - movPos.y();
 
@@ -300,21 +297,10 @@ void MapGLWidget::mousePressEvent(QMouseEvent *event) {
 //            }
 //        }
 
-        int custom = getFirstCustomAllowed();
-        if (custom != -1) {
-            float xt = event->pos().x() - width()/2 - movPos.x();
-            float yt = -event->pos().y() + height()/2 - movPos.y();
+        clickTimer.restart();
 
-            int closest = mymap->findClosest(yt,xt);
-            pointsMap.erase(pointsMap.find(custom));
-            pointsMap.insert(custom,mymap->nodes.at(closest));
+        lastPos = event->pos();
 
-            setCustomAllowed(custom,false);
-            recalculatePaths();
-            updateGL();
-        }
-
-        updateGL();
     } else if (event->button() == Qt::RightButton) {
 
         // emit something here
@@ -333,23 +319,27 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent *event) {
     int dx = event->pos().x() - lastPos.x();
     int dy = event->pos().y() - lastPos.y();
 
-    // Adjustment for sync of mouse and map texture movement
-    camPos.setX(camPos.x()+adjustmentX*(float)dx);
-    camPos.setY(camPos.y()+adjustmentY*(float)dy);
+    if (!(abs(camPos.x()+adjustmentX*(float)dx) > 500
+            || abs(camPos.y()+adjustmentY*(float)dy) > 250)) {
 
-    // This thing is similar to the lastPos, but it is not updated
-    // on the mousePressEvent
-    movPos.setX(movPos.x() + (float)dx);
-    movPos.setY(movPos.y() - (float)dy);
+        // Adjustment for sync of mouse and map texture movement
+        camPos.setX(camPos.x()+adjustmentX*(float)dx);
+        camPos.setY(camPos.y()+adjustmentY*(float)dy);
 
-    // This thing without adjustmets belongs to glWidget point of view
-    lastPos.setX( lastPos.x() + dx );
-    lastPos.setY( lastPos.y() + dy );
+        // This thing is similar to the lastPos, but it is not updated
+        // on the mousePressEvent
+        movPos.setX(movPos.x() + (float)dx);
+        movPos.setY(movPos.y() - (float)dy);
 
-    // Redraw the scene
-    updateGL();
+        // This thing without adjustmets belongs to glWidget point of view
+        lastPos.setX( lastPos.x() + dx );
+        lastPos.setY( lastPos.y() + dy );
 
-    emit mouseMovedGL(dx,dy);
+        // Redraw the scene
+        updateGL();
+
+        emit mouseMovedGL(dx,dy);
+    }
 }
 
 /**
@@ -359,6 +349,25 @@ void MapGLWidget::mouseMoveEvent(QMouseEvent *event) {
  * @param event - a corresponding instance of the QEvent
  */
 void MapGLWidget::mouseReleaseEvent(QMouseEvent *event) {
+    if (clickTimer.elapsed() < 200) {
+        emit mousePressedGL(event->pos().x(),event->pos().y());
+
+        int custom = getFirstCustomAllowed();
+        if (custom != -1) {
+            float xt = event->pos().x() - width()/2 - movPos.x();
+            float yt = -event->pos().y() + height()/2 - movPos.y();
+
+            int closest = mymap->findClosest(yt,xt);
+            pointsMap.erase(pointsMap.find(custom));
+            pointsMap.insert(custom,mymap->nodes.at(closest));
+
+            setCustomAllowed(custom,false);
+            recalculatePaths();
+            updateGL();
+        }
+
+        updateGL();
+    }
     emit mouseReleasedGL(event->pos().x(),event->pos().y());
 }
 
@@ -718,7 +727,8 @@ void MapGLWidget::drawPaths() {
  */
 void MapGLWidget::addPOI(int position, POI* poi) {
 
-    QPointF coordinates = geoToOpenGLCoordinates(QPointF(poi->getPoint().x,poi->getPoint().y));
+    QPointF coordinates = geoToOpenGLCoordinates(
+                QPointF(poi->getPoint().x,poi->getPoint().y));
     int closest = mymap->findClosest(coordinates.y(),coordinates.x());
 
     // Operating the same pointer as in the map,
@@ -727,7 +737,17 @@ void MapGLWidget::addPOI(int position, POI* poi) {
     pointsMap.insert(position,mymap->nodes.at(closest));
     recalculatePaths();
     updateGL();
+}
 
+void MapGLWidget::addGeoPoint(int position, QPointF geoPoint) {
+    QPointF coordinates = geoToOpenGLCoordinates(
+                QPointF(geoPoint.x(),geoPoint.y()));
+
+    int closest = mymap->findClosest(coordinates.y(),coordinates.x());
+    pointsMap.erase(pointsMap.find(position));
+    pointsMap.insert(position,mymap->nodes.at(closest));
+    recalculatePaths();
+    updateGL();
 }
 
 /**
@@ -737,6 +757,13 @@ void MapGLWidget::addPOI(int position, POI* poi) {
  */
 void MapGLWidget::removePOI(int index) {
     pointsMap.erase(pointsMap.find(index));
+    recalculatePaths();
+    updateGL();
+}
+
+void MapGLWidget::removeAllPoints() {
+    pointsMap.clear();
+    emit pointsCleared();
     recalculatePaths();
     updateGL();
 }

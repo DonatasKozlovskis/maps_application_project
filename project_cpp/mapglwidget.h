@@ -51,8 +51,9 @@ public:
     void removePOI(int);
     void setCustomAllowed(int,bool);
 
+    void removeAllPoints();
 
-signals:
+    void addGeoPoint(int, QPointF);
 
 public slots:
     void updateAdjDriving();     // 28.12
@@ -77,6 +78,8 @@ signals:
     void possibleNewPOISelected(float,float);
 
     void routeUpdated(QString);
+
+    void pointsCleared();
 
 
 private:

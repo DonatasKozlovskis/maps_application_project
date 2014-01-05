@@ -47,7 +47,7 @@ private:
     QPointF possiblePOICoords;                  /** Contains the possible coordinates of the new POI.*/
 
 protected:
-    POIContainer* container;                    /** A pointer to the {@link POIContainer} class.*/
+    POIContainer* container;                    /** A pointer to the {@link POIContainer} class. */
     POI* poiSelected;                           /** Stores the pointer to the currently selected POI. */
 
 private slots:

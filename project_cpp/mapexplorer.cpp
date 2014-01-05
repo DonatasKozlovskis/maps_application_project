@@ -5,6 +5,7 @@
 #include "poicontainer.h"
 
 
+
 /**
  * @brief MapExplorer::MapExplorer
  * Default constructor of the {@link MapExplorer} class.
@@ -22,6 +23,8 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     poiwidget = new POIWidget(this);
     poiwidget->setWindowFlags(Qt::Window);
 
+    fDialog = new FindNearestDialog();
+
     // Setup UI and ui elements
     ui->setupUi(this);
 
@@ -34,7 +37,9 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
     currentPOIs[2] = NULL;
 
     container = ui->mapGLWidget->getPois();         // Not good
-    poiwidget->setContainer(container);            // Not good
+    poiwidget->setContainer(container);             // Not good
+    fDialog->setContainer(container);
+
     initializeContextMenu();
     initializeComboBoxes();
 
@@ -45,12 +50,14 @@ MapExplorer::MapExplorer(QWidget *parent) : QMainWindow(parent), ui(new Ui::MapE
 
     connect(ui->mapGLWidget, SIGNAL(routeUpdated(QString)), this, SLOT (updateRouteInfo(QString)));
 
+    connect(fDialog, SIGNAL(nearestPOIFound(QPointF,int)), this, SLOT(updateNearestPOI(QPointF,int)));
+
+    connect(ui->mapGLWidget, SIGNAL(pointsCleared()), this, SLOT(clearPointsSelection()));
+
     ui->driveRadioButton->click();
 
     ui->debugLabel->hide();
     ui->saveRouteButton->setEnabled(false);
-
-
 }
 
 /**
@@ -197,7 +204,9 @@ void MapExplorer::on_mapGLWidget_customContextMenuRequested(const QPoint &pos)
     contextMenu->show();
 
     // Update the possible POI
-    poiwidget->setPossiblePOICoords(ui->mapGLWidget->widgetToGeoCoordinates(QPointF(pos.x(),pos.y())));
+    QPointF temp = ui->mapGLWidget->widgetToGeoCoordinates(QPointF(pos.x(),pos.y()));
+    poiwidget->setPossiblePOICoords(temp);
+    fDialog->setPossiblePOICoords(temp);
 }
 
 /**
@@ -219,6 +228,8 @@ void MapExplorer::initializeContextMenu() {
 
     // Connect the actions to the slots
     connect(newPOIAct, SIGNAL(triggered()), this, SLOT(showPOIWidgetNew()));
+    connect(findNearestAct, SIGNAL(triggered()), this, SLOT(showFindNearestDialog()));
+
 }
 
 /**
@@ -408,7 +419,6 @@ void MapExplorer::on_P3TypeComboBox_currentIndexChanged(int index)
 {
     //updateP3ComboBox();
     updateComboBox(2,ui->P3TypeComboBox->itemData(index).toInt());
-
 }
 
 /**
@@ -548,6 +558,12 @@ void MapExplorer::on_saveRouteButton_clicked()
     }
 }
 
+/**
+ * @brief MapExplorer::updateRouteInfo
+ * Updates the corresponding QTextBrowser with the appropriate information
+ *
+ * @param info
+ */
 void MapExplorer::updateRouteInfo(QString info) {
 
     ui->routeInfoTextBrowser->clear();
@@ -556,8 +572,30 @@ void MapExplorer::updateRouteInfo(QString info) {
     ui->routeInfoTextBrowser->append(info);
     ui->routeInfoTextBrowser->verticalScrollBar()->setValue(ui->routeInfoTextBrowser->verticalScrollBar()->minimum());
     ui->saveRouteButton->setEnabled(true);
-    } else {
+    } else
         ui->saveRouteButton->setEnabled(false);
-    }
+}
 
+/**
+ * @brief MapExplorer::showFindNearestDialog
+ * Shows the find nearest POI dialog
+ */
+void MapExplorer::showFindNearestDialog() {
+    fDialog->show();
+}
+
+void MapExplorer::updateNearestPOI(QPointF coords, int poi) {
+    ui->mapGLWidget->removeAllPoints();
+    ui->mapGLWidget->addGeoPoint(0,coords);
+    ui->mapGLWidget->addPOI(1,container->getPOI(poi));
+}
+
+void MapExplorer::clearPointsSelection() {
+    ui->P1TypeComboBox->setCurrentIndex(0);
+    ui->P2TypeComboBox->setCurrentIndex(0);
+    ui->P3TypeComboBox->setCurrentIndex(0);
+
+    ui->mapGLWidget->setCustomAllowed(0,true);
+    ui->mapGLWidget->setCustomAllowed(1,true);
+    ui->mapGLWidget->setCustomAllowed(2,true);
 }
