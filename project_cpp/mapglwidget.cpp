@@ -546,6 +546,8 @@ QPointF MapGLWidget::getCamPos() {
 void MapGLWidget::updateAdjDriving() {
     this->mymap->rmAdjMatrix();
     this->mymap->adjMatrix(true);
+    recalculatePaths();
+    updateGL();
 }
 
 /**
@@ -555,6 +557,8 @@ void MapGLWidget::updateAdjDriving() {
 void MapGLWidget::updateAdjWalking() {
     this->mymap->rmAdjMatrix();
     this->mymap->adjMatrix(false);
+    recalculatePaths();
+    updateGL();
 }
 
 /**
@@ -672,28 +676,38 @@ void MapGLWidget::recalculatePaths() {
             int source = (*i)->getId();
             int destination = (*(i+1))->getId();
 
-            qDebug() << "No.: " << counter << "Source: " << source << " Destination: " << source;
+            if (source != destination) {
 
-            mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->getnumberNodes());
-            mydijkstra->calculateDistance();
+                qDebug() << "No.: " << counter << "Source: " << source << " Destination: " << source;
 
-            vector<Node*> temp = mymap->getPath(mydijkstra->output());
-            paths.push_back(temp);
+                mydijkstra = new Dijkstra(mymap->m1,source,destination,mymap->getnumberNodes());
+                mydijkstra->calculateDistance();
 
-            vector <string> badOutput = directions->calcPatch(temp);
+                vector<Node*> temp = mymap->getPath(mydijkstra->output());
 
-            vector <string>::iterator it;
+                if (temp.size() > 1) {
+                    paths.push_back(temp);
 
-            dir.append(QString("\nRoute #%1").arg(counter+1).append(":"));
+                    vector <string> badOutput = directions->calcPatch(temp);
 
-            for (it = badOutput.begin(); it != badOutput.end(); it++) {
-                string temp1 = (*it);
-                dir.append(QString::fromStdString("\n\t" + temp1));
-            }
+                    vector <string>::iterator it;
 
-            counter++;
+                    dir.append(QString("\nRoute #%1").arg(counter+1).append(":"));
+                    dir.append(QString("\nDistance: %1").arg(floor(mydijkstra->getDistance())).append(" meters."));
+                    dir.append(QString("\nTime approximately %1").arg(floor(mydijkstra->getTime())).append(" minutes."));
 
-            delete mydijkstra;
+                    for (it = badOutput.begin(); it != badOutput.end(); it++) {
+                        string temp1 = (*it);
+                        dir.append(QString::fromStdString("\n\t" + temp1));
+                    }
+
+                } else {
+                    dir = QString("No path can be calculated for the current selection of the nodes. \nTry to change the movement type (driving / walking).");
+                }
+                counter++;
+
+                delete mydijkstra;
+        }
         }
     }
     emit routeUpdated(dir);

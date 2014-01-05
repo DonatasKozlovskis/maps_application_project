@@ -166,3 +166,10 @@ void Dijkstra::calcTime(){
     }
 }
 
+float Dijkstra::getDistance() {
+        return distance[this->dest]*4;
+}
+
+float Dijkstra::getTime() {
+    return time;
+}

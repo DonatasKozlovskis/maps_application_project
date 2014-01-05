@@ -30,6 +30,9 @@ public:
     void printPath(int);
     void calcTime();
 
+    float getDistance();
+    float getTime();
+
 private:
     Eigen::SparseMatrix<float> adjMatrix;       //Adjacency sparse matrix using Eigen libray
     int * predecessor;
