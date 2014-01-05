@@ -171,5 +171,7 @@ float Dijkstra::getDistance() {
 }
 
 float Dijkstra::getTime() {
-    return time;
+//    if (driving)
+//        return ((this->distance[this->dest]/11.12f)*4)/60;
+    return ((this->distance[this->dest])*4)/60;
 }
