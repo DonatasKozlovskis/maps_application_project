@@ -362,7 +362,7 @@ b = -a\frac{x_{max} - x_{min}}{2}
 
 So, when normalizing the coordinates we just calculate a and b and perform the computation. It is also necessary to note that geographic coordinates are stored in the latitude - longitude manner, so we have to inverse these coordinates while painting it inside the OpenGL.
 
-In our case, we normalize these values to the size of the texture mapped inside the OpenGL. Another problem arose from the OpenGL requirements where the dimensions of the texture should be the powers of tw (2048 x 1024 .png image in our case)o. So, after exporting an image of the texture from the OpenStreetMap we have to crop it and calculate the approximate values of the latitude and longitude which results in the loss of precision.
+In our case, we normalize these values to the size of the texture mapped inside the OpenGL. Another problem arose from the OpenGL requirements where the dimensions of the texture should be the powers of two (2048 x 1024 .png image in our case). So, after exporting an image of the texture from the OpenStreetMap we have to crop it and calculate the approximate values of the latitude and longitude which results in the loss of precision.
 
 However, when trying to get the geographic coordinates of the point where user clicked, we have to consider the ratio between the size of the QGLWidget and the size of the OpenGL's viewport inside it and the map movement. In addition to that, first we should transform the point from widget to OpenGL coordiantes, then to geographic coordinates.
 
