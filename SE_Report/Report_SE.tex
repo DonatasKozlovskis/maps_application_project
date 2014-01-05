@@ -364,11 +364,11 @@ So, when normalizing the coordinates we just calculate a and b and perform the c
 
 In our case, we normalize these values to the size of the texture mapped inside the OpenGL. Another problem arose from the OpenGL requirements where the dimensions of the texture should be the powers of tw (2048 x 1024 .png image in our case)o. So, after exporting an image of the texture from the OpenStreetMap we have to crop it and calculate the approximate values of the latitude and longitude which results in the loss of precision.
 
-However, when trying to get the geographic coordinates of the point where user clicked, we have to consider the ratio between the size of the QGLWidget and the size of the OpenGL's viewport inside it and the map movement. In addition to that, first we should transform the point from widget to OpenGL coordiantes, then to geographic coordinates.
+However, when trying to get the geographic coordinates of the point where user clicked, we have to consider the ratio between the size of the QGLWidget and the size of the OpenGL's viewport inside it and the map movement. In addition to that, first we should transform the point from widget to OpenGL coordinates, then to geographic coordinates.
 
 The final algorithm for getting the geographic coordinates out of widget coordinates when the ration between the viewport and the widget is one (so, one pixel in OpenGl corresponds to one pixel in the widget), is as follows:
 
-First, we calculate the position of the cursor in OpenGL by translating the widget coordinates with zero in the top left corner of the screen to the standard 2D cartesian plane of the OpenGL.
+First, we calculate the position of the cursor in OpenGL by translating the widget coordinates with zero in the top left corner of the screen to the standard 2D Cartesian plane of the OpenGL.
 
 \begin{lstlisting}
     float mpoglx = (widgetCoordinates.x() - width()/2) - movPos.x();
@@ -436,7 +436,7 @@ In this section the project implementation using Matlab is discussed and present
 
 \subsection{Getting the data}
 
-As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure and all data were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
+As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure of Roads and Nodes data tables were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
 
 The first difference comes in fact that the \textit{variables} in Matlab can be not even created, but as well saved in and loaded from Matlab's data structure \textit{.mat} files. This allowed us to come to the solution where the connection to external data source (database) is made only one time for creating appropriate data structures/class objects (discussed in next section). As in Matlab project part queries to database are used only one, the program end-user does not need to have database and driver installed, because afterwards all calculations are created using generated data structures from .mat files.
 
@@ -447,7 +447,7 @@ Since by itself Matlab has a lot of different data types from which the \textit{
 \url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
 }
 
-Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that by itselfs is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that by itself is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
 
 As in C++ implementation, classes for representing the \textit{node}, \textit{road} and \textit{map} were created.
 
@@ -677,7 +677,7 @@ Then we extract the index number and we will use it to know which POI has been s
 	\end{lstlisting}
 The \textit{contents} variable will be a number.
 \item
-We initialize two arrays containing the latitudes and longitudes of the actual POIs list, by the moment all of them. Then we extract the latitude and longitude of the point selected by accessing at the posicion \textit{contents} of these variables. Note that in this point we will store the variables in the handles since we want this point to be accessible from another part of the program and not only this callback.
+We initialize two arrays containing the latitudes and longitudes of the actual POIs list, by the moment all of them. Then we extract the latitude and longitude of the point selected by accessing at the position \textit{contents} of these variables. Note that in this point we will store the variables in the handles since we want this point to be accessible from another part of the program and not only this callback.
 \item
 The next thing to do is to check if we have any Point1 displayed, if this is the case we delete it. Then it is plotted in the map so the user can easily see it. Note that the points will appear according to the colour used in the background of the selection menu of each point. The points are plotted also in a handle so it can be deleted in anywhere without deleting the background map.
 \item
@@ -823,7 +823,7 @@ During all development process we have seen how Matlab is more suitable for perf
 
 On the other hand, using C++ we can obtain a finished product that when it is executed performs much more better in real time even it is more tedious during the development process. We can see this evidence for instance, when we try to compute Dijkstra's algorithm in real time in both implementations and how fast behaves in the C++ implementation in comparison with Matlab code. 
 
-Despite the all differences of C++ and Matlab environments, we have tried to preserve consistency between two different sources. However, some methodologies which work fast in one environment are not so effective in other, (e.g. looping in Matlab, or passing data by pointers is not possible directly in Matlab), thus the user can see the different codes and algorithms on two programming languages. Also, the Matlab program is dependent on IDE version installed to machine, which limits the user to have portable version of a program, which could be made easily using C++ release. 
+Despite the all differences of C++ and Matlab environments, we have tried to preserve consistency between two different sources. However, some methodologies which work fast in one environment are not so effective in other, (e.g. looping in Matlab, or passing data by pointers is not possible directly in Matlab), thus the user can see the different codes and algorithms on two programming languages. Also, the Matlab program is dependent on IDE version installed to machine, which limits the user to have portable version of a program, which could be made easily using C++ release. As another point of the differences, the garbage collection should be mentioned as well. Matlab allows user to do it straight forward with \textit{clear} operation, while in C++ code the programmer has to take care of dynamic memory pointers by itself. 
 
 
 \clearpage
