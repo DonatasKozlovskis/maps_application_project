@@ -1,13 +1,8 @@
-% conn = database('schneider','postgres','password','Vendor','PostGreSQL');
-% 
-% POI = exec(conn,'SELECT poi.* FROM schneider.poi');
-% POI = fetch(POI);
-% close(POI);
-% 
-% POIdata = POI.Data;
+% clear matlab enviroment
 clc;
 clear;
+% add paths for gui
 allDependPath = genpath('dependencies');
 addpath(allDependPath);
-
+% run gui
 GUI();

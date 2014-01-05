@@ -65,7 +65,7 @@ This document has been divided in three different main sections; the first one s
 
 \subsection{Tools and resources}
 This section shows which software has been used directly or indirectly during the whole phase of design as well as the phase of development.
-In order to manage the whole our project and its tasks, we have chosen the web-based project management application \textit{Trello}.It allows to keep track of everything, from the big picture to the minute details. In this way, all kind of tasks can be divided and assigned to the people involved in the project and also can be located in different boards according to the state of development of the task as in the following image:
+In order to manage the whole our project and its tasks, we have chosen the web-based project management application \textit{Trello}. It allows to keep track of everything, from the big picture to the minute details. In this way, all kind of tasks can be divided and assigned to the people involved in the project and also can be located in different boards according to the state of development of the task as in the following image:
 
 \begin{figure}[!h]
 \centering
@@ -73,7 +73,7 @@ In order to manage the whole our project and its tasks, we have chosen the web-b
 \caption{Image of the task manager during the development process at early stages. The work is divided in four different boards with multiple drag and drop tasks and is assigned to one person}
 \end{figure}
 
-At the same time, real world meetings were not avoided. Normally, we tried to establish team meeting at least once in a week. In such meetings we have discussed common problems, created good ideas or simply tried to brainstorm as many ideas as possible.Afterwards, the results of such meetings were definitely moved to the interactive board in \textit{Trello}.
+At the same time, real world meetings were not avoided. Normally, we tried to establish team meeting at least once in a week. In such meetings we have discussed common problems, created good ideas or simply tried to brainstorm as many ideas as possible. Afterwards, the results of such meetings were definitely moved to the interactive board in \textit{Trello}.
 
 \begin{figure}[!h]
 \centering
@@ -83,22 +83,24 @@ At the same time, real world meetings were not avoided. Normally, we tried to es
 
 Concurrently we were looking for frameworks for managing software projects. We have found that \textit{Agile software development} methods as \textit{Scrum} could fit to iterative management development of our project, however as it requires a lot of knowledge, we left this framework to the future works and employed only general parts of this framework.
 
-It is also important to establish the IDE and tools before starting to develop the project. On one hand, we assigned that \textit{open-source} Qt 5.0.1 OpenGL under Mingw compiler would be the appropriate platform because it is the last stable version of Qt and also because this open source developing environment allows us to create easier the graphical user interface and also render without adding by hard the OpenGL libraries. On the other hand, regarding to Matlab part, everything has been developed using the R2013a version of the software.
+For every developer's team, it is also important to establish the IDE and tools before starting to develop the project. On one hand, we assigned that \textit{open-source} Qt 5.0.1 OpenGL under Mingw compiler would be the appropriate platform because it is the last stable version of Qt and also because this open source developing environment allows us to create easier the graphical user interface and also render without adding by hard the OpenGL libraries. On the other hand, regarding to Matlab part, everything has been developed using the R2013a version of the software.
 
 However, the previous software is not the only one used in the project. We supposed correctly the basic necessity to deal with data structures such as information related with roads, nodes, buildings or points of interest among other possible types (see section \textit{Methodology}). The options were to deal with this data coming from one, \textit{txt/xml} format files or similar or two, databases.
 In both cases, Matlab and C++ implementation, the decision was to work with databases because of the amount of data and specially because is the easiest and fastest way to get detailed information of the structures without going over the whole structure in such cases as getting nodes shared by two different roads (see the \textit{Database} section).
 
-Despite sharing the same EER schema, the database chosen for the Matlab part it is different from the one chosen for the C++ part. In this way, we decided to use PostgreSQL just because it is easier to make it work together with Matlab and using MySQL 5.6 with Qt which was more familiar to us. But also, the fact that we chose two different databases made us able to change between them if some problems of generation had been encountered. Note that we have used the correspondent browser of both platforms.
+Despite sharing the same EER schema, the database chosen for the Matlab part is different from the one chosen for the C++ part. In this way, we decided to use PostgreSQL just because it is easier to make it work together with Matlab and using MySQL 5.6 with Qt which was more familiar to us. But also, the fact that we chose two different databases made us able to change between them if some problems of generation had been encountered. Note that we have used the correspondent browsers for both platforms.
 
-Finally, a git server hosted in bitBucket (https://bitbucket.org) was used to control the different versions of the code and to be able to maintain work at the same time easily.
+Finally, a source code management (SCM) system \textit{GIT} hosted in bitBucket (https://bitbucket.org) was used to control the different versions of the code and to be able to maintain work at the same time easily.
 
 \subsection{Related works}
 
-In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.com/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). In fact checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
+In order to be able to design a user-friendly and helpful application it is necessary to have a look to the current work, for instance GoogleMaps (https://maps.google.com/) or another non common but open-source solutions as MapGuide (http://mapguide.osgeo.org/) or OpenStreetMap (http://www.openstreetmap.org/). 
 
-For user's information, \textit{OpenStreetMap} data is stored topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
+Checking the last solution we found the way to get most of the data required to render our map and to fulfil our databases. In addition, some of the information provided by this source was not used.
 
-\textit{OpenStreetMap} has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way. For example, all elements as roads, forest, buildings, rivers, linear structures are represented as polygons of way elements, thus additional data filtering, subsets were used to prepare required datasets for implementation of project database.
+For user's information, \textit{OpenStreetMap} data is stored in topological data structure. Basically there are 4 data primitives as the basic components of \textit{OpenStreetMap}: nodes, ways, relations and tags. For us the first element was a main ingredient as geographical data source and the second element \textit{ways} represents relationship between various nodes. 
+
+\textit{OpenStreetMap} has been a good provider of data but at the same time it has been necessary to adapt our database tables to the information obtained and in some cases to add some additional parameters because we have to take into account that this platform is not able to provide a route between two points, at least not in a direct way. For example, all elements as roads, forest, buildings, rivers, linear structures are represented as polygons of \textit{way} data primitives, thus additional data filtering, subsets were used to prepare required datasets for implementation of project database.
 
 \clearpage
 \section{Application Design}
@@ -107,7 +109,7 @@ In this section is explained how the application was devised starting by the def
 \subsection{Use cases} \label{use_cases}
 In order to prototype the graphical user interface of both parts, we conceived the diagram of cases of use that the user could find. But, first of all, which use cases we have?
 
-According to the statement provided we can identify the following cases:
+According to the statement provided in requirements we can identify the following cases:
 
 \begin{itemize}
   \item Finding the shortest path between two nodes picked up from the screen providing information about distance and time depending on the way of transport.
@@ -152,9 +154,9 @@ ROUTE: Finally, number five the distance and time that the user will spend havin
 \subsection{Getting the data}
 With the aim of creating a robust database where solving the problems proposed by the statement and in order to the maintain the wholeness of the data inside we have to consider the following statement:
 
-\textit{"One map is composed by ROADS which in turn are composed by different NODES. However, a node could belong to more than one road which identifies an intersection between two roads. The only attributes necessary for a node would be a unique ID and the position of the node in a map defined by LATITUDE and LONGITUDE. In the same way all roads have the following attributes: A unique ID that identifies it, its NAME, a TYPE that describes if the road can be used by cars and finally, if it can be walked in both WAYS."}
+\textit{"One map is composed by ROADS which in turn are composed by different NODES. However, a node could belong to more than one road which identifies an intersection between two roads. The only attributes necessary for a node would be a unique ID and the position of the node in a map defined by LATITUDE and LONGITUDE. In the same way all roads have the following attributes: A unique ID that identifies it, its NAME, a TYPE that describes if the road can be used by cars and finally, if it can be passed in both WAYS."}
 
-Here, we can identify two tables, its attributes and the relation between them which can e defined as N:M because of the fact that one node can belong to multiple roads, and one road have multiple nodes. But also this relationship has to be defined taking into account the order the node has in the road that belongs to, giving an attribute of the relationship called ORDER.
+Here, we can identify two tables, its attributes and the relation between them which can be defined as N:M because of the fact that one node can belong to multiple roads, and one road can have multiple nodes. But also this relationship has to be defined taking into account the order the node has in the road that belongs to, giving an attribute of the relationship called ORDER.
 
 On the other hand, the user has to be able to see the points of interest, create news, delete them and also modify the ones which already exist. We decided to create two tables in the same schema without any relationship with the previous tables in order to maintain the isolation from the points updated all the time because it does not belong to any specific road.
 The number of attributes considered from the very beginning for the points of interest (POI) table are: The ID and the position in LATITUDE and LONGITUDE, the NAME of the point, as well as the ADDRESS and the TYPE. Taking into account the previous steps, we can see the result of the database in the following schema:
@@ -166,7 +168,7 @@ The number of attributes considered from the very beginning for the points of in
 \label{fig:RelDBdiagram}
 \end{figure}
 
-Notice that part of the process of development and parsing of the data from OpenStreetMap into our databases was accomplished together with the rest of the groups as well as the large amount of points of interest collected from le Creusot. However, almost everything has been adapted to our specific requirements creating new tables, adding new columns and making homogeneous all information collected. 
+Notice that part of the process of development and parsing of the data from OpenStreetMap into our databases was accomplished together with the rest of the groups as well as the large amount of points of interest collected from Le Creusot. However, almost everything has been adapted to our specific requirements creating new tables, adding new columns and making homogeneous all information collected. 
 
 \clearpage
 \section{C++ Implementation}
@@ -290,7 +292,7 @@ In this way, we can print all points of interest in their specific location in t
 The different types of points of interest are composed in the following: Bakery, Bank, Bar/Restaurant, Cars, Church/Cemetery, Cigar Store, Cultural place, Florist, Fuel, Grocery, Hairdressing, Hospital, Hotel, Park/Library, Pharmacy, Post Office, Residence, School, Shop, Sports/Gym, Train Station, University Building and Variety store.
 
 \subsection{Graphical user interface}
-The graphical user interface of the C++ implementation has been one of the challenges of this project because of the large amount of different relationships and dependencies with another already existing files and our goal to take control of all possible situations and exceptions generated by the user when is performing actions. We solve this situation using resources such as disabling buttons or showing pop-up messages when the user chooses an invalid option. Then, we are going to explain how the requirements specified in section \ref{use_cases} have been implemented.
+The graphical user interface of the C++ implementation has been one of the challenges of this project: it had to control the large amount of different relationships and dependencies with another already existing files and our goal to take control of all possible situations and exceptions generated by the user performing any actions. We solved those situations using resources such as disabling buttons or showing pop-up messages when the user chooses an invalid option. In the next sections, explanations of such solutions and implementation of the requirements specified in section \ref{use_cases} are given.
 
 \subsubsection{Heuristics}
 
@@ -405,7 +407,7 @@ In this way, we can get the distance of the whole path as well as the route path
 \end{figure}
 
 \subsubsection{Points of interest management} \label{POI}
-The most simple thing we can do regarding to the points of interest is to show them according to the type they belong to as we could see in figure~\ref{fig:menu_poi}: We can select the type in the box "display all". In addition, the points of interest basically has three different functions that are: Searching for specific point, modifying an already existing point of interest or creating a new one. For the first two options we can press directly the button "Manage POIs" that will open a form sheet, see figure~\ref{fig:sub1}, where we can obtain different information such as address, coordinates, name and in some cases an image of the place. It is important to notice that since we are looking for information all fields are shown disabled. However, it the radio button is changed to "Edit" we could modify some parameters related with the place as is shown in image~\ref{fig:sub2}: Name, address, type of point of interest or image. As a final option, the point can be deleted using the correspondent button or execute the query for the data base saving the changes.
+The most simple thing we can do regarding to the points of interest is to show them according to the type they belong to as we could see in figure~\ref{fig:menu_poi}: We can select the type in the box "display all". In addition, the points of interest basically has three different functions that are: Searching for specific point, modifying an already existing point of interest or creating a new one. For the first two options we can press directly the button "Manage POIs" that will open a form sheet (see figure~\ref{fig:sub1} ), where we can obtain different information such as address, coordinates, name and in some cases an image of the place. It is important to notice that since we are looking for information all fields are shown disabled. However, it the radio button is changed to "Edit" we could modify some parameters related with the place as is shown in image~\ref{fig:sub2}: Name, address, type of point of interest or image. As a final option, the point can be deleted using the correspondent button or execute the query for the data base saving the changes.
 
 \begin{figure}[h]
 \centering
@@ -430,22 +432,22 @@ Since no coordinates has been selected form the map, if has pressed the radio bu
 \clearpage
 \section{Matlab Implementation}
        
-In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the purposes. Thus here, the text will focus reader on only the differences.
+In this section the project implementation using Matlab is discussed and presented. Most of the concepts are reused from C++ source code as the preservation of consistency between two different sources was one of the our purposes. Thus here, the text will focus the reader only on the differences between concepts and code.
 
 \subsection{Getting the data}
 
 As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure and all data were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
 
-The first difference comes in fact that variables in Matlab can be not even created, but as well saved and loaded in Matlab's data structure \textit{.mat} files. This allowed us to come to the solution where the connection to external data source (database) is made only one time for creating appropriate data structures/class objects (discussed in next section). As in Matlab project part queries to database are used only one, the program end-user does not need to have database and driver installed, because afterwards all calculations are created using generated data structures from .mat files.
+The first difference comes in fact that the \textit{variables} in Matlab can be not even created, but as well saved in and loaded from Matlab's data structure \textit{.mat} files. This allowed us to come to the solution where the connection to external data source (database) is made only one time for creating appropriate data structures/class objects (discussed in next section). As in Matlab project part queries to database are used only one, the program end-user does not need to have database and driver installed, because afterwards all calculations are created using generated data structures from .mat files.
 
 \subsection{Data Structure}
 
 The second important question which had to be answered - the types of data structures in Matlab.
-Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create own object \textit{classes} with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, all of those will not be discussed since all information can be found in the web.\footnote{
+Since by itself Matlab has a lot of different data types from which the \textit{struct} objects can be created, we have decided to create our  own object \textit{classes} with required properties and methods. The reader should note, that there a lot of differences between Matlab and other OOP languages, all of those will not be discussed since all information can be found in the web.\footnote{
 \url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
 }
 
-Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that by itselfs is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
 
 As in C++ implementation, classes for representing the \textit{node}, \textit{road} and \textit{map} were created.
 
@@ -477,13 +479,13 @@ font=\ttfamily}]
 As opposite to C++ implementation, here the additional class \textit{ArrayNodes} was created. This was done with intention to vectorize some methods, since Matlab is optimized for operations involving matrices and vectors. Of course, it was possible to implement such methods directly to the road class, though the recent approach was chosen to emphasize that methods are only related with the Array of \textit{Nodes}.
 
 Notwithstanding our option, the user could find an alternative or better data structure for the same goal.
-For example, together with the team we discussed another options such as keeping data in project in the same way as in kept in the database: roads and nodes and the dictionary (linking table) between roads and nodes. Such structure would have it's advantage that various connections between roads and nodes would be easier accessible, e.g. it would be possible to get all roads where node \textit{X} is included and vice versa, while the our methodology requires additional methods to get the same results. 
+For example, together with the team we discussed another options such as keeping data for our project in the same way as in kept in the database: roads and nodes tables and the dictionary (linking table) between roads and nodes. Such structure would have it's advantage that various connections between roads and nodes would be easier accessible, e.g. it would be possible to get all roads where node \textit{X} is included and vice versa, while the our methodology requires additional methods to get the same results. 
 
 % % matlab
 % % Shortest Path
 \subsection{The shortest path}
 This issue was common between both versions (C++ and Matlab) of programs, thus the same algorithms were used to get a solution to the question of shortest path (Dijkstra was employed on a weighted graph represented as adjacency (sparse) matrix). Therefore in this section the user's attention will be focused on a question how to find a shortest path starting from a random Map Point, which is not pre-included in a adjacency matrix.\\
-Firstly, the random point needs to be obtained from the map with relevant Longitude/Latitude coordinates. The second step is to answer the question, how should we include this new point into already existing weighted graph? After discussion with team members, we came up to the solution where the new point should be connected with a closest existing node. However, there could be a case where the already existing node is closest to the new point, but another perpendicular projection to the line segment, represented using to other nodes is shorter then the distance between new point and already existing node. Thus, finally we decided employ both methods. Please note, that the latter method (projection) requires adding two new points to the weighted graph and the weights between user input - projected point, projected point and two nodes of line segment should be added as well.
+Firstly, the random point needs to be obtained from the map with relevant Longitude/Latitude coordinates. The second step is to answer the question, how should we include this new point into already existing weighted graph? After discussion with team members, we came up to the solution where the new point should be connected with a closest existing node. However, there could be a case where the already existing node is closest to the new point, but another perpendicular projection to the line segment, represented using two other nodes is shorter then the distance between new point and already found closest node. Thus, finally we decided employ both methods. Please note, that the latter method (projection) requires adding two new points to the weighted graph and the weights between user input - projected point, projected point and two nodes of line segment should be added as well.
 Basically, all algorithm can be summarized in such steps:
 \begin{itemize}
 \item Determine the window on which the closest nodes and projections will be searched.
@@ -619,7 +621,7 @@ Basically, all algorithm can be summarized in such steps:
 \caption{Finding the shortest point/projection for the random point on window domain}
 \end{figure}
 
-\subsection{Graphical User Interface, GUI}
+\subsection{Graphical User Interface (GUI)}
 
 The \textit{Graphical User Interface} is one of the most important parts of every program nowadays. The user requires a simple way to interact with the software and the GUI provides it. We came up with a simple idea shown in Figure \ref{fig:GUIprototype}, and after a few updates and modifications we got the next one:
 
@@ -826,7 +828,7 @@ On the other hand, using C++ we can obtain a finished product that when it is ex
 
 - Documentation, resources and additional files can be found at (check Readme.txt file): 
 
-https://www.dropbox.com/sh/a5p2kn4xmv2177m/6uM1AEL8Lv
+\url{https://www.dropbox.com/sh/a5p2kn4xmv2177m/6uM1AEL8Lv}
 
 - We can show some of the more important functions and their relationships in the following diagrams regarding to the C++ implementation:
 
