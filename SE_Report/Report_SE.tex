@@ -304,12 +304,12 @@ The graphical user interface of the C++ implementation has been one of the chall
 
 \subsubsection{Heuristics}
 
-The user interface created is not a good one and it would be useful to look at it from the point of view of heuristic evaluation. Heuristics were taken from the list released by Jakob Nielsen in 1994.
+Since we are not avoiding self-criticism, we could mention that the user interface created is not a best one and it would be useful to look at it from the point of view of heuristic evaluation. Heuristics were taken from the list released by Jakob Nielsen in 1994.
 
 \begin{itemize}
 
 	\item \textbf{Visibility of system status: }
-	The user interface generally follows this heuristic, however there are some violations. The computation of the route using Dijkstra algorithm is relatively long and there is no status bar responsible for displaying the progress of the route computation. On each route computation time, the program windows freezes for a certain period of time (1-3 seconds) which is ot comfortable to the user.
+	The user interface generally follows this heuristic, however there are some violations. The computation of the route using Dijkstra algorithm is relatively long and there is no status bar responsible for displaying the progress of the route computation. On each route computation time, the program windows freezes for a certain period of time (1-3 seconds) which is not comfortable to the user.
 	
 	\item \textbf{Match between the System and the Real World: }
 	The System should speak the Real World's language. This heuristics is partially violated in the route display algorithm. When the users selects a route from the screen, the text explanation displayed doesn't contain the names of the roads  (implementation issue). The only information showed is the distance and direction of where to move. From the user point of view it would be confusing.
@@ -340,7 +340,7 @@ The user interface created is not a good one and it would be useful to look at i
 
 \subsubsection{Normalization and displaying}
 
-One of the main problems encountered was the conversion between geographic, OpenGL and widget coordinates. These three systems use different references, so it is necessary to perform the conversion each time we use them.
+One of the main problems encountered was the conversion between geographic, OpenGL and widget coordinates. Those three systems use different references, e.g. in our program node coordinates are expressed using latitude and longitude while the OpenGL widget requires pixel coordinates from the center of the screen, so it is necessary to perform the conversion each time we use them.
 
 When converting the coordinates from geographic to OpenGL, the problem is quite straightforward and it is a simple mapping problem.
 
@@ -828,12 +828,21 @@ During all development process we have seen how Matlab is more suitable for perf
 
 On the other hand, using C++ we can obtain a finished product that when it is executed performs much more better in real time even it is more tedious during the development process. We can see this evidence for instance, when we try to compute Dijkstra's algorithm in real time in both implementations and how fast behaves in the C++ implementation in comparison with Matlab code. 
 
+Despite the all differences of C++ and Matlab environments, we have tried to preserve consistency between two different sources. However, some methodologies which work fast in one environment are not so effective in other, (e.g. looping in Matlab, or passing data by pointers is not possible directly in Matlab), thus the user can see the different codes and algorithms on two programming languages. Also, the Matlab program is dependent on IDE version installed to machine, which limits the user to have portable version of a program, which could be made easily using C++ release.
+
+We have seen in Matlab how easy is to create a GUI, however this has a little cost. The possibilities of making element different are not very high. Matlab provides a closed environment for working in the graphical interfaces where it is very easy to do a button or to put some text but it is quite closed to customize them. In C++ it is harder to program an interface but the options are bigger since the limitations of programming are less. This is an extra point for Matlab if we don't need really good GUIs but a point for C++ if we need a good finishing touch.
+
+
 \clearpage
 \section{Appendix}
 
 - Documentation, resources and additional files can be found at (check Readme.txt file): 
 
-\url{https://www.dropbox.com/sh/a5p2kn4xmv2177m/6uM1AEL8Lv}
+\url{https://www.dropbox.com/sh/9ci2o6xctwog3kf/JM1tnjTTxT}
+
+- Full source code with history, changes, all works can be found at SCM server online:
+
+\url{https://bitbucket.org/DonatasKozlovskis/seproject} 
 
 - We can show some of the more important functions and their relationships in the following diagrams regarding to the C++ implementation:
 
