@@ -14,7 +14,7 @@ using namespace std;
  * make the normalization of the nodes and display them the screen, capture the closest
  * node of a point pressed and generate the correspondent adjacency matrix
  */
-class Map{
+class Map {
 
 public:
     Map();

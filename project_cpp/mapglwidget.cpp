@@ -672,6 +672,7 @@ void MapGLWidget::recalculatePaths() {
 
         unsigned int counter = 0;
 
+        // Better recalculate the routes only for adjacent points, but not implemented
         for (i = pointsMap.begin(); i != end; i++) {
             int source = (*i)->getId();
             int destination = (*(i+1))->getId();
@@ -753,6 +754,13 @@ void MapGLWidget::addPOI(int position, POI* poi) {
     updateGL();
 }
 
+/**
+ * @brief MapGLWidget::addGeoPoint
+ * Adds the geographical point to the map.
+ *
+ * @param position - order of the point in the route
+ * @param geoPoint - geographical coordinates of the point
+ */
 void MapGLWidget::addGeoPoint(int position, QPointF geoPoint) {
     QPointF coordinates = geoToOpenGLCoordinates(
                 QPointF(geoPoint.x(),geoPoint.y()));
@@ -775,6 +783,10 @@ void MapGLWidget::removePOI(int index) {
     updateGL();
 }
 
+/**
+ * @brief MapGLWidget::removeAllPoints
+ * Removes all of the pooints from the route calculation map.
+ */
 void MapGLWidget::removeAllPoints() {
     pointsMap.clear();
     emit pointsCleared();
@@ -801,6 +813,5 @@ void MapGLWidget::setCustomAllowed(int index, bool state) {
 int MapGLWidget::getFirstCustomAllowed() {
     for (int i = 0; i < MAX_POINTS; i++)
         if (customAllowed[i]) return i;
-
     return -1;
 }

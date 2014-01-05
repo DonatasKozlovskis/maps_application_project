@@ -89,7 +89,10 @@ void MapExplorer::on_actionExit_triggered()
 void MapExplorer::on_actionAbout_triggered()
 {
     QMessageBox::about(this,    tr("About Map Explorer"),
-                                tr("<p>This is a Qt <b>GUI</b> test. Will be used in further projects.</p><p>VIBOT Promotion 8</p>"));
+                                tr("<p>This action remained here since the first tests of the QT GUI interface. </p> <p> This is an as-is version of the Software Engineering project. </p>")
+
+                       );
+
 }
 
 /**

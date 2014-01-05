@@ -9,6 +9,10 @@ namespace Ui {
 class FindNearestDialog;
 }
 
+/**
+ * @brief The FindNearestDialog class
+ * A pop-up dialog responsible for user input regarding the search of the nearest POI.
+ */
 class FindNearestDialog : public QDialog
 {
     Q_OBJECT
@@ -22,9 +26,7 @@ public:
 
 private slots:
     void on_cancelButton_clicked();
-
     void on_findButton_clicked();
-
     void on_maxDistanceCheckBox_toggled(bool checked);
 
 signals:

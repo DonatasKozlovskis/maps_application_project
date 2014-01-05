@@ -16,6 +16,7 @@ POIWidget::POIWidget(QWidget *parent) : QWidget(parent), ui(new Ui::POIWidget) {
  * @param ncontainer - a new pointer to the container
  */
 void POIWidget::setContainer(POIContainer* ncontainer) {
+
     container = ncontainer;
     initializeComboBoxes();
 }
