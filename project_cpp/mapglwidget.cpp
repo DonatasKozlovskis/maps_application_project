@@ -40,7 +40,7 @@ MapGLWidget::MapGLWidget(QWidget *parent) : QGLWidget(parent) {
     timer.start();
     mymap->normalize(mapNormalization[1],mapNormalization[0], mapGeoCoordinates);
     cout << "Data normalization: " << timer.elapsed() << endl;
-    bool driving = true;
+    driving = true;
     mymap->adjMatrix(driving);
     cout << "Adj: "<< timer.elapsed() << endl;
 
@@ -546,6 +546,7 @@ QPointF MapGLWidget::getCamPos() {
 void MapGLWidget::updateAdjDriving() {
     this->mymap->rmAdjMatrix();
     this->mymap->adjMatrix(true);
+    driving = true;
     recalculatePaths();
     updateGL();
 }
@@ -557,6 +558,7 @@ void MapGLWidget::updateAdjDriving() {
 void MapGLWidget::updateAdjWalking() {
     this->mymap->rmAdjMatrix();
     this->mymap->adjMatrix(false);
+    driving = false;
     recalculatePaths();
     updateGL();
 }
@@ -693,9 +695,15 @@ void MapGLWidget::recalculatePaths() {
 
                     vector <string>::iterator it;
 
+                    // fast and bad fix
+                    float travelTime = mydijkstra->getTime();
+
+                    if (driving) travelTime = travelTime/11.12f;
+                    else travelTime = travelTime/1.12f;
+
                     dir.append(QString("\nRoute #%1").arg(counter+1).append(":"));
                     dir.append(QString("\nDistance: %1").arg(floor(mydijkstra->getDistance())).append(" meters."));
-                    dir.append(QString("\nTime approximately %1").arg(floor(mydijkstra->getTime())).append(" minutes."));
+                    dir.append(QString("\nTime approximately %1").arg(floor(travelTime)).append(" minutes."));
 
                     for (it = badOutput.begin(); it != badOutput.end(); it++) {
                         string temp1 = (*it);

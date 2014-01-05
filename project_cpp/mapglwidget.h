@@ -128,6 +128,8 @@ private:
 
     int getFirstCustomAllowed();
 
+    bool driving;
+
 
 protected:
     POIContainer* container;
