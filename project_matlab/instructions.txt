@@ -1,13 +1,19 @@
-Continue 0.020116 km on unnamed road. 
- Med. turn left to Rue Marceau road. 
- Continue 0.021229 km on Rue Marceau road. 
- Med. turn left to Rue Victor Hugo road. 
- Continue 0.36289 km on Rue Victor Hugo road. 
- Slight turn left to Rue de la Marne road. 
- Continue 0.19721 km on Rue de la Marne road. 
- Med. turn left to Rue des Puddlers road. 
- Continue 0.16832 km on Rue des Puddlers road. 
- Med. turn right to Rue Anatole France road. 
- Continue 0.087891 km on Rue Anatole France road. 
+Continue 0.14918 km on unnamed road. 
+ Med. turn left to Rue de Volnay road. 
+ Continue 0.20443 km on Rue de Volnay road. 
+ Slight turn right to Rue de Bourgogne road. 
+ Continue 0.14591 km on Rue de Bourgogne road. 
+ Slight turn right to Rue de la Fontaine road. 
+ Continue 0.31736 km on Rue de la Fontaine road. 
+ Med. turn left to Rue des Acacias road. 
+ Continue 0.03644 km on Rue des Acacias road. 
+ Med. turn right to Rue du Président Wilson road. 
+ Continue 0.87819 km on Rue du Président Wilson road. 
+ Med. turn left to Avenue de Verdun road. 
+ Continue 0.26004 km on Avenue de Verdun road. 
+ Med. turn right to Rue des Puddlers road. 
+ Continue 0.40877 km on Rue des Puddlers road. 
+ Med. turn right to Rue du Maréchal Foch road. 
+ Continue 0.23427 km on Rue du Maréchal Foch road. 
  Med. turn left to unnamed road. 
   
