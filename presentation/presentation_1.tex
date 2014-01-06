@@ -1,0 +1,471 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\graphicspath{ {./images/} }
+\usepackage{tikz}
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\newenvironment<>{varblock}[2][.9\textwidth]{%
+  \setlength{\textwidth}{#1}
+  \begin{actionenv}#3%
+    \def\insertblocktitle{#2}%
+    \par%
+    \usebeamertemplate{block begin}}
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}}
+  
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Software Engineering Project]{Software Engineering Project} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Cornella, Garcia, Kozlovskis, Pak} % Your name
+\institute[VIBOT 8] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+University of Burgundy \\ % Your institution for the title page
+\medskip
+
+}
+\date{7 of January of 2014} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\tableofcontents
+\end{frame}
+
+\begin{frame}
+\frametitle{Tools and resources}
+\begin{columns}
+
+\begin{column}{6cm}
+
+	\begin{varblock}[5.8cm]{IDE}
+	\begin{itemize}
+	\item
+	Qt 5.1 with OpenGL
+	\item
+	Matlab 2013Ra
+	\end{itemize}
+	\end{varblock}
+	
+	\begin{varblock}[5.8cm]{Group meetings and coordination}
+	\begin{itemize}
+	\item
+	Trello
+	\item
+	Git and Bitbucket
+	\end{itemize}
+	\end{varblock}
+	
+	\begin{varblock}[5.8cm]{Database}
+	\begin{itemize}
+	\item
+	MySQL Server 5.6
+	\item
+	PostgreSQL
+	\end{itemize}
+	\end{varblock}
+\end{column}
+	
+\begin{column}{6cm}
+	\begin{figure}[r]
+	\centering
+	\includegraphics[width=1\textwidth]{big_schneider}
+	\caption{Database tables}
+	\end{figure}
+\end{column}
+	
+	
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{C++ Implementation}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Creating the map}
+\end{frame}
+
+\begin{frame}
+\frametitle{The shortest path}
+\end{frame}
+
+\begin{frame}
+\frametitle{Route path}
+\end{frame}
+
+\begin{frame}
+\frametitle{Heuristics}
+\end{frame}
+
+\begin{frame}
+\frametitle{Normalization and displaying}
+\end{frame}
+
+\begin{frame}
+\frametitle{Selecting a route}
+\end{frame}
+
+\begin{frame}
+\frametitle{Matlab implementation}
+\begin{itemize}
+\item
+Data Structure
+\item
+Shortest Path
+\end{itemize}
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[
+	%	style def
+    scale=0.6,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+    %circle representing user input			 
+    \fill[red] (2.6,2.5) circle (3pt) node[above] {$?$};
+\end{tikzpicture}
+\begin{tikzpicture}[
+	%	style def
+    scale=0.6,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+    %circle representing user input			 
+    \fill[red] (2.6,2.5) coordinate(user) circle (2pt) ;
+    			     
+
+    \draw[important line, blue] (user) -- (a3);
+    \draw[important line, blue] (user) -- (E);
+    \draw[important line, blue] (user) -- (J);
+    %connecting closest nodes
+        %circle representing user input			 
+        \fill[red] (user) circle (3pt) node[above] {$?$};
+        
+    %square window line (dashed)
+    \draw[important line, black, dashed] (2.6-0.9,2.5-0.9) -- (2.6-0.9,2.5+0.9) -- (2.6+0.9,2.5+0.9) -- (2.6+0.9,2.5-0.9) -- (2.6-0.9,2.5-0.9);
+    
+\end{tikzpicture}
+\begin{tikzpicture}[
+	%	style def
+    scale=0.6,
+    important line/.style={thick},
+    every node/.style={color=black}
+    ]
+	
+	% demo connection of nodes
+	\draw[important line] (0,1) coordinate (a1) -- (1,1.5) coordinate (a2) -- (3,2) coordinate (a3) -- (4,2) coordinate (a4);
+	\draw[important line] (0,2.2)coordinate (C2) -- (1,2.5) coordinate (D) -- (2,3) coordinate (E) -- (2.5, 4.5) coordinate (F);
+	\draw[important line] (a2)--(D) ;
+	\draw[important line] (E)--(1,4) coordinate (G) -- (0,4.5) coordinate (H);
+    \draw[important line] (3.5,4.5)coordinate (I) -- (3.4,3) coordinate (J)  --  (4,2.5) coordinate (K) ;
+    \fill[black] 
+        		 (a1) circle (2pt)
+    			 (a2) circle (2pt)
+    			 (a3) circle (2pt)
+    			 (a4) circle (2pt)
+    			 (C2) circle (2pt)
+    			 (D) circle (2pt)
+    			 (E) circle (2pt)
+    			 (F) circle (2pt)
+    			 (G) circle (2pt)
+    			 (H) circle (2pt)
+    			 (I) circle (2pt)
+    			 (J) circle (2pt)
+    			 (K) circle (2pt);
+   %circle representing user input			 
+    \fill[red] (2.6,2.5) coordinate(user) circle (2pt) ;
+    			     
+	%connecting closest nodes
+    \draw[important line, blue] (user) -- (a3);
+    \draw[important line, blue] (user) -- (E);
+    \draw[important line, blue] (user) -- (J);
+    % projection
+    \draw[important line, green] (user) -- (2.73, 1.95) coordinate (intersect);
+    \fill[black] (intersect) circle (2pt) ;
+    
+    \draw[important line, green, ] (intersect)+(-0.14,0.07) node[minimum size=0.1cm,draw,green, rotate =14]{};
+    %circle representing user input			 
+    \fill[red] (user) circle (3pt) node[above] {$?$};
+    \draw[important line] (a1) -- (a2) -- (a3) -- (a4);   
+    
+    %square window line (dashed)
+    \draw[important line, black, dashed] (2.6-0.9,2.5-0.9) -- (2.6-0.9,2.5+0.9) -- (2.6+0.9,2.5+0.9) -- (2.6+0.9,2.5-0.9) -- (2.6-0.9,2.5-0.9);	 
+\end{tikzpicture}
+\caption{Finding the shortest point/projection for the random point on window domain}
+\end{figure}
+	
+\end{frame}
+
+\begin{frame}
+\frametitle{Graphical User Interface (GUI)}
+\begin{figure}[r]
+\centering
+\includegraphics[width=1\textwidth]{gui}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Insertion of points}
+\begin{columns}
+	\begin{column}{6cm}
+	\begin{itemize}
+	\item
+	Point from a list
+	\item
+	Filter by class
+	\item
+	Get Location from the map
+	\item
+	Walk / Car
+	\item
+	GO!
+	\end{itemize}
+	\end{column}
+	
+	\begin{column}{6cm}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{gui_1}
+	\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Manipulating Points of interest}
+
+\begin{tikzpicture}[>=stealth, thick]
+\node (A) at (0,0) [process, text width=5cm, minimum height=0.5cm, align=flush center] 
+{\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.4\textwidth]{manipulate_poi}
+	\end{figure}};
+
+\node (B) at (-3,-4) [process, text width=5cm, minimum height=0.5cm, align=flush center] 
+{\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{modify_poi}
+	\end{figure}};
+
+\node (C) at (3,-4) [process, text width=5cm, minimum height=0.5cm, align=flush center] 
+{\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{new_poi}
+	\end{figure}};
+
+
+\draw[->] (-0.6,0.37) -- (-3,0.37) -|  (-3,-2.2);
+\draw[->] (0.55,-0.25) -- (3,-0.25) -|  (3,-1.6);
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{Itinerary}
+\begin{columns}
+	\begin{column}{6cm}
+	\begin{itemize}
+	\item
+	Adding a third point
+	\item
+	Getting and storing the distance
+	\item
+	How it works
+	\item
+	Cost of time
+	\end{itemize}
+	\end{column}
+	
+	\begin{column}{6cm}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{itinerary}
+	\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Find in a Range}
+\begin{columns}
+	\begin{column}{6cm}
+	\begin{itemize}
+	\item
+	Using Point 1 data
+	\item
+	Selection of classes
+	\item
+	Distance
+	\item
+	Slow process
+	\end{itemize}
+	\end{column}
+	
+	\begin{column}{6cm}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{find_range}
+	\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Generation of the instructions}
+\begin{columns}
+	\begin{column}{6cm}
+	\begin{itemize}
+	\item
+	Generating instructions from shortest path
+	\item
+	Setting a scroll bar
+	\item
+	Exporting this data
+	\item
+	Default text when missing data
+	\end{itemize}
+	\end{column}
+	
+	\begin{column}{6cm}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{instructions}
+	\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\end{document} 
