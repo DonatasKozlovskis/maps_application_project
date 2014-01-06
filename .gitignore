@@ -29,3 +29,5 @@ SE_Report/*.out
 *.aux
 *.log
 *.synctex.gz
+*.aux.orig
+*.tex.orig

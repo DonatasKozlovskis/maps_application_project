@@ -136,7 +136,7 @@ After defining the use cases that users have to be able to deal with, we can sta
 
 THE BROWSER: This section is marked with the number one in the following figure, first GUI prototype. Basically, it brings to the user the possibility to look for a point of interest that is already present in the database.
 
-THE MAP: The zone shows a map able to be scaled (zoom in and zoom out) and reactive to mouse events in the whole surface.
+THE MAP: The zone shows a map able to be scaled (Matlab) (zoom in and zoom out) and reactive to mouse events in the whole surface.
 
 SHORTEST-PATH: Number Three allows the user to establish a route between two or three points taking into account if he or she is moving by car or by foot. But also brings the possibility using the buttons located on the left, to look for a type of point of interest around one position.
 
@@ -173,6 +173,14 @@ Notice that part of the process of development and parsing of the data from Open
 \clearpage
 \section{C++ Implementation}
 The present section has been divided in two different parts: The first one explains how the map structure is created evolving the three basic classes, the correspondent adjacency matrix depending on the choice of the user (walking or driving), how the shortest path is calculated using Dijkstra's algorithm and the logic behind the management of the points of interest. During the second part, we will focus on how the data is shown and obtained directly from the screen and its process of normalization and denormalization, taking into account the different spatial coordinates we work with during the implementation. But also we will see how the graphical user interface provides the input/output to the user and how is managed.
+
+\subsection{Database interaction}
+
+The first database-related problem we encountered was the necessity of building the MySQL (QMYSQL) driver manually for usage. It could have been avoided by directly including the headers of the MySQL connector, but the usage of the compiled driver significantly simplified the database interaction.
+
+The program creates one global connection in the main window, and then it is possible to access the database directly from all parts of the program. In addition to that, building SQL queries by preparing the QSqlQuery and consequently binding the values to it is likely to protect it from the SQL injections.
+
+It was not reasonable to implement fully-functional Object-Relational Mapping layer in the program. Now, the program uses a mix of database and object operations, however, for the first time everything is loaded from the database. Database are proven to be usable on the global queries that are connected with the selection of the set of values, but at the same time it is not reasonable to query the database to receive one Node or one Point of Interest, so these operations were implemented using the dictionaries (both STL map and Qt's QMap were used).
 
 \subsection{Creating the map}
 The implementation of the application started with classes \textit{Node}, \textit{Road} and \textit{Map} according to the three tables already existing in the database and with the goal of loading all necessary points that composes the map of Le Creusot in memory. However, at the same time, we wanted to take profit of the whole process storing all nodes that composes one road in the same structure. As a consequence, the map structure is a vector container that keeps as many pointers to road structures as number of roads are in the map. At the same time, each road is a vector container whose size is defined by the number of nodes that compose it. However, what is stored in the road structure are pointers to nodes.
@@ -364,11 +372,11 @@ So, when normalizing the coordinates we just calculate a and b and perform the c
 
 In our case, we normalize these values to the size of the texture mapped inside the OpenGL. Another problem arose from the OpenGL requirements where the dimensions of the texture should be the powers of two (2048 x 1024 .png image in our case). So, after exporting an image of the texture from the OpenStreetMap we have to crop it and calculate the approximate values of the latitude and longitude which results in the loss of precision.
 
-However, when trying to get the geographic coordinates of the point where user clicked, we have to consider the ratio between the size of the QGLWidget and the size of the OpenGL's viewport inside it and the map movement. In addition to that, first we should transform the point from widget to OpenGL coordiantes, then to geographic coordinates.
+However, when trying to get the geographic coordinates of the point where user clicked, we have to consider the ratio between the size of the QGLWidget and the size of the OpenGL's viewport inside it and the map movement. In addition to that, first we should transform the point from widget to OpenGL coordinates, then to geographic coordinates.
 
-The final algorithm for getting the geographic coordinates out of widget coordinates when the ration between the viewport and the widget is one (so, one pixel in OpenGl corresponds to one pixel in the widget), is as follows:
+The final algorithm for getting the geographic coordinates out of widget coordinates when the ratio between the viewport and the widget is one (so, one pixel in OpenGl corresponds to one pixel in the widget), is as follows:
 
-First, we calculate the position of the cursor in OpenGL by translating the widget coordinates with zero in the top left corner of the screen to the standard 2D cartesian plane of the OpenGL.
+First, we calculate the position of the cursor in OpenGL by translating the widget coordinates with zero in the top left corner of the screen to the standard 2D Cartesian plane of the OpenGL.
 
 \begin{lstlisting}
     float mpoglx = (widgetCoordinates.x() - width()/2) - movPos.x();
@@ -382,13 +390,10 @@ Then, we calculate a (2) and b (3) and perform the inverse transformation with s
     float mpgeolat = (mpogly*2/scale - bLat)/aLat;
 \end{lstlisting}
 
-???
+
+We find closest node by calculating the Euclidean distance in the OpenGL coordinates.
 
 
-
--Explain process of normalization and denormalization.
--Classes used using inheritance such as QGLWidget, UI or QmainWindow
--Geo to OpenGL Coordinates and find closest
 
 \subsubsection{Selecting a route}
 In order to make the route selection as user friendly as possible, we have created a main menu which is able to perform all tasks related with routes divided in five parts (see figure~\ref{fig:menu_poi}): Method of transport, type of point of interest in the second column, specific point of interest in the first column, deletion and points of interest management (explained in detail in section \ref{POI}).
@@ -436,7 +441,7 @@ In this section the project implementation using Matlab is discussed and present
 
 \subsection{Getting the data}
 
-As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure and all data were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
+As it was mentioned before, in Matlab implementation we have chosen to use \textit{PostgreSQL} database, since the whole process (installing additional drivers for Matlab, making connectors, etc.) was more user friendly and time efficient. However, the database schema/structure of Roads and Nodes data tables were the same between MySQL and PostgreSQL implementations (see figure: ~\ref{fig:RelDBdiagram}).
 
 The first difference comes in fact that the \textit{variables} in Matlab can be not even created, but as well saved in and loaded from Matlab's data structure \textit{.mat} files. This allowed us to come to the solution where the connection to external data source (database) is made only one time for creating appropriate data structures/class objects (discussed in next section). As in Matlab project part queries to database are used only one, the program end-user does not need to have database and driver installed, because afterwards all calculations are created using generated data structures from .mat files.
 
@@ -447,7 +452,7 @@ Since by itself Matlab has a lot of different data types from which the \textit{
 \url{http://www.mathworks.fr/fr/help/matlab/matlab_oop/matlab-vs-other-oo-languages.html}
 }
 
-Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that by itselfs is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
+Another faced issue was the fact that the Matlab is not so flexible as C++ with passing objects by pointer or reference. Since we would like to avoid creating a copies of original objects in functions, we found that \textit{handle} classes in Matlab can be created, where class constructor returns a handle object that by itself is a reference to the object created. In this way, using such objects in functions, MATLAB copies just the handle and access its data indirectly.
 
 As in C++ implementation, classes for representing the \textit{node}, \textit{road} and \textit{map} were created.
 
@@ -677,7 +682,7 @@ Then we extract the index number and we will use it to know which POI has been s
 	\end{lstlisting}
 The \textit{contents} variable will be a number.
 \item
-We initialize two arrays containing the latitudes and longitudes of the actual POIs list, by the moment all of them. Then we extract the latitude and longitude of the point selected by accessing at the posicion \textit{contents} of these variables. Note that in this point we will store the variables in the handles since we want this point to be accessible from another part of the program and not only this callback.
+We initialize two arrays containing the latitudes and longitudes of the actual POIs list, by the moment all of them. Then we extract the latitude and longitude of the point selected by accessing at the position \textit{contents} of these variables. Note that in this point we will store the variables in the handles since we want this point to be accessible from another part of the program and not only this callback.
 \item
 The next thing to do is to check if we have any Point1 displayed, if this is the case we delete it. Then it is plotted in the map so the user can easily see it. Note that the points will appear according to the colour used in the background of the selection menu of each point. The points are plotted also in a handle so it can be deleted in anywhere without deleting the background map.
 \item
@@ -823,10 +828,11 @@ During all development process we have seen how Matlab is more suitable for perf
 
 On the other hand, using C++ we can obtain a finished product that when it is executed performs much more better in real time even it is more tedious during the development process. We can see this evidence for instance, when we try to compute Dijkstra's algorithm in real time in both implementations and how fast behaves in the C++ implementation in comparison with Matlab code. 
 
-Despite the all differences of C++ and Matlab environments, we have tried to preserve consistency between two different sources. However, some methodologies which work fast in one environment are not so effective in other, (e.g. looping in Matlab, or passing data by pointers is not possible directly in Matlab), thus the user can see the different codes and algorithms on two programming languages. Also, the Matlab program is dependent on IDE version installed to machine, which limits the user to have portable version of a program, which could be made easily using C++ release.
+
+Despite the all differences of C++ and Matlab environments, we have tried to preserve consistency between two different sources. However, some methodologies which work fast in one environment are not so effective in other, (e.g. looping in Matlab, or passing data by pointers is not possible directly in Matlab), thus the user can see the different codes and algorithms on two programming languages. Also, the Matlab program is dependent on IDE version installed to machine, which limits the user to have portable version of a program, which could be made easily using C++ release. As another point of the differences, the garbage collection should be mentioned as well. Matlab allows user to do it straight forward with \textit{clear} operation, while in C++ code the programmer has to take care of dynamic memory pointers by itself. 
+
 
 We have seen in Matlab how easy is to create a GUI, however this has a little cost. The possibilities of making element different are not very high. Matlab provides a closed environment for working in the graphical interfaces where it is very easy to do a button or to put some text but it is quite closed to customize them. In C++ it is harder to program an interface but the options are bigger since the limitations of programming are less. This is an extra point for Matlab if we don't need really good GUIs but a point for C++ if we need a good finishing touch.
-
 
 \clearpage
 \section{Appendix}
