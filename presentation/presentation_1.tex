@@ -1,7 +1,4 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Beamer Presentation
-% LaTeX Template
-% Version 1.0 (10/11/12)
 %
 % This template has been downloaded from:
 % http://www.LaTeXTemplates.com
@@ -58,7 +55,7 @@
 %\usecolortheme{albatross}
 %\usecolortheme{beaver}
 %\usecolortheme{beetle}
-%\usecolortheme{crane}
+\usecolortheme{crane}
 %\usecolortheme{dolphin}
 %\usecolortheme{dove}
 %\usecolortheme{fly}
@@ -77,11 +74,16 @@
 }
 
 \usepackage{graphicx} % Allows including images
+\usepackage{svg}		%Allows including vector graphics
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \graphicspath{ {./images/} }
-\usepackage{tikz}
+
 \usepackage{flowchart}
-\usetikzlibrary{arrows}
+
+\usepackage{tikz} % allows to use tikz graphics
+\usetikzlibrary{shapes,snakes}
+\usetikzlibrary{shapes.misc, shapes.arrows}
+\usetikzlibrary{calc, matrix,chains,scopes,positioning,arrows,fit}
 
 
 \newenvironment<>{varblock}[2][.9\textwidth]{%
@@ -109,18 +111,33 @@ University of Burgundy \\ % Your institution for the title page
 
 }
 \date{7 of January of 2014} % Date, can be changed to a custom date
+\logo{%
+  %\makebox[0.95\paperwidth]{
+    \includegraphics[height=0.8cm,keepaspectratio]{ubLogo}
+
+  %}
+}
 
 \begin{document}
 
 \begin{frame}
 \titlepage % Print the title page as the first slide
+%\logo{\includegraphics[height=0.8cm]{ub_logo}\vspace{220pt}}
 \end{frame}
 
 \begin{frame}
 \frametitle{Outline}
-\tableofcontents
+%\tableofcontents[sectionstyle=show]
+
+	\begin{itemize}
+		\item Tools and resources
+		\item Methodology
+		\item C++ implementation
+		\item Matlab implementation	
+	\end{itemize}
 \end{frame}
 
+\section{Tools and resources}
 \begin{frame}
 \frametitle{Tools and resources}
 \begin{columns}
@@ -166,6 +183,7 @@ University of Burgundy \\ % Your institution for the title page
 \end{columns}
 \end{frame}
 
+\section{C++ Implementation}
 \begin{frame}
 \frametitle{C++ Implementation}
 \begin{itemize}
@@ -347,13 +365,60 @@ InnerIndices: & 1 & 2 & 0 & 2 & 4 & 2 & 1 & 4 \\
 
 \begin{frame}
 \frametitle{Matlab implementation}
-\begin{itemize}
-\item
-Data Structure
-\item
-Shortest Path
-\end{itemize}
+\framesubtitle{Getting the data}
+	\begin{itemize}
+		\item PostgreSQL database
+		\item Queries were made only once.
+		\item Created objects can be saved in .MAT files
+		\item No need to recreate object on each program start
+	\end{itemize}
+\end{frame}
 
+\begin{frame}
+\frametitle{Matlab implementation}
+\framesubtitle{Data Structure}
+	\begin{itemize}
+		\item Objects of 4 classes were constructed. 
+		\item No pointers in Matlab.
+		\item Solution: handle classes.
+	\end{itemize}
+	
+	\begin{figure}[!h]
+		\centering
+			\begin{tikzpicture}[node distance=5mm,
+			terminal/.style={
+			% The shape:
+			rectangle,
+			minimum size=6mm,
+			% The rest
+			very thick,draw=black!50,
+			top color=white,bottom color=black!15,
+			font=\ttfamily}]
+			
+			\node (Node) [terminal] {Node};
+			\node (ArrNode) [terminal,right=of Node] {ArrayNodes};
+			\node (Road) [terminal,right=of ArrNode] {Road};
+			\node (Map) [terminal,right=of Road] {Map (Array of Roads)};
+			\path
+			(Node) edge[-latex] (ArrNode) % simple edges
+			(ArrNode) edge[-latex] (Road)
+			(Road) edge[-latex] (Map);
+			
+			\end{tikzpicture}
+		\caption{Simplified diagram of relationship of a classes}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Matlab implementation}
+\framesubtitle{The shortest path}
+	\begin{itemize}
+		\item Dijkstra's algorithm
+		\item Determine the window on which the closest nodes and projections will be searched.
+		\item Find the closest node on determined window.
+		\item Find the closest projection (if possible) on the same window.
+		\item Update the adjacency matrix according shortest distance.
+	\end{itemize}
 \begin{figure}[!h]
 \centering
 \begin{tikzpicture}[
@@ -466,7 +531,7 @@ Shortest Path
     \draw[important line, green] (user) -- (2.73, 1.95) coordinate (intersect);
     \fill[black] (intersect) circle (2pt) ;
     
-    \draw[important line, green, ] (intersect)+(-0.14,0.07) node[minimum size=0.1cm,draw,green, rotate =14]{};
+    \draw[important line, green, ] (intersect)+(-0.14,0.07) node[scale = 0.6, minimum size=0.1cm,draw,green, rotate =14]{};
     %circle representing user input			 
     \fill[red] (user) circle (3pt) node[above] {$?$};
     \draw[important line] (a1) -- (a2) -- (a3) -- (a4);   
@@ -617,5 +682,23 @@ Shortest Path
 	\end{column}
 \end{columns}
 \end{frame}
+
+\begin{frame}
+\frametitle{Conclusions}
+
+\end{frame}
+
+\begin{frame}[c]
+	\begin{center} 
+		\Huge  Thank you for attention! 
+	\end{center} 
+\end{frame}
+
+\begin{frame}[c] 
+	\begin{center} 
+		\Huge  Questions? 
+	\end{center} 
+\end{frame} 
+
 
 \end{document} 
