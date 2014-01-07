@@ -152,7 +152,7 @@ void MapGLWidget::paintGL() {
  */
 void MapGLWidget::resizeGL(int width, int height) {
 
-    glViewport(0,0,width,height);						// Reset The Current Viewport
+    glViewport(0,   0,width,height);						// Reset The Current Viewport
     glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
     glLoadIdentity();									// Reset The Projection Matrix
 
